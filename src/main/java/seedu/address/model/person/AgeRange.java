@@ -9,7 +9,9 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class AgeRange {
 
-    public static final String MESSAGE_CONSTRAINTS = "Age range must be one of the predefined ranges: <25, 25-34, 35-44, 45-54, 55-64, >65";
+    public static final String MESSAGE_CONSTRAINTS =
+            "Age range must be one of the predefined ranges: " +
+            "<25, 25-34, 35-44, 45-54, 55-64, >65";
 
     public final AgeRangeEnum value;
 
@@ -48,6 +50,5 @@ public class AgeRange {
     @Override
     public int hashCode() {
         return value.hashCode();
-}
-
+    }
 }
