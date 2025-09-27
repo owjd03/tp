@@ -10,8 +10,8 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Salary {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Salaries can take any non-negative values, " +
-            "and it should not be blank";
+            "Salaries can take any non-negative values, "
+            + "and it should not be blank";
 
     /*
      * For a salary to be valid, it must be non-negative.
