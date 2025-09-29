@@ -10,8 +10,15 @@ import seedu.address.logic.commands.RemarkCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Remark;
 
-
+/**
+ * Parses input arguments and creates a {@code RemarkCommand}.
+ */
 public class RemarkCommandParser {
+    /**
+     * Parses the given {@code args} and returns a {@code RemarkCommand}.
+     *
+     * @throws ParseException if the input does not conform to the expected format
+     */
     public RemarkCommand parse(String args) throws ParseException {
         requireNonNull(args);
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args,
