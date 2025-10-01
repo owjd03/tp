@@ -499,7 +499,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     * 3a4. FA enters the code.
 	 
-	 *3a4a. FA enters the wrong code.
+	 * 3a4a. FA enters the wrong code.
 
 	      * 3a4a1. ClientCore tells user code is wrong.
 
