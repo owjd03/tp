@@ -288,16 +288,18 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is the `ClientCore` and the **Actor** is the `FA`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use case: U1. Delete a client**
+
+**Precondition: FA is logged into the app**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
+1.  FA requests to list the clients
+2.  ClientCore shows a list of clients
+3.  FA requests to delete a specific client in the list
+4.  ClientCore deletes the client
 
     Use case ends.
 
@@ -309,19 +311,21 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 3a. The given index is invalid.
 
-    * 3a1. AddressBook shows an error message.
+    * 3a1. ClientCore shows an error message.
 
       Use case resumes at step 2.
 
 
-**Use case: Find a person**
+**Use case: U2. Find a client**
+
+**Precondition: FA is logged into the app**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to find a list of persons containing the keyword.
-4.  AddressBook finds and shows a new list of matching persons.
+1.  FA requests to list clients
+2.  ClientCore shows a list of clients
+3.  FA requests to find a list of clients containing the input keyword.
+4.  ClientCore finds and shows a new list of clients with matching names.
 
     Use case ends.
 
@@ -333,19 +337,21 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 3a. The given name is invalid.
 
-    * 3a1. AddressBook shows an error message.
+    * 3a1. ClientCore shows an error message.
 
       Use case resumes at step 2.
 
 
-**Use case: View a person**
+**Use case: U3. View a client's full detail**
+
+**Precondition: FA is logged into the app**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to view a specific person in the list.
-4.  AddressBook shows the person's details.
+1.  FA requests to list clients
+2.  ClientCore shows a list of clients
+3.  FA requests to view a specific client in the list.
+4.  ClientCore shows the client's full detail.
 
     Use case ends.
 
@@ -357,32 +363,34 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 3a. The given index is invalid.
 
-    * 3a1. AddressBook shows an error message.
+    * 3a1. ClientCore shows an error message.
 
       Use case resumes at step 2.
 
 * 3b. The given name is invalid.
 
-    * 3b1. AddressBook shows an error message.
+    * 3b1. ClientCore shows an error message.
 
       Use case resumes at step 2.
 
-* 3c. The given name matches with 2 or more people
+* 3c. The given name matches with 2 or more client
 
-    * 3c1. AddressBook shows a list of matching persons with their 
-	   index and prompt User to view based on index instead of name.
+    * 3c1. ClientCore shows a list of matching clients with their 
+	   index and prompt FA to view based on index instead of name.
 
       Use case resumes at step 2.
 
 
-**Use case: Filter list of persons**
+**Use case: U4. Filter list of clients**
+
+**Precondition: FA is logged into the app**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to filter the list based on input field.
-4.  AddressBook shows the filtered list.
+1.  FA requests to list persons
+2.  ClientCore shows a list of persons
+3.  FA requests to filter the list based on input field.
+4.  ClientCore shows the filtered list.
 
     Use case ends.
 
@@ -394,15 +402,116 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 3a. The given input field does not exist.
 
-    * 3a1. AddressBook shows an error message.
+    * 3a1. ClientCore shows an error message.
 
       Use case resumes at step 2.
 
 * 3b. The given input contains duplicate field.
 
-    * 3b1. AddressBook shows an error message.
+    * 3b1. ClientCore shows an error message.
 
       Use case resumes at step 2.
+
+**Use case: U5. Tag a client into groups**
+
+**Precondition: 1. FA is logged into the app
+		2. Target client is in the list**
+**MSS**
+
+1.  FA requests to list clients
+2.  ClientCore shows a list of clients
+3.  FA requests to tag a specific client in the list.
+4.  ClientCore tag the client and group them with similar tags.
+
+    Use case ends.
+
+**Extensions**
+
+* 2a. The list is empty.
+
+  Use case ends.
+
+* 3a. The given tag input is invalid
+
+    * 3a1. ClientCore shows an error message.
+
+      Use case resumes at step 2.
+
+* 4a. The given tag is a newly created tag
+    
+    * 4a1. ClientCore tells FA that the tag is new and the
+	   tagged client is the first one in the group.
+
+      Use case ends.
+
+**Use case: U6. Sort a client based on a criteria**
+
+**Precondition: 1. FA is logged into the app
+		2. The list contains 2 or more client**
+
+**MSS**
+
+1.  FA requests to list clients
+2.  ClientCore shows a list of clients
+3.  FA requests to sort clients based on existing category, ascending/descending
+4.  ClientCore sorts the list based on FA's input.
+
+    Use case ends.
+
+**Extensions**
+
+* 3a. The given input is not based on existing category.
+      
+    * 3a1. ClientCore shows an error message that says category doesn't exist.
+
+      Use case resumes at step 2.
+
+* 3b. FA does not specify ascending or descending.
+  
+    * 3b1. ClientCore automatically infer it as ascending and sort ascendingly.
+
+      Use case ends.
+
+**Use case: U7. Logging into an account**
+
+**Precondition: 1. FA has a personal email
+		2. FA has installed the app locally**
+
+**MSS**
+
+1.  FA opens the app
+2.  ClientCore opens and shows the login screen
+3.  FA enters username and password
+4.  ClientCore logs FA in and loads the latest data in the account
+
+    Use case ends.
+
+**Extensions**
+
+* 3a. FA forgets username or password.
+
+    * 3a1. ClientCore asks for an email to send a code.
+
+    * 3a2. FA enters personal email.
+
+    * 3a3. ClientCore sends a random code to the email and asks
+	   to enter the same code.
+
+    * 3a4. FA enters the code.
+	 
+	 *3a4a. FA enters the wrong code.
+
+	      * 3a4a1. ClientCore tells user code is wrong.
+
+		Use case resumes at step 3a1.
+
+    * 3a5. ClientCore asks for a new username and password.
+
+    * 3a6. FA enters new username and password.
+
+    * 3a7. ClientCore logs the user in with latest data in previous account.
+      
+      Use case ends.
 
 *{More to be added}*
 
