@@ -422,16 +422,69 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Non-Functional Requirements
 
+#### Platform Compatibility
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
+
+#### Performance and Responsiveness 
 2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
-3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+
+#### Scalability 
+4. The system should be designed to scale to larger datasets (e.g., ≥10,000 contacts) with minimal architectural changes.
+
+#### Usability 
+5. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) 
+should be able to accomplish most of the tasks faster using commands than using the mouse.
+6. Commands should be concise, memorable, and consistent.
+7. Error messages should be clear, instructive, and suggest corrective action.
+
+#### Reliability and Fault Tolerance 
+8. The application should not crash in the event of invalid inputs. 
+9. Must handle unexpected shutdowns gracefully without loss of stored data. 
+
+#### Security and Privacy 
+10. All sensitive data (salary, occupation, contact details, etc) must be stored securely.
+11. Must comply with existing data privacy regulations. 
+
+#### Maintainability 
+12. Code must be modular and follow standard Java conventions.
+13. Build should be automated via Gradle. 
+14. Unit and integration tests should provide ample coverage of the codebase. 
+
+#### Extensibility 
+15. The system should support the addition of new commands with minimal changes to existing code.
+
+#### Portability 
+16. The application should be distributable as a single JAR file and run consistently across
+supported platforms without requiring external dependencies. 
+
+#### Documentation 
+17. User guide should explain all commands clearly with examples.
+18. Developer Guide should include instructions for setting up the development environment.
+19. Public classes and methods in the codebase should include Javadoc header comments that describe its purpose, 
+parameters, return values, and any exceptions thrown. These comments should follow the official JavaDoc conventions.
 
 *{More to be added}*
 
 ### Glossary
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
+* **Command Line Interface (CLI)**: A text-based interface where the user types commands instead of 
+graphical elements.
+* **Private contact detail**: A contact detail that is not meant to be shared with others.
+* **Financial Advisor**: A professional user of the system whose job is to manage client 
+relationships and recommend suitable financial products or services.
+* **Client**: An individual whose personal and financial details (e.g., age, salary, policies, risk profile) 
+are stored in the system. Clients are the primary focus of the Financial Advisor’s work and the main type of
+contact being managed. 
+* **Client Profile**: A structured record containing personal and financial information of a client (e.g. name,
+age, salary, relationship status). 
+* **Tag**: A label applied to a client profile to group clients meaningfully.
+* **Command**: A typed instruction given to the system to perform an action (e.g. list, add, find, delete).
+* **Archiving**: The act of marking a client profile as inactive (not deleted) for long-term storage,
+    so that it no longer shows up in day-to-day operations but can be retrieved if needed.
+* **Offline**: The ability to use the system without an internet connection. 
+
+*{More to be added}*
 
 --------------------------------------------------------------------------------------------------------------------
 
