@@ -503,7 +503,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 	      * 3a4a1. ClientCore tells user code is wrong.
 
-		Use case resumes at step 3a1.
+	        Use case resumes at step 3a1.
 
     * 3a5. ClientCore asks for a new username and password.
 
