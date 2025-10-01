@@ -262,29 +262,43 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
-* has a need to manage a significant number of contacts
+* works as a Financial Advisor professionally
+* has a need to manage a significant number of clients and contacts
+* wants to store clients' profile to get applicable financial plans for them
 * prefer desktop apps over other types
 * can type fast
 * prefers typing to mouse interactions
 * is reasonably comfortable using CLI apps
 
-**Value proposition**: manage contacts faster than a typical mouse/GUI driven app
+**Value proposition**: help Financial Advisors to manage many contacts faster than a typical mouse/GUI driven app
 
 
 ### User stories
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                     | So that I can…​                                                        |
-| -------- | ------------------------------------------ | ------------------------------ | ---------------------------------------------------------------------- |
-| `* * *`  | new user                                   | see usage instructions         | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person               |                                                                        |
-| `* * *`  | user                                       | delete a person                | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name          | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details   | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name           | locate a person easily                                                 |
-
-*{More to be added}*
+| Priority | As a …​                                                          | I want to …​                                                                            | So that I can…​                                                                            |
+|----------|------------------------------------------------------------------|-----------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|
+| `* * *`  | Financial Advisor                                                | store detailed client profiles (including salary, age etc)                              | quickly assess which insurance plans are best suited for which client                      |
+| `* * *`  | Financial Advisor                                                | edit my client's data                                                                   | update their details if there is any change                                                |
+| `* * *`  | Financial Advisor                                                | archive or delete old clients                                                           | remove entries that I no longer need                                                       |
+| `* * *`  | Financial Advisor                                                | assess the application offline                                                          | work without internet connection.                                                          |
+| `* * *`  | Financial Advisor                                                | add a new client profile with key financial details                                     | provide personalized recommendations later.                                                |
+| `* * *`  | Financial Advisor                                                | safely store and access sensitive customer data since it is a remote application        | not worry about data beaches                                                               |
+| `* * *`  | Financial advisor                                                | quickly search for clients based on their names	                                        | get their data quickly                                                                     |
+| `* *`    | Financial advisor	                                               | filter my client list based on specific criteria (age range, income level)	             | quickly assess which insurance plans are best suited for which client                      |
+| `* *`    | Financial advisor	                                               | tag them with custom labels	                                                            | split them into meaningful groups.                                                         |
+| `* *`    | Financial advisor that is new to the system	                     | see sample client profiles when I open the app	                                         | quickly understand how information is structured and stored                                |
+| `* *`    | Financial advisor ready to use the system in my day to day work	 | delete all samples and test data/start a clean account for myself	                      | input real client information.                                                             |
+| `*`      | Financial advisor	                                               | list out the customers whose insurance plans are ending	                                | recommend new policies                                                                     |
+| `*`      | Financial advisor	                                               | sort my list based on category (name, income level, age range)	                         | quickly identify clients at the bottom or top of a category                                |
+| `*`      | Financial advisor worried about local breaching	                 | have login password to the app	                                                         | be assured that no other people can access the data locally                                |
+| `*`      | Financial advisor that likes to add extra details                | 	add notes for each client	                                                             | can add additional information regarding the client                                        |
+| `*`      | Financial advisor that is forgetful	                             | reset my password	                                                                      | regain access if I forget it                                                               |
+| `*`      | results-driven financial manager	                                | see aggregated statistics on how many new clients each advisor has onboarded	           | monitor productivity and client acquisition trends.                                        |
+| `*`      | mobile and on-the-go financial advisor	                          | update client data even when I don’t have my desktop	                                   | remain productive during travel or client site visits.                                     |
+| `*`      | proactive and client-centric financial advisor		                 | flag clients I haven’t contacted in a long time                                         | re-engage them with timely interactions and reduce the risk of losing them to competitors. |
+| `*`      | meticulous and details-driven financial advisor	                 | record significant life events (marriage, new child, job change) in a client’s profile	 | proactively suggest financial products that match their changing circumstances.            |
 
 ### Use cases
 
@@ -524,16 +538,69 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Non-Functional Requirements
 
+#### Platform Compatibility
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
+
+#### Performance and Responsiveness 
 2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
-3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+
+#### Scalability 
+4. The system should be designed to scale to larger datasets (e.g., ≥10,000 contacts) with minimal architectural changes.
+
+#### Usability 
+5. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) 
+should be able to accomplish most of the tasks faster using commands than using the mouse.
+6. Commands should be concise, memorable, and consistent.
+7. Error messages should be clear, instructive, and suggest corrective action.
+
+#### Reliability and Fault Tolerance 
+8. The application should not crash in the event of invalid inputs. 
+9. Must handle unexpected shutdowns gracefully without loss of stored data. 
+
+#### Security and Privacy 
+10. All sensitive data (salary, occupation, contact details, etc) must be stored securely.
+11. Must comply with existing data privacy regulations. 
+
+#### Maintainability 
+12. Code must be modular and follow standard Java conventions.
+13. Build should be automated via Gradle. 
+14. Unit and integration tests should provide ample coverage of the codebase. 
+
+#### Extensibility 
+15. The system should support the addition of new commands with minimal changes to existing code.
+
+#### Portability 
+16. The application should be distributable as a single JAR file and run consistently across
+supported platforms without requiring external dependencies. 
+
+#### Documentation 
+17. User guide should explain all commands clearly with examples.
+18. Developer Guide should include instructions for setting up the development environment.
+19. Public classes and methods in the codebase should include Javadoc header comments that describe its purpose, 
+parameters, return values, and any exceptions thrown. These comments should follow the official JavaDoc conventions.
 
 *{More to be added}*
 
 ### Glossary
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
+* **Command Line Interface (CLI)**: A text-based interface where the user types commands instead of 
+graphical elements.
+* **Private contact detail**: A contact detail that is not meant to be shared with others.
+* **Financial Advisor**: A professional user of the system whose job is to manage client 
+relationships and recommend suitable financial products or services.
+* **Client**: An individual whose personal and financial details (e.g., age, salary, policies, risk profile) 
+are stored in the system. Clients are the primary focus of the Financial Advisor’s work and the main type of
+contact being managed. 
+* **Client Profile**: A structured record containing personal and financial information of a client (e.g. name,
+age, salary, relationship status). 
+* **Tag**: A label applied to a client profile to group clients meaningfully.
+* **Command**: A typed instruction given to the system to perform an action (e.g. list, add, find, delete).
+* **Archiving**: The act of marking a client profile as inactive (not deleted) for long-term storage,
+    so that it no longer shows up in day-to-day operations but can be retrieved if needed.
+* **Offline**: The ability to use the system without an internet connection. 
+
+*{More to be added}*
 
 --------------------------------------------------------------------------------------------------------------------
 
