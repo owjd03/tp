@@ -414,8 +414,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Use case: U5. Tag a client into groups**
 
-**Precondition: 1. FA is logged into the app
-                2. Target client is in the list**
+**Precondition:** 
+
+1. FA is logged into the app
+2. Target client is in the list
+
 **MSS**
 
 1.  FA requests to list clients
@@ -446,8 +449,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Use case: U6. Sort a client based on a criteria**
 
-**Precondition: 1. FA is logged into the app
-                2. The list contains 2 or more client**
+**Precondition:**
+
+1. FA is logged into the app
+2. The list contains 2 or more client
 
 **MSS**
 
@@ -474,8 +479,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Use case: U7. Logging into an account**
 
-**Precondition: 1. FA has a personal email
-                2. FA has installed the app locally**
+**Precondition:**
+
+1. FA has a personal email
+2. FA has installed the app locally
 
 **MSS**
 
