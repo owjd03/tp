@@ -31,9 +31,8 @@ public class Dependents {
         return test >= 0;
     }
 
-    @Override
-    public String toString() {
-        return String.valueOf(value);
+    public int toInt() {
+        return value;
     }
 
     @Override
