@@ -6,6 +6,11 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPENDENTS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE_OF_BIRTH;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_MARITAL_STATUS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_OCCUPATION;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
@@ -26,12 +31,22 @@ public class AddCommand extends Command {
             + PREFIX_PHONE + "PHONE "
             + PREFIX_EMAIL + "EMAIL "
             + PREFIX_ADDRESS + "ADDRESS "
+            + PREFIX_SALARY + "SALARY "
+            + PREFIX_DATE_OF_BIRTH + "DATE_OF_BIRTH "
+            + PREFIX_MARITAL_STATUS + "MARITAL_STATUS "
+            + PREFIX_OCCUPATION + "OCCUPATION "
+            + PREFIX_DEPENDENTS + "DEPENDENTS "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "John Doe "
             + PREFIX_PHONE + "98765432 "
             + PREFIX_EMAIL + "johnd@example.com "
             + PREFIX_ADDRESS + "311, Clementi Ave 2, #02-25 "
+            + PREFIX_SALARY + "5000 "
+            + PREFIX_DATE_OF_BIRTH + "1999-01-01 "
+            + PREFIX_MARITAL_STATUS + "Single "
+            + PREFIX_OCCUPATION + "Engineer "
+            + PREFIX_DEPENDENTS + "2 "
             + PREFIX_TAG + "friends "
             + PREFIX_TAG + "owesMoney";
 
