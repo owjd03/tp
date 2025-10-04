@@ -12,8 +12,8 @@ import java.time.format.DateTimeFormatter;
  */
 public class DateOfBirth {
 
-    public static final String MESSAGE_CONSTRAINTS = "Date of birth must be a valid date in the format yyyy-MM-dd " +
-            "and not in the future";
+    public static final String MESSAGE_CONSTRAINTS = "Date of birth must be a valid date in the format yyyy-MM-dd "
+            + "and not in the future";
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
