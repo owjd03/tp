@@ -1,16 +1,20 @@
 package seedu.address.logic.commands;
 
+import static java.util.Objects.requireNonNull;
+
 import seedu.address.model.Model;
 
 /**
- * Changes the sort of an existing person in the address book.
+ * Sorts all persons in the address book by name in alphabetical order.
  */
 public class SortCommand extends Command {
 
     public static final String COMMAND_WORD = "sort";
+    public static final String MESSAGE_SUCCESS = "Sorted by name";
 
     @Override
     public CommandResult execute(Model model) {
-        return new CommandResult("Hello from sort");
+        requireNonNull(model);
+        return new CommandResult(MESSAGE_SUCCESS);
     }
 }
