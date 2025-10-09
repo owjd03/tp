@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static seedu.address.logic.Messages.MESSAGE_PERSONS_LISTED_OVERVIEW;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.logic.commands.ViewCommand.MESSAGE_NOVIEW;
 import static seedu.address.logic.commands.ViewCommand.MESSAGE_VIEW_SUCCESS;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
@@ -50,7 +51,7 @@ public class ViewCommandTest {
 
     @Test
     public void execute_zeroKeywords_noPersonToView() {
-        String expectedMessage = String.format(MESSAGE_VIEW_SUCCESS, 0);
+        String expectedMessage = String.format(MESSAGE_NOVIEW, 0);
         NameContainsKeywordsPredicate predicate = preparePredicate(" ");
         ViewCommand command = new ViewCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);

@@ -28,6 +28,7 @@ public class ViewCommand extends Command {
             + "Example 2: " + COMMAND_WORD + " 1";
 
     public static final String MESSAGE_VIEW_SUCCESS = "Here's the full detail!";
+    public static final String MESSAGE_NOVIEW = "There's no one to be viewed!";
 
     private final Index index;
     private final NameContainsKeywordsPredicate predicate;
@@ -66,7 +67,11 @@ public class ViewCommand extends Command {
             model.updateFilteredPersonList(predicate);
         }
 
-        return new CommandResult(MESSAGE_VIEW_SUCCESS);
+        if (model.getFilteredPersonList().isEmpty()) {
+            return new CommandResult(MESSAGE_NOVIEW);
+        } else {
+            return new CommandResult(MESSAGE_VIEW_SUCCESS);
+        }
     }
 
     @Override
