@@ -13,7 +13,7 @@ public class MaritalStatus {
             "Marital status must be one of the predefined constants: "
                     + "Single, Married, Divorced, Widowed";
 
-    public final String value;
+    public final MaritalStatusEnum value;
 
     /**
      * Constructs a {@code MaritalStatus}.
@@ -23,7 +23,7 @@ public class MaritalStatus {
     public MaritalStatus(String maritalStatus) {
         requireNonNull(maritalStatus);
         checkArgument(MaritalStatusEnum.isValidMaritalStatus(maritalStatus), MESSAGE_CONSTRAINTS);
-        value = String.valueOf(MaritalStatusEnum.fromString(maritalStatus));
+        value = MaritalStatusEnum.fromString(maritalStatus);
     }
 
 

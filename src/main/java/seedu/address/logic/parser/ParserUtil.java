@@ -10,15 +10,9 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
-import seedu.address.model.person.DateOfBirth;
-import seedu.address.model.person.Dependents;
 import seedu.address.model.person.Email;
-import seedu.address.model.person.MaritalStatus;
-import seedu.address.model.person.MaritalStatusEnum;
 import seedu.address.model.person.Name;
-import seedu.address.model.person.Occupation;
 import seedu.address.model.person.Phone;
-import seedu.address.model.person.Salary;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -99,77 +93,6 @@ public class ParserUtil {
             throw new ParseException(Email.MESSAGE_CONSTRAINTS);
         }
         return new Email(trimmedEmail);
-    }
-
-    /**
-     * Parses a {@code String salary} into a {@code Salary}.
-     * Leading and trailing whitespaces will be trimmed.
-     *
-     * @throws ParseException if the given {@code salary} is invalid.
-     */
-    public static Salary parseSalary(String salary) throws ParseException {
-        requireNonNull(salary);
-        String trimmedSalary = salary.trim();
-        if (!Salary.isValidSalary(trimmedSalary)) {
-            throw new ParseException(Salary.MESSAGE_CONSTRAINTS);
-        }
-        return new Salary(trimmedSalary);
-    }
-
-    /**
-     * Parses a {@code String input} representing either a person's date of birth into a {@code DateOfBirth}.
-     * Leading and trailing whitespaces will be trimmed.
-     *
-     * @throws ParseException if the given {@code dateOfBirth} is invalid.
-     */
-    public static DateOfBirth parseDateOfBirth(String input) throws ParseException {
-        requireNonNull(input);
-        String trimmedDateOfBirth = input.trim();
-        if (!DateOfBirth.isValidDateOfBirth(trimmedDateOfBirth)) {
-            throw new ParseException(DateOfBirth.MESSAGE_CONSTRAINTS);
-        }
-        return new DateOfBirth(trimmedDateOfBirth);
-    }
-
-    /**
-     * Parses a {@code String maritalStatus} into a {@code MaritalStatus}.
-     * Leading and trailing whitespaces will be trimmed.
-     *
-     * @throws ParseException if the given {@code maritalStatus} is invalid.
-     */
-    public static MaritalStatus parseMaritalStatus(String maritalStatus) throws ParseException {
-        requireNonNull(maritalStatus);
-        String trimmedMaritalStatus = maritalStatus.trim();
-        if (!MaritalStatusEnum.isValidMaritalStatus(trimmedMaritalStatus)) {
-            throw new ParseException(MaritalStatus.MESSAGE_CONSTRAINTS);
-        }
-        return new MaritalStatus(trimmedMaritalStatus);
-    }
-
-    /**
-     * Parses a {@code String occupation} into an {@code Occupation}.
-     * Leading and trailing whitespaces will be trimmed.
-     *
-     * @throws ParseException if the given {@code occupation} is invalid.
-     */
-    public static Occupation parseOccupation(String occupation) throws ParseException {
-        requireNonNull(occupation);
-        String trimmedOccupation = occupation.trim();
-        if (!Occupation.isValidOccupation(trimmedOccupation)) {
-            throw new ParseException(Occupation.MESSAGE_CONSTRAINTS);
-        }
-        return new Occupation(trimmedOccupation);
-    }
-
-    /**
-     * Parses an {@code int dependents} into a {@code Dependents}.
-     * @throws ParseException if the given {@code dependents} is invalid.
-     */
-    public static Dependents parseDependents(int dependents) throws ParseException {
-        if (!Dependents.isValidDependents(dependents)) {
-            throw new ParseException(Dependents.MESSAGE_CONSTRAINTS);
-        }
-        return new Dependents(dependents);
     }
 
     /**
