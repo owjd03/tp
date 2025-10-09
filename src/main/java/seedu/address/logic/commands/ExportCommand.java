@@ -10,7 +10,7 @@ public class ExportCommand extends Command {
     public static final String COMMAND_WORD = "export";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + "Allows for exporting of client contact details.\n"
+            + "Allows for exporting of client contact details for external safekeeping.\n"
             + "Usage: export";
 
 
