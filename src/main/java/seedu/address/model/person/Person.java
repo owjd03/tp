@@ -21,34 +21,19 @@ public class Person {
     private final Phone phone;
     private final Email email;
 
-    // Compulsory data fields
+    // Data fields
     private final Address address;
-    private final Salary salary;
-    private final DateOfBirth dateOfBirth;
     private final Set<Tag> tags = new HashSet<>();
 
-    // Optional data fields (can be null)
-    private final Occupation occupation;
-    private final MaritalStatus maritalStatus;
-    private final Dependents dependents;
-
     /**
-     * Every compulsory field must be present and not null.
-     * Optional fields (maritalStatus, occupation, dependents) can be null.
+     * Every field must be present and not null.
      */
-    public Person(Name name, Phone phone, Email email, Address address,
-                  Salary salary, DateOfBirth dateOfBirth, MaritalStatus maritalStatus,
-                  Occupation occupation, Dependents dependents, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, tags, salary, dateOfBirth);
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
+        requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
-        this.salary = salary;
-        this.dateOfBirth = dateOfBirth;
-        this.maritalStatus = maritalStatus;
-        this.occupation = occupation;
-        this.dependents = dependents;
         this.tags.addAll(tags);
     }
 
@@ -76,26 +61,6 @@ public class Person {
         return Collections.unmodifiableSet(tags);
     }
 
-    public Salary getSalary() {
-        return salary;
-    }
-
-    public DateOfBirth getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public MaritalStatus getMaritalStatus() {
-        return maritalStatus;
-    }
-
-    public Occupation getOccupation() {
-        return occupation;
-    }
-
-    public Dependents getDependents() {
-        return dependents;
-    }
-
     /**
      * Returns true if both persons have the same name.
      * This defines a weaker notion of equality between two persons.
@@ -110,7 +75,7 @@ public class Person {
     }
 
     /**
-     * Returns true if both persons have the same identity and compulsory data fields.
+     * Returns true if both persons have the same identity and data fields.
      * This defines a stronger notion of equality between two persons.
      */
     @Override
@@ -129,15 +94,13 @@ public class Person {
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
                 && address.equals(otherPerson.address)
-                && tags.equals(otherPerson.tags)
-                && dateOfBirth.equals(otherPerson.dateOfBirth)
-                && salary.equals(otherPerson.salary);
+                && tags.equals(otherPerson.tags);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, salary, dateOfBirth, tags);
+        return Objects.hash(name, phone, email, address, tags);
     }
 
     @Override
@@ -147,11 +110,6 @@ public class Person {
                 .add("phone", phone)
                 .add("email", email)
                 .add("address", address)
-                .add("salary", salary)
-                .add("dateOfBirth", dateOfBirth)
-                .add("maritalStatus", maritalStatus)
-                .add("occupation", occupation)
-                .add("dependents", dependents)
                 .add("tags", tags)
                 .toString();
     }
