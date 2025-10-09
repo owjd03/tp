@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.ViewCommand.MESSAGE_NOVIEW;
+import static seedu.address.logic.commands.ViewCommand.MESSAGE_VIEW_SUCCESS;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
@@ -26,24 +27,27 @@ public class ViewCommandTest {
 
     @Test
     public void equals() {
-        final ViewCommand standardCommand = new ViewCommand(INDEX_FIRST_PERSON);
+        final ViewCommand standardIndexCommand = new ViewCommand(INDEX_FIRST_PERSON);
+        final ViewCommand standardNameCommand = new ViewCommand(preparePredicate("view Alice"));
 
         // same values -> returns true
-        ViewCommand commandWithSameValues = new ViewCommand(INDEX_FIRST_PERSON);
-        assertTrue(standardCommand.equals(commandWithSameValues));
+        ViewCommand commandWithSameIndexValues = new ViewCommand(INDEX_FIRST_PERSON);
+        assertTrue(standardIndexCommand.equals(commandWithSameIndexValues));
 
         // same object -> returns true
-        assertTrue(standardCommand.equals(standardCommand));
+        assertTrue(standardIndexCommand.equals(standardIndexCommand));
 
         // null -> returns false
-        assertFalse(standardCommand.equals(null));
+        assertFalse(standardIndexCommand.equals(null));
 
         // different types -> returns false
-        assertFalse(standardCommand.equals(new ClearCommand()));
+        assertFalse(standardIndexCommand.equals(new ClearCommand()));
 
         // different index -> returns false
-        assertFalse(standardCommand.equals(new ViewCommand(INDEX_SECOND_PERSON)));
+        assertFalse(standardIndexCommand.equals(new ViewCommand(INDEX_SECOND_PERSON)));
 
+        // same predicate -> returns true
+        assertTrue(standardNameCommand.equals(new ViewCommand(preparePredicate("view Alice"))));
     }
 
     @Test
@@ -54,6 +58,15 @@ public class ViewCommandTest {
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(Collections.emptyList(), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_validIndexInput_successPersonToView() {
+        String expectedMessage = String.format(MESSAGE_VIEW_SUCCESS);
+        NameContainsKeywordsPredicate predicate = preparePredicate("view Alice");
+        ViewCommand command = new ViewCommand(INDEX_FIRST_PERSON);
+        expectedModel.updateFilteredPersonList(predicate);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
 
     /**
