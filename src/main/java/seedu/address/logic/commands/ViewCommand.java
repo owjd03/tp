@@ -7,10 +7,13 @@ import seedu.address.model.Model;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
+import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 /**
  * View the full details of a person in the address book (case-sensitive)
@@ -24,9 +27,7 @@ public class ViewCommand extends Command {
             + "Example 1: " + COMMAND_WORD + " alex\n"
             + "Example 2: " + COMMAND_WORD + " 1";
 
-    public static final String SHOWING_VIEW_MESSAGE = "Opened full details of the person.";
-
-    public static final String MESSAGE_ARGUMENTS = "Index: %1$d";
+    public static final String MESSAGE_VIEW_SUCCESS = "Here's the full detail!";
 
     private final Index index;
     private final NameContainsKeywordsPredicate predicate;
@@ -35,8 +36,6 @@ public class ViewCommand extends Command {
      * @param index of the person in the filtered person list
      */
     public ViewCommand(Index index) {
-        requireNonNull(index);
-
         this.index = index;
         this.predicate = null;
     }
@@ -45,19 +44,15 @@ public class ViewCommand extends Command {
      * @param predicate of the person in the filtered person list
      */
     public ViewCommand(NameContainsKeywordsPredicate predicate) {
-        requireNonNull(predicate);
-
         this.index = null;
         this.predicate = predicate;
     }
-
-
-    public static final String MESSAGE_SUCCESS = "Here's the full detail!";
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         if (index != null) {
+            model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
             List<Person> lastShownList = model.getFilteredPersonList();
 
             if (index.getZeroBased() >= lastShownList.size()) {
@@ -65,11 +60,13 @@ public class ViewCommand extends Command {
             }
 
             Person personToView = lastShownList.get(index.getZeroBased());
-
+            String[] personToViewName = personToView.getName().toString().split("\\s+");;
+            model.updateFilteredPersonList(new NameContainsKeywordsPredicate(Arrays.asList(personToViewName)));
         } else {
-            throw new CommandException(
-                    String.format(MESSAGE_ARGUMENTS, index.getOneBased()));
+            model.updateFilteredPersonList(predicate);
         }
+
+        return new CommandResult(MESSAGE_VIEW_SUCCESS);
     }
 
     @Override
@@ -84,6 +81,10 @@ public class ViewCommand extends Command {
         }
 
         ViewCommand e = (ViewCommand) other;
-        return index.equals(e.index);
+        if (index == null) {
+            return e.index == null && predicate.equals(e.predicate);
+        } else {
+            return e.predicate == null && index.equals(e.index);
+        }
     }
 }

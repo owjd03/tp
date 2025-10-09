@@ -1,28 +1,30 @@
 package seedu.address.logic.commands;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static seedu.address.logic.Messages.MESSAGE_PERSONS_LISTED_OVERVIEW;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
-import static seedu.address.logic.commands.ViewCommand.MESSAGE_ARGUMENTS;
+import static seedu.address.logic.commands.ViewCommand.MESSAGE_VIEW_SUCCESS;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
+import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.core.index.Index;
+import seedu.address.logic.parser.ArgumentTokenizer;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
+import seedu.address.model.UserPrefs;
+import seedu.address.model.person.NameContainsKeywordsPredicate;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 public class ViewCommandTest {
 
-    private Model model = new ModelManager();
-    private Model expectedModel = new ModelManager();
-
-    @Test
-    public void execute() {
-        assertCommandFailure(new ViewCommand(INDEX_FIRST_PERSON), model,
-                String.format(MESSAGE_ARGUMENTS, INDEX_FIRST_PERSON.getOneBased()));
-    }
+    private Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+    private Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
     @Test
     public void equals() {
@@ -44,7 +46,22 @@ public class ViewCommandTest {
         // different index -> returns false
         assertFalse(standardCommand.equals(new ViewCommand(INDEX_SECOND_PERSON)));
 
-        // different remark -> returns false
-        assertFalse(standardCommand.equals(new ViewCommand(INDEX_FIRST_PERSON)));
+    }
+
+    @Test
+    public void execute_zeroKeywords_noPersonToView() {
+        String expectedMessage = String.format(MESSAGE_VIEW_SUCCESS, 0);
+        NameContainsKeywordsPredicate predicate = preparePredicate(" ");
+        ViewCommand command = new ViewCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(Collections.emptyList(), model.getFilteredPersonList());
+    }
+
+    /**
+     * Parses {@code userInput} into a {@code NameContainsKeywordsPredicate}.
+     */
+    private NameContainsKeywordsPredicate preparePredicate(String userInput) {
+        return new NameContainsKeywordsPredicate(Arrays.asList(userInput.split("\\s+")));
     }
 }

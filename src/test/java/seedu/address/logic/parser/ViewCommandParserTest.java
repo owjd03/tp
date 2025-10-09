@@ -14,7 +14,7 @@ public class ViewCommandParserTest {
     private ViewCommandParser parser = new ViewCommandParser();
 
     @Test
-    public void parse_indexSpecified_success() {
+    public void parse_validIndexSpecified_returnsViewCommand() {
         // have index
         Index targetIndex = INDEX_FIRST_PERSON;
         String userInput = targetIndex.getOneBased() + "";
@@ -24,10 +24,10 @@ public class ViewCommandParserTest {
     }
 
     @Test
-    public void parse_missingCompulsoryField_failure() {
+    public void parse_missingCompulsoryField_throwsParseException() {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewCommand.MESSAGE_USAGE);
 
         // no parameters
-        assertParseFailure(parser, ViewCommand.COMMAND_WORD, expectedMessage);
+        assertParseFailure(parser, " ", expectedMessage);
     }
 }
