@@ -1,10 +1,14 @@
 package seedu.address.logic.commands;
 
-import static seedu.address.logic.parser.CliSyntax.*;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 
+/**
+ * Filters for persons in the address book based on the specifications to the parameters.
+ */
 public class FilterCommand extends Command {
     public static final String COMMAND_WORD = "filter";
 
