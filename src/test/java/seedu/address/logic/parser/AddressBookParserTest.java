@@ -19,12 +19,12 @@ import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.ExportCommand;
 import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.SortCommand;
-import seedu.address.logic.commands.ExportCommand;
 import seedu.address.logic.commands.ViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
@@ -106,7 +106,9 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_export() throws Exception {
         assertTrue(parser.parseCommand(ExportCommand.COMMAND_WORD) instanceof ExportCommand);
-      
+    }
+
+    @Test
     public void parseCommand_view() throws Exception {
         ViewCommand command = (ViewCommand) parser.parseCommand(ViewCommand.COMMAND_WORD + " "
                 + INDEX_FIRST_PERSON.getOneBased());
