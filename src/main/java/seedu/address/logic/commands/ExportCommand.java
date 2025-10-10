@@ -13,7 +13,6 @@ public class ExportCommand extends Command {
             + "Allows for exporting of client contact details for external safekeeping.\n"
             + "Usage: export";
 
-
     public static final String MESSAGE_NOT_IMPLEMENTED_YET = "Export command not implemented yet";
 
     @Override
