@@ -18,13 +18,13 @@ public class SortCommandParser implements Parser<SortCommand> {
     public SortCommand parse(String args) throws ParseException {
         String trimmedArguments = args.trim();
 
-        if (!trimmedArguments.isEmpty()) {
+        if (trimmedArguments.isEmpty()) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
         }
 
-        String[] ArgumentsArray = trimmedArguments.split("\\s+");
-        String sortType = ArgumentsArray[0];
+        String[] argumentsArray = trimmedArguments.split("\\s+");
+        String sortType = argumentsArray[0];
 
         if (!sortType.equals("name")) {
             throw new ParseException(

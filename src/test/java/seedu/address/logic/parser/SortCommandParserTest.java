@@ -10,7 +10,7 @@ public class SortCommandParserTest {
     private SortCommandParser parser = new SortCommandParser();
 
     @Test
-    public void parse_validArgs_returnsFindCommand() {
+    public void parse_validArgs_returnsSortCommand() {
         assertParseSuccess(parser, "name", new SortCommand());
 
         assertParseSuccess(parser, "name 222", new SortCommand());
