@@ -34,4 +34,17 @@ public class SortCommand extends Command {
         return (person1, person2) ->
                 person1.getName().fullName.compareToIgnoreCase(person2.getName().fullName);
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == this) {
+            return true;
+        }
+
+        if (!(object instanceof SortCommand)) {
+            return false;
+        }
+
+        return true;
+    }
 }
