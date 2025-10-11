@@ -269,7 +269,6 @@ public class AddCommandParserTest {
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                     + SALARY_DESC_BOB + VALID_DOB_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
                     + DEPENDENTS_DESC_BOB, expectedMessage);
-        
         // missing marital status prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                     + SALARY_DESC_BOB + DOB_DESC_BOB + VALID_MARITAL_STATUS_BOB + OCCUPATION_DESC_BOB
