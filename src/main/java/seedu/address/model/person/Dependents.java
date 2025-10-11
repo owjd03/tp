@@ -36,6 +36,11 @@ public class Dependents {
     }
 
     @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
+
+    @Override
     public boolean equals(Object other) {
         if (other == this) {
             return true;
