@@ -11,10 +11,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.DateOfBirth;
+import seedu.address.model.person.Dependents;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.MaritalStatus;
+import seedu.address.model.person.MaritalStatusEnum;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Occupation;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Salary;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -28,6 +34,12 @@ class JsonAdaptedPerson {
     private final String phone;
     private final String email;
     private final String address;
+    private final String salary;
+    private final String dateOfBirth;
+    private final String maritalStatus;
+    private final String occupation;
+    private final int dependents;
+
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
 
     /**
@@ -35,12 +47,21 @@ class JsonAdaptedPerson {
      */
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
-            @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags) {
+                             @JsonProperty("email") String email, @JsonProperty("address") String address,
+                             @JsonProperty("salary") String salary, @JsonProperty("dateOfBirth") String dateOfBirth,
+                             @JsonProperty("maritalStatus") String maritalStatus,
+                             @JsonProperty("occupation") String occupation,
+                             @JsonProperty("dependents") int dependents,
+                             @JsonProperty("tags") List<JsonAdaptedTag> tags) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
+        this.salary = salary;
+        this.dateOfBirth = dateOfBirth;
+        this.maritalStatus = maritalStatus;
+        this.occupation = occupation;
+        this.dependents = dependents;
         if (tags != null) {
             this.tags.addAll(tags);
         }
@@ -54,6 +75,11 @@ class JsonAdaptedPerson {
         phone = source.getPhone().value;
         email = source.getEmail().value;
         address = source.getAddress().value;
+        salary = source.getSalary().value;
+        dateOfBirth = source.getDateOfBirth().value;
+        maritalStatus = source.getMaritalStatus().value;
+        occupation = source.getOccupation().value;
+        dependents = source.getDependents().value;
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
@@ -102,8 +128,50 @@ class JsonAdaptedPerson {
         }
         final Address modelAddress = new Address(address);
 
+        if (salary == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Salary.class.getSimpleName()));
+        }
+        if (!Salary.isValidSalary(salary)) {
+            throw new IllegalValueException(Salary.MESSAGE_CONSTRAINTS);
+        }
+        final Salary modelSalary = new Salary(salary);
+
+        if (dateOfBirth == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    DateOfBirth.class.getSimpleName()));
+        }
+        if (!DateOfBirth.isValidDateOfBirth(dateOfBirth)) {
+            throw new IllegalValueException(DateOfBirth.MESSAGE_CONSTRAINTS);
+        }
+        final DateOfBirth modelDateOfBirth = new DateOfBirth(dateOfBirth);
+
+        if (maritalStatus == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    MaritalStatus.class.getSimpleName()));
+        }
+        if (!MaritalStatusEnum.isValidMaritalStatus(maritalStatus)) {
+            throw new IllegalValueException(MaritalStatus.MESSAGE_CONSTRAINTS);
+        }
+        final MaritalStatus modelMaritalStatus = new MaritalStatus(maritalStatus);
+
+        if (occupation == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    Occupation.class.getSimpleName()));
+        }
+        if (!Occupation.isValidOccupation(occupation)) {
+            throw new IllegalValueException(Occupation.MESSAGE_CONSTRAINTS);
+        }
+        final Occupation modelOccupation = new Occupation(occupation);
+
+        if (dependents < 0) {
+            throw new IllegalValueException(Dependents.MESSAGE_CONSTRAINTS);
+        }
+        final Dependents modelDependents = new Dependents(dependents);
+
         final Set<Tag> modelTags = new HashSet<>(personTags);
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags);
+
+        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelSalary, modelDateOfBirth,
+                modelMaritalStatus, modelOccupation, modelDependents, modelTags);
     }
 
 }
