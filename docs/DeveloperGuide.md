@@ -302,16 +302,18 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is the `ClientCore` and the **Actor** is the `FA`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use case: U1. Delete a client**
+
+**Precondition: FA is logged into the app**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
+1.  FA requests to list the clients
+2.  ClientCore shows a list of clients
+3.  FA requests to delete a specific client in the list
+4.  ClientCore deletes the client
 
     Use case ends.
 
@@ -323,19 +325,21 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 3a. The given index is invalid.
 
-    * 3a1. AddressBook shows an error message.
+    * 3a1. ClientCore shows an error message.
 
       Use case resumes at step 2.
 
 
-**Use case: Find a person**
+**Use case: U2. Find a client**
+
+**Precondition: FA is logged into the app**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to find a list of persons containing the keyword.
-4.  AddressBook finds and shows a new list of matching persons.
+1.  FA requests to list clients
+2.  ClientCore shows a list of clients
+3.  FA requests to find a list of clients containing the input keyword.
+4.  ClientCore finds and shows a new list of clients with matching names.
 
     Use case ends.
 
@@ -347,19 +351,21 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 3a. The given name is invalid.
 
-    * 3a1. AddressBook shows an error message.
+    * 3a1. ClientCore shows an error message.
 
       Use case resumes at step 2.
 
 
-**Use case: View a person**
+**Use case: U3. View a client's full detail**
+
+**Precondition: FA is logged into the app**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to view a specific person in the list.
-4.  AddressBook shows the person's details.
+1.  FA requests to list clients
+2.  ClientCore shows a list of clients
+3.  FA requests to view a specific client in the list.
+4.  ClientCore shows the client's full detail.
 
     Use case ends.
 
@@ -371,32 +377,34 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 3a. The given index is invalid.
 
-    * 3a1. AddressBook shows an error message.
+    * 3a1. ClientCore shows an error message.
 
       Use case resumes at step 2.
 
 * 3b. The given name is invalid.
 
-    * 3b1. AddressBook shows an error message.
+    * 3b1. ClientCore shows an error message.
 
       Use case resumes at step 2.
 
-* 3c. The given name matches with 2 or more people
+* 3c. The given name matches with 2 or more client
 
-    * 3c1. AddressBook shows a list of matching persons with their 
-	   index and prompt User to view based on index instead of name.
+    * 3c1. ClientCore shows a list of matching clients with their 
+	   index and prompt FA to view based on index instead of name.
 
       Use case resumes at step 2.
 
 
-**Use case: Filter list of persons**
+**Use case: U4. Filter list of clients**
+
+**Precondition: FA is logged into the app**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to filter the list based on input field.
-4.  AddressBook shows the filtered list.
+1.  FA requests to list persons
+2.  ClientCore shows a list of persons
+3.  FA requests to filter the list based on input field.
+4.  ClientCore shows the filtered list.
 
     Use case ends.
 
@@ -408,30 +416,191 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 3a. The given input field does not exist.
 
-    * 3a1. AddressBook shows an error message.
+    * 3a1. ClientCore shows an error message.
 
       Use case resumes at step 2.
 
 * 3b. The given input contains duplicate field.
 
-    * 3b1. AddressBook shows an error message.
+    * 3b1. ClientCore shows an error message.
 
       Use case resumes at step 2.
+
+**Use case: U5. Tag a client into groups**
+
+**Precondition:** 
+
+1. FA is logged into the app
+2. Target client is in the list
+
+**MSS**
+
+1.  FA requests to list clients
+2.  ClientCore shows a list of clients
+3.  FA requests to tag a specific client in the list.
+4.  ClientCore tag the client and group them with similar tags.
+
+    Use case ends.
+
+**Extensions**
+
+* 2a. The list is empty.
+
+  Use case ends.
+
+* 3a. The given tag input is invalid
+
+    * 3a1. ClientCore shows an error message.
+
+      Use case resumes at step 2.
+
+* 4a. The given tag is a newly created tag
+    
+    * 4a1. ClientCore tells FA that the tag is new and the
+	   tagged client is the first one in the group.
+
+      Use case ends.
+
+**Use case: U6. Sort a client based on a criteria**
+
+**Precondition:**
+
+1. FA is logged into the app
+2. The list contains 2 or more client
+
+**MSS**
+
+1.  FA requests to list clients
+2.  ClientCore shows a list of clients
+3.  FA requests to sort clients based on existing category, ascending/descending
+4.  ClientCore sorts the list based on FA's input.
+
+    Use case ends.
+
+**Extensions**
+
+* 3a. The given input is not based on existing category.
+      
+    * 3a1. ClientCore shows an error message that says category doesn't exist.
+
+      Use case resumes at step 2.
+
+* 3b. FA does not specify ascending or descending.
+  
+    * 3b1. ClientCore automatically infer it as ascending and sort ascendingly.
+
+      Use case ends.
+
+**Use case: U7. Logging into an account**
+
+**Precondition:**
+
+1. FA has a personal email
+2. FA has installed the app locally
+
+**MSS**
+
+1.  FA opens the app
+2.  ClientCore opens and shows the login screen
+3.  FA enters username and password
+4.  ClientCore logs FA in and loads the latest data in the account
+
+    Use case ends.
+
+**Extensions**
+
+* 3a. FA forgets username or password.
+
+    * 3a1. ClientCore asks for an email to send a code.
+
+    * 3a2. FA enters personal email.
+
+    * 3a3. ClientCore sends a random code to the email and asks
+	   to enter the same code.
+
+    * 3a4. FA enters the code.
+	 
+    	* 3a4a. FA enters the wrong code.
+
+	      * 3a4a1. ClientCore tells user code is wrong.
+
+	        Use case resumes at step 3a1.
+
+    * 3a5. ClientCore asks for a new username and password.
+
+    * 3a6. FA enters new username and password.
+
+    * 3a7. ClientCore logs the user in with latest data in previous account.
+      
+      Use case ends.
 
 *{More to be added}*
 
 ### Non-Functional Requirements
 
+#### Platform Compatibility
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
+
+#### Performance and Responsiveness 
 2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
-3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+
+#### Scalability 
+4. The system should be designed to scale to larger datasets (e.g., ≥10,000 contacts) with minimal architectural changes.
+
+#### Usability 
+5. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) 
+should be able to accomplish most of the tasks faster using commands than using the mouse.
+6. Commands should be concise, memorable, and consistent.
+7. Error messages should be clear, instructive, and suggest corrective action.
+
+#### Reliability and Fault Tolerance 
+8. The application should not crash in the event of invalid inputs. 
+9. Must handle unexpected shutdowns gracefully without loss of stored data. 
+
+#### Security and Privacy 
+10. All sensitive data (salary, occupation, contact details, etc) must be stored securely.
+11. Must comply with existing data privacy regulations. 
+
+#### Maintainability 
+12. Code must be modular and follow standard Java conventions.
+13. Build should be automated via Gradle. 
+14. Unit and integration tests should provide ample coverage of the codebase. 
+
+#### Extensibility 
+15. The system should support the addition of new commands with minimal changes to existing code.
+
+#### Portability 
+16. The application should be distributable as a single JAR file and run consistently across
+supported platforms without requiring external dependencies. 
+
+#### Documentation 
+17. User guide should explain all commands clearly with examples.
+18. Developer Guide should include instructions for setting up the development environment.
+19. Public classes and methods in the codebase should include Javadoc header comments that describe its purpose, 
+parameters, return values, and any exceptions thrown. These comments should follow the official JavaDoc conventions.
 
 *{More to be added}*
 
 ### Glossary
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
+* **Command Line Interface (CLI)**: A text-based interface where the user types commands instead of 
+graphical elements.
+* **Private contact detail**: A contact detail that is not meant to be shared with others.
+* **Financial Advisor**: A professional user of the system whose job is to manage client 
+relationships and recommend suitable financial products or services.
+* **Client**: An individual whose personal and financial details (e.g., age, salary, policies, risk profile) 
+are stored in the system. Clients are the primary focus of the Financial Advisor’s work and the main type of
+contact being managed. 
+* **Client Profile**: A structured record containing personal and financial information of a client (e.g. name,
+age, salary, relationship status). 
+* **Tag**: A label applied to a client profile to group clients meaningfully.
+* **Command**: A typed instruction given to the system to perform an action (e.g. list, add, find, delete).
+* **Archiving**: The act of marking a client profile as inactive (not deleted) for long-term storage,
+    so that it no longer shows up in day-to-day operations but can be retrieved if needed.
+* **Offline**: The ability to use the system without an internet connection. 
+
+*{More to be added}*
 
 --------------------------------------------------------------------------------------------------------------------
 
