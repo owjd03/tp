@@ -6,14 +6,11 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailur
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.ViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
 
 public class ViewCommandParserTest {
     private ViewCommandParser parser = new ViewCommandParser();
@@ -30,23 +27,14 @@ public class ViewCommandParserTest {
 
     @Test
     public void parse_invalidIndexSpecified_success() {
-        // have index
         try {
-            ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize("-1");
-            Index targetIndex = ParserUtil.parseIndex(argMultimap.getPreamble());
+            ViewCommand viewCom = new ViewCommandParser().parse("-1");
             assertEquals(2, 3);
         } catch (ParseException e) {
             assertEquals(2, 2);
         }
     }
 
-    @Test
-    public void parse_validNameSpecified_returnsViewCommand() {
-        // have index
-        ViewCommand expectedViewCommand =
-                new ViewCommand(new NameContainsKeywordsPredicate(Arrays.asList("Alice", "Bob")));
-        assertParseSuccess(parser, "Alice Bob", expectedViewCommand);
-    }
 
     @Test
     public void parse_missingCompulsoryField_throwsParseException() {

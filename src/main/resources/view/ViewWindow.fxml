@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Scene?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.stage.Stage?>
+
+<fx:root resizable="false" title="Details" type="javafx.stage.Stage" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+    <icons>
+        <Image url="@/images/info_icon.png" />
+    </icons>
+    <scene>
+        <Scene>
+            <stylesheets>
+                <URL value="@DarkTheme.css" />
+                <URL value="@Extensions.css" />
+            </stylesheets>
+            <VBox fx:id="personList" prefHeight="150" prefWidth="340" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets bottom="10" left="10" right="10" top="10" />
+                </padding>
+                <StackPane fx:id="personListPanelPlaceholder" prefHeight="150.0" prefWidth="318.0" VBox.vgrow="ALWAYS" />
+            </VBox>
+        </Scene>
+    </scene>
+</fx:root>
