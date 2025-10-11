@@ -31,6 +31,10 @@ public class Dependents {
         return test >= 0;
     }
 
+    public int toInt() {
+        return value;
+    }
+
     @Override
     public String toString() {
         return String.valueOf(value);
