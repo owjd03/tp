@@ -2,9 +2,14 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE_OF_BIRTH;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPENDENTS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_MARITAL_STATUS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_OCCUPATION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
@@ -22,10 +27,15 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.DateOfBirth;
+import seedu.address.model.person.Dependents;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.MaritalStatus;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Occupation;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Salary;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -43,6 +53,11 @@ public class EditCommand extends Command {
             + "[" + PREFIX_PHONE + "PHONE] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
+            + "[" + PREFIX_SALARY + "SALARY] "
+            + "[" + PREFIX_DATE_OF_BIRTH + "AGE] "
+            + "[" + PREFIX_MARITAL_STATUS + "MARITAL STATUS] "
+            + "[" + PREFIX_OCCUPATION + "OCCUPATION] "
+            + "[" + PREFIX_DEPENDENTS + "DEPENDENTS] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PHONE + "91234567 "
@@ -99,9 +114,16 @@ public class EditCommand extends Command {
         Phone updatedPhone = editPersonDescriptor.getPhone().orElse(personToEdit.getPhone());
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.getEmail());
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
+        Salary updatedSalary = editPersonDescriptor.getSalary().orElse(personToEdit.getSalary());
+        DateOfBirth updatedDateOfBirth = editPersonDescriptor.getDateOfBirth().orElse(personToEdit.getDateOfBirth());
+        MaritalStatus updatedMaritalStatus = editPersonDescriptor.getMaritalStatus()
+                .orElse(personToEdit.getMaritalStatus());
+        Occupation updatedOccupation = editPersonDescriptor.getOccupation().orElse(personToEdit.getOccupation());
+        Dependents updatedDependents = editPersonDescriptor.getDependents().orElse(personToEdit.getDependents());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
+        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedSalary,
+                updatedDateOfBirth, updatedMaritalStatus, updatedOccupation, updatedDependents, updatedTags);
     }
 
     @Override
@@ -137,6 +159,11 @@ public class EditCommand extends Command {
         private Phone phone;
         private Email email;
         private Address address;
+        private Salary salary;
+        private DateOfBirth dateOfBirth;
+        private MaritalStatus maritalStatus;
+        private Occupation occupation;
+        private Dependents dependents;
         private Set<Tag> tags;
 
         public EditPersonDescriptor() {}
@@ -150,6 +177,11 @@ public class EditCommand extends Command {
             setPhone(toCopy.phone);
             setEmail(toCopy.email);
             setAddress(toCopy.address);
+            setSalary(toCopy.salary);
+            setDateOfBirth(toCopy.dateOfBirth);
+            setMaritalStatus(toCopy.maritalStatus);
+            setOccupation(toCopy.occupation);
+            setDependents(toCopy.dependents);
             setTags(toCopy.tags);
         }
 
@@ -157,7 +189,8 @@ public class EditCommand extends Command {
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email, address, tags);
+            return CollectionUtil.isAnyNonNull(name, phone, email, address, salary, dateOfBirth, maritalStatus,
+                    occupation, dependents, tags);
         }
 
         public void setName(Name name) {
@@ -190,6 +223,46 @@ public class EditCommand extends Command {
 
         public Optional<Address> getAddress() {
             return Optional.ofNullable(address);
+        }
+
+        public void setSalary(Salary salary) {
+            this.salary = salary;
+        }
+
+        public Optional<Salary> getSalary() {
+            return Optional.ofNullable(salary);
+        }
+
+        public void setDateOfBirth(DateOfBirth dateOfBirth) {
+            this.dateOfBirth = dateOfBirth;
+        }
+
+        public Optional<DateOfBirth> getDateOfBirth() {
+            return Optional.ofNullable(dateOfBirth);
+        }
+
+        public void setMaritalStatus(MaritalStatus maritalStatus) {
+            this.maritalStatus = maritalStatus;
+        }
+
+        public Optional<MaritalStatus> getMaritalStatus() {
+            return Optional.ofNullable(maritalStatus);
+        }
+
+        public void setOccupation(Occupation occupation) {
+            this.occupation = occupation;
+        }
+
+        public Optional<Occupation> getOccupation() {
+            return Optional.ofNullable(occupation);
+        }
+
+        public void setDependents(Dependents dependents) {
+            this.dependents = dependents;
+        }
+
+        public Optional<Dependents> getDependents() {
+            return Optional.ofNullable(dependents);
         }
 
         /**
@@ -225,6 +298,11 @@ public class EditCommand extends Command {
                     && Objects.equals(phone, otherEditPersonDescriptor.phone)
                     && Objects.equals(email, otherEditPersonDescriptor.email)
                     && Objects.equals(address, otherEditPersonDescriptor.address)
+                    && Objects.equals(salary, otherEditPersonDescriptor.salary)
+                    && Objects.equals(dateOfBirth, otherEditPersonDescriptor.dateOfBirth)
+                    && Objects.equals(maritalStatus, otherEditPersonDescriptor.maritalStatus)
+                    && Objects.equals(occupation, otherEditPersonDescriptor.occupation)
+                    && Objects.equals(dependents, otherEditPersonDescriptor.dependents)
                     && Objects.equals(tags, otherEditPersonDescriptor.tags);
         }
 
@@ -235,6 +313,11 @@ public class EditCommand extends Command {
                     .add("phone", phone)
                     .add("email", email)
                     .add("address", address)
+                    .add("salary", salary)
+                    .add("dateOfBirth", dateOfBirth)
+                    .add("maritalStatus", maritalStatus)
+                    .add("occupation", occupation)
+                    .add("dependents", dependents)
                     .add("tags", tags)
                     .toString();
         }
