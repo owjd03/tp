@@ -6,10 +6,15 @@ import java.util.stream.Stream;
 
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.DateOfBirth;
+import seedu.address.model.person.Dependents;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.MaritalStatus;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Occupation;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Salary;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -36,6 +41,11 @@ public class EditPersonDescriptorBuilder {
         descriptor.setPhone(person.getPhone());
         descriptor.setEmail(person.getEmail());
         descriptor.setAddress(person.getAddress());
+        descriptor.setSalary(person.getSalary());
+        descriptor.setDateOfBirth(person.getDateOfBirth());
+        descriptor.setMaritalStatus(person.getMaritalStatus());
+        descriptor.setOccupation(person.getOccupation());
+        descriptor.setDependents(person.getDependents());
         descriptor.setTags(person.getTags());
     }
 
@@ -68,6 +78,46 @@ public class EditPersonDescriptorBuilder {
      */
     public EditPersonDescriptorBuilder withAddress(String address) {
         descriptor.setAddress(new Address(address));
+        return this;
+    }
+
+    /**
+     * Sets the {@code Salary} of the {@code EditPersonDescriptor} that we are building.
+     */
+    public EditPersonDescriptorBuilder withSalary(String salary) {
+        descriptor.setSalary(new Salary(salary));
+        return this;
+    }
+
+    /**
+     * Sets the {@code DateOfBirth} of the {@code EditPersonDescriptor} that we are building.
+     */
+    public EditPersonDescriptorBuilder withDateOfBirth(String dateOfBirth) {
+        descriptor.setDateOfBirth(new DateOfBirth(dateOfBirth));
+        return this;
+    }
+
+    /**
+     * Sets the {@code MaritalStatus} of the {@code EditPersonDescriptor} that we are building.
+     */
+    public EditPersonDescriptorBuilder withMaritalStatus(String maritalStatus) {
+        descriptor.setMaritalStatus(new MaritalStatus(maritalStatus));
+        return this;
+    }
+
+    /**
+     * Sets the {@code Occupation} of the {@code EditPersonDescriptor} that we are building.
+     */
+    public EditPersonDescriptorBuilder withOccupation(String occupation) {
+        descriptor.setOccupation(new Occupation(occupation));
+        return this;
+    }
+
+    /**
+     * Sets the {@code Dependents} of the {@code EditPersonDescriptor} that we are building.
+     */
+    public EditPersonDescriptorBuilder withDependents(int dependents) {
+        descriptor.setDependents(new Dependents(dependents));
         return this;
     }
 

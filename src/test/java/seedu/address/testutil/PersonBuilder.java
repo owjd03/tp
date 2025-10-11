@@ -156,6 +156,8 @@ public class PersonBuilder {
 
     /**
      * Builds the Person object.
+     *
+     * @return The constructed Person object.
      */
     public Person build() {
         return new Person(name, phone, email, address, salary, dateOfBirth, maritalStatus, occupation, dependents,
