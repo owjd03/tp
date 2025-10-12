@@ -59,14 +59,15 @@ public class PersonCard extends UiPart<Region> {
         this.person = person;
         id.setText(displayedIndex + ". ");
         name.setText(person.getName().fullName);
-        phone.setText(person.getPhone().value);
-        address.setText(person.getAddress().value);
-        email.setText(person.getEmail().value);
-        salary.setText(person.getSalary().toString());
-        dateOfBirth.setText(person.getDateOfBirth().value);
-        maritalStatus.setText(person.getMaritalStatus().value);
-        dependents.setText(String.valueOf(person.getDependents().value));
-        occupation.setText(person.getOccupation().value);
+
+        phone.setText("Phone Number: " + person.getPhone().value);
+        address.setText("Address: " + person.getAddress().value);
+        email.setText("Email: " + person.getEmail().value);
+        salary.setText("Salary: " + person.getSalary().toString());
+        dateOfBirth.setText("Born: " + person.getDateOfBirth().value);
+        maritalStatus.setText("Marital Status: " + person.getMaritalStatus().value);
+        dependents.setText("Dependents: " + String.valueOf(person.getDependents().value));
+        occupation.setText("Occupation: " + person.getOccupation().value);
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
