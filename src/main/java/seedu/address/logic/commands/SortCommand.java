@@ -5,6 +5,7 @@ import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.Comparator;
 
+import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
@@ -16,7 +17,8 @@ public class SortCommand extends Command {
     public static final String COMMAND_WORD = "sort";
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Sorts all persons by name in alphabetical order.\n"
-            + "Parameters: name or phone or email or address\n"
+            + "Parameters: name or phone or email or address or salary\n"
+            + "or dateofbirth or maritalstatus or occupation or dependent\n"
             + "Example: " + COMMAND_WORD + " name";
     public static final String MESSAGE_SUCCESS = "Sorted all persons in alphabetical order by ";
 
@@ -62,6 +64,21 @@ public class SortCommand extends Command {
         case ADDRESS:
             return (person1, person2) ->
                     person1.getAddress().value.compareToIgnoreCase(person2.getAddress().value);
+        case SALARY:
+            return (person1, person2) ->
+                    person1.getSalary().value.compareToIgnoreCase(person2.getSalary().value);
+        case DATEOFBIRTH:
+            return (person1, person2) ->
+                    person1.getDateOfBirth().value.compareToIgnoreCase(person2.getDateOfBirth().value);
+        case MARITALSTATUS:
+            return (person1, person2) ->
+                    person1.getMaritalStatus().value.compareToIgnoreCase(person2.getMaritalStatus().value);
+        case OCCUPATION:
+            return (person1, person2) ->
+                    person1.getOccupation().value.compareToIgnoreCase(person2.getOccupation().value);
+        case DEPENDENT:
+            return (person1, person2) ->
+                    Integer.compare(person1.getDependents().value, person2.getDependents().value);
         default:
             throw new AssertionError("Invalid sort field" + sortField);
         }
@@ -85,6 +102,13 @@ public class SortCommand extends Command {
      * Represents the available fields to sort by
      **/
     public enum SortField {
-        NAME, PHONE, EMAIL, ADDRESS
+        NAME, PHONE, EMAIL, ADDRESS, SALARY, DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENT
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .add("sortField", sortField)
+                .toString();
     }
 }

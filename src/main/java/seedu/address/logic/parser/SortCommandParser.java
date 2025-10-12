@@ -36,6 +36,16 @@ public class SortCommandParser implements Parser<SortCommand> {
             return new SortCommand(SortField.EMAIL);
         case "address":
             return new SortCommand(SortField.ADDRESS);
+        case "salary":
+            return new SortCommand(SortField.SALARY);
+        case "dateofbirth":
+            return new SortCommand(SortField.DATEOFBIRTH);
+        case "maritalstatus":
+            return new SortCommand(SortField.MARITALSTATUS);
+        case "occupation":
+            return new SortCommand(SortField.OCCUPATION);
+        case "dependent":
+            return new SortCommand(SortField.DEPENDENT);
         default:
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
