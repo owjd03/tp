@@ -26,15 +26,12 @@ public class Person {
     private final Salary salary;
     private final DateOfBirth dateOfBirth;
     private final Set<Tag> tags = new HashSet<>();
-
-    // Optional data fields (can be null)
     private final Occupation occupation;
     private final MaritalStatus maritalStatus;
     private final Dependents dependents;
 
     /**
      * Every compulsory field must be present and not null.
-     * Optional fields (maritalStatus, occupation, dependents) can be null.
      */
     public Person(Name name, Phone phone, Email email, Address address,
                   Salary salary, DateOfBirth dateOfBirth, MaritalStatus maritalStatus,

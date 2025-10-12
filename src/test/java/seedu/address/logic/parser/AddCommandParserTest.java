@@ -34,9 +34,12 @@ import static seedu.address.logic.commands.CommandTestUtil.SALARY_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_DEPENDENTS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_DOB_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_MARITAL_STATUS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_OCCUPATION_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_SALARY_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_FRIEND;
@@ -239,27 +242,47 @@ public class AddCommandParserTest {
 
         // missing name prefix
         assertParseFailure(parser, VALID_NAME_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + SALARY_DESC_BOB + DOB_DESC_BOB, expectedMessage);
+                        + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
+                        + DEPENDENTS_DESC_BOB, expectedMessage);
 
         // missing phone prefix
         assertParseFailure(parser, NAME_DESC_BOB + VALID_PHONE_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                    + SALARY_DESC_BOB + DOB_DESC_BOB, expectedMessage);
+                    + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
+                    + DEPENDENTS_DESC_BOB, expectedMessage);
 
         // missing email prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + VALID_EMAIL_BOB + ADDRESS_DESC_BOB
-                    + SALARY_DESC_BOB + DOB_DESC_BOB, expectedMessage);
+                    + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
+                    + DEPENDENTS_DESC_BOB, expectedMessage);
 
         // missing address prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + VALID_ADDRESS_BOB
-                    + SALARY_DESC_BOB + DOB_DESC_BOB, expectedMessage);
+                    + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
+                    + DEPENDENTS_DESC_BOB, expectedMessage);
 
         // missing salary prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                    + VALID_SALARY_BOB + DOB_DESC_BOB, expectedMessage);
+                    + VALID_SALARY_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
+                    + DEPENDENTS_DESC_BOB, expectedMessage);
 
         // missing date of birth prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                    + SALARY_DESC_BOB + VALID_DOB_BOB, expectedMessage);
+                    + SALARY_DESC_BOB + VALID_DOB_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
+                    + DEPENDENTS_DESC_BOB, expectedMessage);
+        // missing marital status prefix
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                    + SALARY_DESC_BOB + DOB_DESC_BOB + VALID_MARITAL_STATUS_BOB + OCCUPATION_DESC_BOB
+                    + DEPENDENTS_DESC_BOB, expectedMessage);
+
+        // missing occupation prefix
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                    + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + VALID_OCCUPATION_BOB
+                    + DEPENDENTS_DESC_BOB, expectedMessage);
+
+        // missing dependents prefix
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                    + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
+                    + VALID_DEPENDENTS_BOB, expectedMessage);
 
         // all prefixes missing
         assertParseFailure(parser, VALID_NAME_BOB + VALID_PHONE_BOB + VALID_EMAIL_BOB + VALID_ADDRESS_BOB
