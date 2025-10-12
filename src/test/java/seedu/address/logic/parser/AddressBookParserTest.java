@@ -8,7 +8,9 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,7 @@ import seedu.address.logic.commands.ViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.PersonContainsKeywordsPredicate;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
@@ -73,8 +76,16 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_remark() throws Exception {
-        assertTrue(parser.parseCommand(FilterCommand.COMMAND_WORD) instanceof FilterCommand);
+    public void parseCommand_filter() throws Exception {
+        String args = " " + CliSyntax.PREFIX_NAME + "foo" + " " + CliSyntax.PREFIX_ADDRESS + "bar";
+        FilterCommand command = (FilterCommand) parser.parseCommand(FilterCommand.COMMAND_WORD + args);
+
+        Map<Prefix, String> expectedKeywords = new HashMap<>();
+        expectedKeywords.put(CliSyntax.PREFIX_NAME, "foo");
+        expectedKeywords.put(CliSyntax.PREFIX_ADDRESS, "bar");
+        PersonContainsKeywordsPredicate expectedPredicate = new PersonContainsKeywordsPredicate(expectedKeywords);
+
+        assertEquals(new FilterCommand(expectedPredicate), command);
     }
 
     @Test
