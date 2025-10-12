@@ -41,8 +41,12 @@ public class FilterCommandParserTest {
 
     @Test
     public void parse_noKeywords_throwsParseException() {
-        assertParseFailure(parser, " " + PREFIX_NAME, FilterCommand.MESSAGE_USAGE);
-        assertParseFailure(parser, " " + PREFIX_NAME + " ", FilterCommand.MESSAGE_USAGE);
+        assertParseFailure(parser,
+                " " + PREFIX_NAME,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
+        assertParseFailure(parser,
+                " " + PREFIX_NAME + " ",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
     }
 
     @Test

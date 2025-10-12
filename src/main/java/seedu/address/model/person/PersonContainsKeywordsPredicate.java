@@ -32,7 +32,12 @@ public class PersonContainsKeywordsPredicate implements Predicate<Person> {
     public boolean test(Person person) {
         // returns true if the person matches ALL specified filter criteria.
         // filter n/josh a/kent ridge ->  filter (name=josh AND address=kent ridge)
-        return keywords.entrySet().stream().allMatch(entry -> checkPersonAttribute(person, entry));
+        return keywords.entrySet().stream().allMatch(entry -> {
+            if (entry.getValue().isEmpty()) {
+                return false;
+            }
+            return checkPersonAttribute(person, entry);
+        });
     }
 
     private boolean checkPersonAttribute(Person person, Entry<Prefix, String> entry) {
