@@ -28,19 +28,21 @@ public class FilterCommandParserTest {
     }
 
     @Test
-    public void parse_invalidArgs_throwsParseException() {
-        // Test with invalid preamble (text before the first valid prefix)
+    public void parse_preamble_throwsParseException() {
+        // Test with preamble (text before the first valid prefix)
         assertParseFailure(parser,
                 "this is a test",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
 
-        // Test with prefix but empty value
         assertParseFailure(parser,
-                " " + PREFIX_NAME,
+                "this is a test " + PREFIX_NAME + " Alice",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
-        assertParseFailure(parser,
-                " " + PREFIX_NAME + " ",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_noKeywords_throwsParseException() {
+        assertParseFailure(parser, " " + PREFIX_NAME, FilterCommand.MESSAGE_USAGE);
+        assertParseFailure(parser, " " + PREFIX_NAME + " ", FilterCommand.MESSAGE_USAGE);
     }
 
     @Test
