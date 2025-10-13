@@ -129,6 +129,28 @@ Examples:
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
+### Filtering persons: `filter`
+
+Filters the list of persons to show only those who match all specified criteria.
+
+Format: `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`
+
+* At least one of the optional fields must be provided.
+* The filter is case-insensitive. e.g `josh` will match `Josh`
+* Only persons who match **all** specified criteria will be shown.
+* If you specify the same prefix multiple times, only the last one will be used for filtering.
+
+Examples:
+* `filter n/josh` displays all persons whose name contains `josh`
+* `filter n/josh a/changi` displays all persons whose name contains `josh` **AND** whose address contains `changi`
+* `filter n/josh n/david` is equivalent to `filter n/david`. It will display all persons whose name contains `david`
+
+Invalid Usages:
+* `filter` (no parameters)
+* `filter some random text` (preamble is not allowed)
+* `filter n/` (empty description for a prefix)
+* `filter n/ a/changi` (empty description for a prefix)
+
 ### Deleting a person : `delete`
 
 Deletes the specified person from the address book.
