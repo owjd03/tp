@@ -51,7 +51,7 @@ public class CommandResult {
     }
 
     public boolean isShowView() {
-        return viewData.isShowView();
+        return viewData.isView();
     }
 
     public boolean isExit() {
@@ -86,7 +86,7 @@ public class CommandResult {
 
     @Override
     public int hashCode() {
-        return Objects.hash(feedbackToUser, showHelp, viewData.isShowView(), viewData.getPerson(), exit);
+        return Objects.hash(feedbackToUser, showHelp, isShowView(), getPersonToView(), exit);
     }
 
     @Override
