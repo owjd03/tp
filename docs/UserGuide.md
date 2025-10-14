@@ -154,6 +154,7 @@ Format: `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF
 
 * At least one of the optional fields must be provided.
 * The filter is case-insensitive. e.g `josh` will match `Josh`
+* Keywords can be single words or phrases (e.g. `a/changi village` is allowed).
 * Only persons who match **all** specified criteria will be shown.
 * If you specify the same prefix multiple times, only the last one will be used for filtering.
 
