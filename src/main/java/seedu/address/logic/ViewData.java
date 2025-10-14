@@ -17,7 +17,7 @@ public class ViewData {
         this.person = person;
     }
 
-    public boolean isShowView() {
+    public boolean isView() {
         return this.isView;
     }
 
@@ -38,9 +38,9 @@ public class ViewData {
 
         ViewData otherViewData = (ViewData) other;
         if (person == null) {
-            return isView == otherViewData.isShowView() && otherViewData.getPerson() == null;
+            return isView == otherViewData.isView() && otherViewData.getPerson() == null;
         } else {
-            return isView == otherViewData.isShowView()
+            return isView == otherViewData.isView()
                     && person.equals(otherViewData.getPerson());
         }
     }
