@@ -58,7 +58,7 @@ public class ViewCommand extends Command {
         requireNonNull(model);
         if (index != null) {
             return executeIndex(model);
-        } else if (predicate != null && !predicate.isBlank()) {
+        } else if (!predicate.isBlank()) {
             return executeName(model);
         } else {
             throw new CommandException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewCommand.MESSAGE_USAGE));
