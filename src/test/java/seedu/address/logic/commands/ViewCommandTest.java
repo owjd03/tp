@@ -93,7 +93,7 @@ public class ViewCommandTest {
     public void execute_zeroKeywords_throwCommandException() {
         String expectedMessage = String.format(
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewCommand.MESSAGE_USAGE));
-        ViewCommand command = new ViewCommand("");
+        ViewCommand command = new ViewCommand(" ");
         assertCommandFailure(command, model, expectedMessage);
     }
 

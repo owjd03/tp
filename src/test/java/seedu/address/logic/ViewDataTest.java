@@ -30,28 +30,35 @@ public class ViewDataTest {
             new Dependents(0), getTagSet("friends"));
 
     private static final ViewData expectedTrueViewData = new ViewData(true, testPerson);
-
+    private static final ViewData expectedTrueNoViewData = new ViewData(false, null);
     @Test
     public void equals() {
         final ViewData standardViewData = new ViewData(true, testPerson);
+        final ViewData standardNoViewData = new ViewData(false, null);
 
         // same values -> returns true
         assertTrue(standardViewData.equals(expectedTrueViewData));
+        assertTrue(standardNoViewData.equals(expectedTrueNoViewData));
 
         // same object -> returns true
         assertTrue(standardViewData.equals(standardViewData));
+        assertTrue(standardNoViewData.equals(standardNoViewData));
 
         // null -> returns false
         assertFalse(standardViewData.equals(null));
+        assertFalse(standardNoViewData.equals(null));
 
         // different types -> returns false
         assertFalse(standardViewData.equals(new ViewData(false, null)));
+        assertFalse(standardNoViewData.equals(new ViewData(true, dummyPerson)));
 
         // different boolean -> returns false
         assertFalse(standardViewData.equals(new ViewData(false, testPerson)));
+        assertFalse(standardNoViewData.equals(new ViewData(true, null)));
 
         // different person -> returns false
         assertFalse(standardViewData.equals(new ViewData(true, dummyPerson)));
+        assertFalse(standardNoViewData.equals(new ViewData(false, dummyPerson)));
 
     }
 
