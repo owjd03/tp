@@ -65,8 +65,7 @@ public class SortCommand extends Command {
             return (person1, person2) ->
                     person1.getAddress().value.compareToIgnoreCase(person2.getAddress().value);
         case SALARY:
-            return (person1, person2) ->
-                    person1.getSalary().value.compareToIgnoreCase(person2.getSalary().value);
+            return Comparator.comparingDouble(person -> Double.parseDouble(person.getSalary().value));
         case DATEOFBIRTH:
             return (person1, person2) ->
                     person1.getDateOfBirth().value.compareToIgnoreCase(person2.getDateOfBirth().value);
@@ -77,8 +76,7 @@ public class SortCommand extends Command {
             return (person1, person2) ->
                     person1.getOccupation().value.compareToIgnoreCase(person2.getOccupation().value);
         case DEPENDENT:
-            return (person1, person2) ->
-                    Integer.compare(person1.getDependents().value, person2.getDependents().value);
+            return Comparator.comparingInt(person -> person.getDependents().value);
         default:
             throw new AssertionError("Invalid sort field" + sortField);
         }
