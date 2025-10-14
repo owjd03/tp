@@ -8,6 +8,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.logic.commands.ViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
+
 /**
  * Parses the given {@code String} of arguments in the context of the ViewCommand
  * and returns a ViewCommand object for execution.
@@ -21,12 +22,23 @@ public class ViewCommandParser implements Parser<ViewCommand> {
      */
     public ViewCommand parse(String args) throws ParseException {
         requireNonNull(args);
+        String trimmedArgs = args.trim();
+
+        if (trimmedArgs.isEmpty()) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewCommand.MESSAGE_USAGE));
+        }
+
         try {
+            Integer.parseInt(trimmedArgs);
+
             ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args);
             Index index = ParserUtil.parseIndex(argMultimap.getPreamble());
             return new ViewCommand(index);
         } catch (IllegalValueException ive) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewCommand.MESSAGE_USAGE), ive);
+        } catch (NumberFormatException e) {
+            return new ViewCommand(trimmedArgs);
         }
     }
 }
