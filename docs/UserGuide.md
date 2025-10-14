@@ -129,6 +129,23 @@ Examples:
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
+### Viewing persons details: `view`
+
+Views persons whose names contains the given keyword or is in the given index.
+
+Format: `view [NAME-KEYWORD]` `view [INDEX]`
+
+* The search is case-insensitive. e.g. `alex` will match `Alex`
+* The command will not work if it finds more than 1 name with given keyword.
+* The order of the keywords matter. e.g. `Alex Yo` will not match `Yo Alex` 
+* Keywords will match with any name that contains the keyword. e.g. `ale` will match `Alex` and `Bale`
+* The index **must be a positive integer** 1, 2, 3, …​
+* The index must be within the size of the current list that is being displayed.
+
+Examples:
+* `view Alex` opens up a new window containing `Alex Yeoh` details.
+* `view 1` opens up a new window containing details of the first person in the list.
+
 ### Filtering persons: `filter`
 
 Filters the list of persons to show only those who match all specified criteria.
@@ -219,5 +236,6 @@ Action | Format, Examples
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
 **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
+**View** | `view NAME-KEYWORD` `view INDEX` <br> e.g. `view Alex` `view 1`
 **List** | `list`
 **Help** | `help`
