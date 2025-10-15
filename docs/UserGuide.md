@@ -256,8 +256,8 @@ Action | Format, Examples
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
 **Filter** | `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g., `filter n/James Lee e/jameslee`
-**Sort** | `sort FIELD`<br> e.g., `sort name`, `sort salary`
 **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **View** | `view NAME-KEYWORD` `view INDEX` <br> e.g. `view Alex` `view 1`
 **List** | `list`
 **Help** | `help`
+**Sort** | `sort FIELD`<br> e.g., `sort name`, `sort salary`
