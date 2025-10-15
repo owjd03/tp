@@ -188,6 +188,16 @@ Examples:
 * `sort salary` sorts all persons by salary from lowest to highest
 * `sort dateofbirth` sorts all persons by date of birth from oldest to youngest
 
+### Exporting all persons: `export`
+
+Exports all contacts from the address book into a single CSV (Comma-Separated Values) file. This is useful for creating backups 
+for external safekeeping or for importing contacts into other applications like spreadsheet software (e.g. Microsoft Excel).
+
+Format: `export`
+
+* After running the command, a file named  `addressbook.csv` will be created in the `data` folder.
+* **Caution**: If an `addressbook.csv` file already exists in the `data` folder, it will be **overwritten** with the current data from the address book. 
+
 ### Deleting a person : `delete`
 
 Deletes the specified person from the address book.
@@ -255,6 +265,7 @@ Action | Format, Examples
 **Clear** | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
+**Export** | `export`
 **Filter** | `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g., `filter n/James Lee e/jameslee`
 **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **View** | `view NAME-KEYWORD` `view INDEX` <br> e.g. `view Alex` `view 1`
