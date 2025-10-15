@@ -170,6 +170,24 @@ Invalid Usages:
 * `filter n/` (empty description for a prefix)
 * `filter n/ a/changi` (empty description for a prefix)
 
+### Sorting persons: `sort`
+
+Sorts the list of persons by the specified field in ascending order.
+
+Format: `sort FIELD`
+
+* The `FIELD` must be one of the following: `name`, `phone`, `email`, `address`, `salary`, `dateofbirth`, `maritalstatus`, `occupation`, `dependents`
+* The sort is case-insensitive for text fields (e.g., `name`, `email`, `address`, `maritalstatus`, `occupation`)
+* Numerical fields (`salary`, `dependents`) are sorted numerically
+* Date fields (`dateofbirth`) are sorted chronologically
+* The entire list will be sorted and displayed in the main window
+* Extra parameters after the field name will be ignored
+
+Examples:
+* `sort name` sorts all persons alphabetically by name
+* `sort salary` sorts all persons by salary from lowest to highest
+* `sort dateofbirth` sorts all persons by date of birth from oldest to youngest
+
 ### Deleting a person : `delete`
 
 Deletes the specified person from the address book.
@@ -242,3 +260,4 @@ Action | Format, Examples
 **View** | `view NAME-KEYWORD` `view INDEX` <br> e.g. `view Alex` `view 1`
 **List** | `list`
 **Help** | `help`
+**Sort** | `sort FIELD`<br> e.g., `sort name`, `sort salary`
