@@ -129,6 +129,23 @@ Examples:
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
+### Viewing persons details: `view`
+
+Views persons whose names contains the given keyword or is in the given index.
+
+Format: `view [NAME-KEYWORD]` `view [INDEX]`
+
+* The search is case-insensitive. e.g. `alex` will match `Alex`
+* The command will not work if it finds more than 1 name with given keyword.
+* The order of the keywords matter. e.g. `Alex Yo` will not match `Yo Alex` 
+* Keywords will match with any name that contains the keyword. e.g. `ale` will match `Alex` and `Bale`
+* The index **must be a positive integer** 1, 2, 3, …​
+* The index must be within the size of the current list that is being displayed.
+
+Examples:
+* `view Alex` opens up a new window containing `Alex Yeoh` details.
+* `view 1` opens up a new window containing details of the first person in the list.
+
 ### Filtering persons: `filter`
 
 Filters the list of persons to show only those who match all specified criteria.
@@ -137,19 +154,49 @@ Format: `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF
 
 * At least one of the optional fields must be provided.
 * The filter is case-insensitive. e.g `josh` will match `Josh`
+* Keywords do not need to be complete words. The command matches any entry that **contains** the keyword. e.g. `n/jo` will match names like `John` or `Joseph`
+* Keywords can be single words or phrases (e.g. `a/changi village` is allowed).
 * Only persons who match **all** specified criteria will be shown.
 * If you specify the same prefix multiple times, only the last one will be used for filtering.
 
 Examples:
-* `filter n/josh` displays all persons whose name contains `josh`
-* `filter n/josh a/changi` displays all persons whose name contains `josh` **AND** whose address contains `changi`
-* `filter n/josh n/david` is equivalent to `filter n/david`. It will display all persons whose name contains `david`
+* `filter n/josh` displays all persons whose name contains `josh`.
+* `filter n/josh a/kent ridge` displays all persons whose name contains `josh` **AND** whose address contains `kent ridge`.
+* `filter n/josh n/david` is equivalent to `filter n/david`. It will display all persons whose name contains `david`.
 
 Invalid Usages:
 * `filter` (no parameters)
 * `filter some random text` (preamble is not allowed)
 * `filter n/` (empty description for a prefix)
 * `filter n/ a/changi` (empty description for a prefix)
+
+### Sorting persons: `sort`
+
+Sorts the list of persons by the specified field in ascending order.
+
+Format: `sort FIELD`
+
+* The `FIELD` must be one of the following: `name`, `phone`, `email`, `address`, `salary`, `dateofbirth`, `maritalstatus`, `occupation`, `dependents`
+* The sort is case-insensitive for text fields (e.g., `name`, `email`, `address`, `maritalstatus`, `occupation`)
+* Numerical fields (`salary`, `dependents`) are sorted numerically
+* Date fields (`dateofbirth`) are sorted chronologically
+* The entire list will be sorted and displayed in the main window
+* Extra parameters after the field name will be ignored
+
+Examples:
+* `sort name` sorts all persons alphabetically by name
+* `sort salary` sorts all persons by salary from lowest to highest
+* `sort dateofbirth` sorts all persons by date of birth from oldest to youngest
+
+### Exporting all persons: `export`
+
+Exports all contacts from the address book into a single CSV (Comma-Separated Values) file. This is useful for creating backups 
+for external safekeeping or for importing contacts into other applications like spreadsheet software (e.g. Microsoft Excel).
+
+Format: `export`
+
+* After running the command, a file named  `addressbook.csv` will be created in the `data` folder.
+* **Caution**: If an `addressbook.csv` file already exists in the `data` folder, it will be **overwritten** with the current data from the address book. 
 
 ### Deleting a person : `delete`
 
@@ -218,6 +265,10 @@ Action | Format, Examples
 **Clear** | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
+**Export** | `export`
+**Filter** | `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g., `filter n/James Lee e/jameslee`
 **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
+**View** | `view NAME-KEYWORD` `view INDEX` <br> e.g. `view Alex` `view 1`
 **List** | `list`
 **Help** | `help`
+**Sort** | `sort FIELD`<br> e.g., `sort name`, `sort salary`
