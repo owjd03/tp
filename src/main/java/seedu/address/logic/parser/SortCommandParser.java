@@ -3,6 +3,7 @@ package seedu.address.logic.parser;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
 import seedu.address.logic.commands.SortCommand;
+import seedu.address.logic.commands.SortCommand.SortDirection;
 import seedu.address.logic.commands.SortCommand.SortField;
 import seedu.address.logic.parser.exceptions.ParseException;
 
@@ -25,30 +26,58 @@ public class SortCommandParser implements Parser<SortCommand> {
         }
 
         String[] argumentsArray = trimmedArguments.split("\\s+");
-        String sortType = argumentsArray[0];
+        String sortType = argumentsArray[0].toLowerCase();
 
-        switch(sortType.toLowerCase()) {
+        SortDirection direction = SortDirection.ASCENDING;
+
+        if (argumentsArray.length > 1) {
+            String directionOfSort = argumentsArray[1].toLowerCase();
+            switch(directionOfSort) {
+            case "ascending":
+                direction = SortDirection.ASCENDING;
+                break;
+            case "descending":
+                direction = SortDirection.DESCENDING;
+                break;
+            default:
+                break;
+            }
+        }
+
+        SortField field;
+        switch(sortType) {
         case "name":
-            return new SortCommand(SortField.NAME);
+            field = SortField.NAME;
+            break;
         case "phone":
-            return new SortCommand(SortField.PHONE);
+            field = SortField.PHONE;
+            break;
         case "email":
-            return new SortCommand(SortField.EMAIL);
+            field = SortField.EMAIL;
+            break;
         case "address":
-            return new SortCommand(SortField.ADDRESS);
+            field = SortField.ADDRESS;
+            break;
         case "salary":
-            return new SortCommand(SortField.SALARY);
+            field = SortField.SALARY;
+            break;
         case "dateofbirth":
-            return new SortCommand(SortField.DATEOFBIRTH);
+            field = SortField.DATEOFBIRTH;
+            break;
         case "maritalstatus":
-            return new SortCommand(SortField.MARITALSTATUS);
+            field = SortField.MARITALSTATUS;
+            break;
         case "occupation":
-            return new SortCommand(SortField.OCCUPATION);
+            field = SortField.OCCUPATION;
+            break;
         case "dependent":
-            return new SortCommand(SortField.DEPENDENT);
+            field = SortField.DEPENDENT;
+            break;
         default:
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
         }
+
+        return new SortCommand(field, direction);
     }
 }
