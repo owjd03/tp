@@ -9,8 +9,10 @@ import static seedu.address.testutil.TypicalInsurancePackages.GOLD;
 import static seedu.address.testutil.TypicalInsurancePackages.SILVER;
 import static seedu.address.testutil.TypicalInsurancePackages.UNDECIDED;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -147,12 +149,81 @@ public class UniqueInsurancePackageListTest {
         List<InsurancePackage> listWithDuplicateInsurancePackages = Arrays.asList(GOLD, GOLD);
         assertThrows(DuplicateInsurancePackageException.class, () ->
                 uniqueInsurancePackageList.setInsurancePackages(listWithDuplicateInsurancePackages));
+
+        List<InsurancePackage> longerListWithDuplicateInsurancePackages = Arrays.asList(GOLD, SILVER, GOLD);
+        assertThrows(DuplicateInsurancePackageException.class, () ->
+                uniqueInsurancePackageList.setInsurancePackages(longerListWithDuplicateInsurancePackages));
+
+        List<InsurancePackage> anotherLongerListWithDuplicateInsurancePackages = Arrays.asList(GOLD, SILVER, SILVER);
+        assertThrows(DuplicateInsurancePackageException.class, () ->
+                uniqueInsurancePackageList.setInsurancePackages(anotherLongerListWithDuplicateInsurancePackages));
+
+        List<InsurancePackage> longestListWithDuplicateInsurancePackages =
+                Arrays.asList(GOLD, SILVER, BRONZE, UNDECIDED, BRONZE);
+        assertThrows(DuplicateInsurancePackageException.class, () ->
+                uniqueInsurancePackageList.setInsurancePackages(longestListWithDuplicateInsurancePackages));
     }
 
     @Test
     public void asUnmodifiableObservableList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () ->
                 uniqueInsurancePackageList.asUnmodifiableObservableList().remove(0));
+    }
+
+    @Test
+    public void sort_list_sortsListCorrectly() {
+        uniqueInsurancePackageList.add(UNDECIDED);
+        uniqueInsurancePackageList.add(GOLD);
+        uniqueInsurancePackageList.add(BRONZE);
+        uniqueInsurancePackageList.add(SILVER);
+        uniqueInsurancePackageList.sort(Comparator.comparing(p -> p.packageName));
+
+        UniqueInsurancePackageList expectedList = new UniqueInsurancePackageList();
+        expectedList.add(BRONZE);
+        expectedList.add(GOLD);
+        expectedList.add(SILVER);
+        expectedList.add(UNDECIDED);
+        assertEquals(expectedList, uniqueInsurancePackageList);
+    }
+
+    @Test
+    public void iterator_valid_iteratesCorrectly() {
+        uniqueInsurancePackageList.add(GOLD);
+        uniqueInsurancePackageList.add(SILVER);
+        List<InsurancePackage> iteratedList = new ArrayList<>();
+        uniqueInsurancePackageList.iterator().forEachRemaining(iteratedList::add);
+        assertEquals(Arrays.asList(GOLD, SILVER), iteratedList);
+    }
+
+    @Test
+    public void equals_wordsCorrectly() {
+        // same object returns true
+        assertTrue(uniqueInsurancePackageList.equals(uniqueInsurancePackageList));
+
+        // null returns false
+        assertFalse(uniqueInsurancePackageList.equals(null));
+
+        // different type returns false
+        assertFalse(uniqueInsurancePackageList.equals("Clearly not an UniqueInsurancePackageList"));
+
+        // different list returns false
+        UniqueInsurancePackageList otherList = new UniqueInsurancePackageList();
+        otherList.add(GOLD);
+        assertFalse(uniqueInsurancePackageList.equals(otherList));
+
+        // same internal list returns true
+        uniqueInsurancePackageList.add(GOLD);
+        UniqueInsurancePackageList sameList = new UniqueInsurancePackageList();
+        sameList.add(GOLD);
+        assertTrue(uniqueInsurancePackageList.equals(sameList));
+    }
+
+    @Test
+    public void hashCode_valid_returnsSameHashCode() {
+        uniqueInsurancePackageList.add(GOLD);
+        UniqueInsurancePackageList otherList = new UniqueInsurancePackageList();
+        otherList.add(GOLD);
+        assertEquals(uniqueInsurancePackageList.hashCode(), otherList.hashCode());
     }
 
     @Test

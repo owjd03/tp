@@ -18,7 +18,7 @@ import seedu.address.model.insurance.exceptions.InsurancePackageNotFoundExceptio
  * {@code InsurancePackage#isSameInsurancePackage(InsurancePackage)}. As such, adding and updating of insurance packages
  * uses InsurancePackage#isSameInsurancePackage(InsurancePackage) for equality to ensure that the insurance package
  * being added or updated is unique in terms of package name in the UniqueInsurancePackageList. However, the removal of
- * a insurance package uses InsurancePackage#equals(Object) to ensure that the insurance package with exactly the same
+ * an insurance package uses InsurancePackage#equals(Object) to ensure that the insurance package with exactly the same
  * fields will be removed.
  *
  * Supports a minimal set of list operations.
