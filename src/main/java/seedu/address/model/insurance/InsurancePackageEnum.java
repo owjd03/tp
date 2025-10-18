@@ -5,10 +5,10 @@ package seedu.address.model.insurance;
  * Each enum constant has a human-readable string representation.
  */
 public enum InsurancePackageEnum {
-    Gold("Gold"),
-    Silver("Silver"),
-    Bronze("Bronze"),
-    Undecided("Undecided");
+    GOLD("Gold"),
+    SILVER("Silver"),
+    BRONZE("Bronze"),
+    UNDECIDED("Undecided");
 
     private final String displayValue;
 
