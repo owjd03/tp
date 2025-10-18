@@ -13,7 +13,7 @@ public class InsurancePackage {
             "Insurance package must be one of the predefined constants: "
                     + "Gold, Silver, Bronze, Undecided.";
 
-    public final String value;
+    public final String packageName;
 
     /**
      * Constructs a {@code InsurancePackage}.
@@ -23,13 +23,19 @@ public class InsurancePackage {
     public InsurancePackage(String insurancePackage) {
         requireNonNull(insurancePackage);
         checkArgument(InsurancePackageEnum.isValidInsurancePackage(insurancePackage), MESSAGE_CONSTRAINTS);
-        value = String.valueOf(InsurancePackageEnum.fromString(insurancePackage));
+        packageName = String.valueOf(InsurancePackageEnum.fromString(insurancePackage));
     }
 
+    /**
+     * Returns true if both insurance packages have the same package name.
+     * This defines a weaker notion of equality between two insurance packages.
+     */
+    public boolean isSameInsurancePackage(InsurancePackage otherInsurancePackage) {
+        if (otherInsurancePackage == this) {
+            return true;
+        }
 
-    @Override
-    public String toString() {
-        return value.toString();
+        return otherInsurancePackage != null && otherInsurancePackage.packageName.equals(packageName);
     }
 
     @Override
@@ -45,12 +51,16 @@ public class InsurancePackage {
 
         seedu.address.model.insurance.InsurancePackage otherInsurancePackage =
                 (seedu.address.model.insurance.InsurancePackage) other;
-        return value.equals(otherInsurancePackage.value);
+        return packageName.equals(otherInsurancePackage.packageName);
     }
 
     @Override
     public int hashCode() {
-        return value.hashCode();
+        return packageName.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return packageName.toString();
+    }
 }
