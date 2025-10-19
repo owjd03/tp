@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.insurance.InsurancePackage;
-import seedu.address.model.insurance.InsurancePackageEnum;
 
 /**
  * Jackson-friendly version of {@link InsurancePackage}.
