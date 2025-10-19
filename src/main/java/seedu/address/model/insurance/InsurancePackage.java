@@ -14,16 +14,19 @@ public class InsurancePackage {
                     + "Gold, Silver, Bronze, Undecided.";
 
     public final String packageName;
+    public final String packageDescription;
 
     /**
      * Constructs a {@code InsurancePackage}.
      *
-     * @param insurancePackage A valid insurance package.
+     * @param name             A valid insurance package, represented by its name.
+     * @param description      Description of the insurance package.
      */
-    public InsurancePackage(String insurancePackage) {
-        requireNonNull(insurancePackage);
-        checkArgument(InsurancePackageEnum.isValidInsurancePackage(insurancePackage), MESSAGE_CONSTRAINTS);
-        packageName = String.valueOf(InsurancePackageEnum.fromString(insurancePackage));
+    public InsurancePackage(String name, String description) {
+        requireNonNull(name);
+        checkArgument(InsurancePackageEnum.isValidInsurancePackage(name), MESSAGE_CONSTRAINTS);
+        packageName = String.valueOf(InsurancePackageEnum.fromString(name));
+        packageDescription = description;
     }
 
     /**

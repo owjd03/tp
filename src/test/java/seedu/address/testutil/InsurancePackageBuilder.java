@@ -7,15 +7,18 @@ import seedu.address.model.insurance.InsurancePackage;
  */
 public class InsurancePackageBuilder {
 
-    public static final String DEFAULT_PACKAGE_NAME = "Gold";
+    public static final String DEFAULT_PACKAGE_NAME = "Undecided";
+    public static final String DEFAULT_PACKAGE_DESCRIPTION = "No insurance package selected.";
 
     private String packageName;
+    private String packageDescription;
 
     /**
      * Creates a {@code InsurancePackageBuilder} with the default details.
      */
     public InsurancePackageBuilder() {
         packageName = DEFAULT_PACKAGE_NAME;
+        packageDescription = DEFAULT_PACKAGE_DESCRIPTION;
     }
 
     /**
@@ -23,6 +26,7 @@ public class InsurancePackageBuilder {
      */
     public InsurancePackageBuilder(InsurancePackage insurancePackageToCopy) {
         packageName = insurancePackageToCopy.packageName;
+        packageDescription = insurancePackageToCopy.packageDescription;
     }
 
     /**
@@ -33,7 +37,15 @@ public class InsurancePackageBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code Description} of the {@code InsurancePackage} that we are building.
+     */
+    public InsurancePackageBuilder withDescription(String description) {
+        this.packageDescription = description;
+        return this;
+    }
+
     public InsurancePackage build() {
-        return new InsurancePackage(packageName);
+        return new InsurancePackage(packageName, packageDescription);
     }
 }
