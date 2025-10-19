@@ -1,0 +1,9 @@
+{
+  "insurancePackages": [ {
+    "packageName": "Invalid Name",
+    "packageDescription": "Package name is not a valid name."
+  }, {
+    "packageName": "Gold",
+    "packageDescription": "Ultra premium deluxe insurance package."
+  } ]
+}

@@ -18,7 +18,7 @@ import seedu.address.model.ReadOnlyInsuranceCatalog;
  * A class to access InsuranceCatalog data stored as a json file on the hard disk.
  */
 public class JsonInsuranceCatalogStorage implements InsuranceCatalogStorage {
-    private static final Logger logger = LogsCenter.getLogger(JsonAddressBookStorage.class);
+    private static final Logger logger = LogsCenter.getLogger(JsonInsuranceCatalogStorage.class);
 
     private Path filePath;
 

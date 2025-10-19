@@ -35,7 +35,7 @@ public class TypicalInsurancePackages {
     private TypicalInsurancePackages() {} // prevents instantiation
 
     public static List<InsurancePackage> getTypicalInsurancePackages() {
-        return new ArrayList<InsurancePackage>(Arrays.asList(GOLD, SILVER, BRONZE, UNDECIDED));
+        return new ArrayList<InsurancePackage>(Arrays.asList(GOLD, SILVER));
     }
 
     public static InsuranceCatalog getTypicalInsuranceCatalog() {

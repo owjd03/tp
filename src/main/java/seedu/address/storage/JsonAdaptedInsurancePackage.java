@@ -44,16 +44,15 @@ public class JsonAdaptedInsurancePackage {
         if (this.packageName == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, "packageName"));
         }
-        if (!InsurancePackageEnum.isValidInsurancePackage(this.packageName)) {
-            throw new IllegalValueException(InsurancePackage.MESSAGE_CONSTRAINTS);
-        }
-        final String modelPackageName = this.packageName;
 
         if (this.packageDescription == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, "packageDescription"));
         }
-        final String modelPackageDescription = this.packageDescription;
 
-        return new InsurancePackage(modelPackageName, modelPackageDescription);
+        try {
+            return new InsurancePackage(this.packageName, this.packageDescription);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalValueException(e.getMessage());
+        }
     }
 }

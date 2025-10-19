@@ -22,7 +22,9 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.ReadOnlyInsuranceCatalog;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
 
@@ -86,7 +88,7 @@ public class AddCommandTest {
     }
 
     /**
-     * A default model stub that have all of the methods failing.
+     * A default model stub that have all the methods failing.
      */
     private class ModelStub implements Model {
         @Override
@@ -115,7 +117,17 @@ public class AddCommandTest {
         }
 
         @Override
+        public Path getInsuranceCatalogFilePath() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void setAddressBookFilePath(Path addressBookFilePath) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setInsuranceCatalogFilePath(Path addressBookFilePath) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -125,7 +137,17 @@ public class AddCommandTest {
         }
 
         @Override
+        public void addInsurancePackage(InsurancePackage insurancePackage) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void setAddressBook(ReadOnlyAddressBook newData) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setInsuranceCatalog(ReadOnlyInsuranceCatalog newData) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -135,7 +157,17 @@ public class AddCommandTest {
         }
 
         @Override
+        public ReadOnlyInsuranceCatalog getInsuranceCatalog() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public boolean hasPerson(Person person) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean hasInsurancePackage(InsurancePackage insurancePackage) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -145,7 +177,17 @@ public class AddCommandTest {
         }
 
         @Override
+        public void deleteInsurancePackage(InsurancePackage target) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void setPerson(Person target, Person editedPerson) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setInsurancePackage(InsurancePackage target, InsurancePackage editedInsurancePackage) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -155,12 +197,27 @@ public class AddCommandTest {
         }
 
         @Override
+        public ObservableList<InsurancePackage> getFilteredInsurancePackageList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void updateFilteredPersonList(Predicate<Person> predicate) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
+        public void updateFilteredInsurancePackageList(Predicate<InsurancePackage> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void sortPersonList(Comparator<Person> comparator) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void sortInsurancePackageList(Comparator<InsurancePackage> comparator) {
             throw new AssertionError("This method should not be called.");
         }
     }

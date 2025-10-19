@@ -24,7 +24,7 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final InsuranceCatalog insuranceCatalog;
     private final UserPrefs userPrefs;
-    private final FilteredList<InsurancePackage> filteredInsurancePackage;
+    private final FilteredList<InsurancePackage> filteredInsurancePackages;
     private final FilteredList<Person> filteredPersons;
 
     /**
@@ -42,8 +42,8 @@ public class ModelManager implements Model {
         this.addressBook = new AddressBook(addressBook);
         this.insuranceCatalog = new InsuranceCatalog(insuranceCatalog);
         this.userPrefs = new UserPrefs(userPrefs);
-        this.filteredInsurancePackage = new FilteredList<>(this.insuranceCatalog.getInsurancePackageList());
-        filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
+        this.filteredInsurancePackages = new FilteredList<>(this.insuranceCatalog.getInsurancePackageList());
+        this.filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
     }
 
     public ModelManager() {
@@ -197,13 +197,13 @@ public class ModelManager implements Model {
 
     @Override
     public ObservableList<InsurancePackage> getFilteredInsurancePackageList() {
-        return filteredInsurancePackage;
+        return filteredInsurancePackages;
     }
 
     @Override
     public void updateFilteredInsurancePackageList(Predicate<InsurancePackage> predicate) {
         requireNonNull(predicate);
-        filteredInsurancePackage.setPredicate(predicate);
+        filteredInsurancePackages.setPredicate(predicate);
     }
 
     @Override
@@ -220,6 +220,7 @@ public class ModelManager implements Model {
         ModelManager otherModelManager = (ModelManager) other;
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
-                && filteredPersons.equals(otherModelManager.filteredPersons);
+                && filteredPersons.equals(otherModelManager.filteredPersons)
+                && filteredInsurancePackages.equals(otherModelManager.filteredInsurancePackages);
     }
 }

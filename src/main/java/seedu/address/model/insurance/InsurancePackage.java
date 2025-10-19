@@ -54,7 +54,8 @@ public class InsurancePackage {
 
         seedu.address.model.insurance.InsurancePackage otherInsurancePackage =
                 (seedu.address.model.insurance.InsurancePackage) other;
-        return packageName.equals(otherInsurancePackage.packageName);
+        return packageName.equals(otherInsurancePackage.packageName)
+                && packageDescription.equals(otherInsurancePackage.packageDescription);
     }
 
     @Override
