@@ -84,7 +84,7 @@ public class ViewCommand extends Command {
 
         ViewData last = new ViewData(true, this.personToView);
 
-        return new CommandResult(MESSAGE_VIEW_SUCCESS, false, last, false);
+        return new CommandResult(MESSAGE_VIEW_SUCCESS, false, last, false, false);
     }
 
     /**
@@ -100,7 +100,6 @@ public class ViewCommand extends Command {
                 .filter(p ->
                         p.getName().fullName.toLowerCase()
                                    .contains(predicate.toLowerCase())
-
                         )
                 .toList();
 
@@ -113,7 +112,7 @@ public class ViewCommand extends Command {
 
             ViewData last = new ViewData(true, this.personToView);
 
-            return new CommandResult(MESSAGE_VIEW_SUCCESS, false, last, false);
+            return new CommandResult(MESSAGE_VIEW_SUCCESS, false, last, false, false);
         }
     }
 

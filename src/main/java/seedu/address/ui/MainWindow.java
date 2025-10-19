@@ -36,6 +36,7 @@ public class MainWindow extends UiPart<Stage> {
     private ResultDisplay resultDisplay;
     private HelpWindow helpWindow;
     private ViewWindow viewWindow;
+    private PackageWindow packageWindow;
 
     @FXML
     private StackPane commandBoxPlaceholder;
@@ -69,6 +70,7 @@ public class MainWindow extends UiPart<Stage> {
 
         helpWindow = new HelpWindow();
         viewWindow = new ViewWindow();
+        packageWindow = new PackageWindow();
     }
 
     public Stage getPrimaryStage() {
@@ -163,6 +165,18 @@ public class MainWindow extends UiPart<Stage> {
         }
     }
 
+    /**
+     * Opens the package window or focuses on it if it's already opened.
+     */
+    @FXML
+    public void handlePackage() {
+        if (!packageWindow.isShowing()) {
+            packageWindow.show();
+        } else {
+            packageWindow.focus();
+        }
+    }
+
     void show() {
         primaryStage.show();
     }
@@ -201,6 +215,10 @@ public class MainWindow extends UiPart<Stage> {
 
             if (commandResult.isShowView()) {
                 handleView(commandResult.getPersonToView());
+            }
+
+            if (commandResult.isShowPackage()) {
+                handlePackage();
             }
 
             if (commandResult.isExit()) {
