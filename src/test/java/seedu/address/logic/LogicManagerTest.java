@@ -20,6 +20,7 @@ import static seedu.address.testutil.TypicalPersons.AMY;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -125,6 +126,37 @@ public class LogicManagerTest {
     public void getFilteredInsurancePackageList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> logic.getFilteredInsurancePackageList().remove(0));
     }
+
+    @Test
+    public void getAddressBook_returnsCorrectAddressBook() {
+        assertEquals(model.getAddressBook(), logic.getAddressBook());
+    }
+
+    @Test
+    public void getInsuranceCatalog_returnsCorrectInsuranceCatalog() {
+        assertEquals(model.getInsuranceCatalog(), logic.getInsuranceCatalog());
+    }
+
+    @Test
+    public void getAddressBookFilePath_returnsCorrectPath() {
+        UserPrefs userPrefs = new UserPrefs();
+        Path customPath = Paths.get("custom/path/for/addressbook.json");
+        userPrefs.setAddressBookFilePath(customPath);
+        model.setUserPrefs(userPrefs);
+
+        assertEquals(customPath, logic.getAddressBookFilePath());
+    }
+
+    @Test
+    public void getInsuranceCatalogFilePath_returnsCorrectPath() {
+        UserPrefs userPrefs = new UserPrefs();
+        Path customPath = Paths.get("custom/path/for/insurance.json");
+        userPrefs.setInsuranceCatalogFilePath(customPath);
+        model.setUserPrefs(userPrefs);
+
+        assertEquals(customPath, logic.getInsuranceCatalogFilePath());
+    }
+
 
     /**
      * Executes the command and confirms that
