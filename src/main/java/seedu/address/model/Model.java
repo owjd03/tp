@@ -111,7 +111,8 @@ public interface Model {
     ReadOnlyInsuranceCatalog getInsuranceCatalog();
 
     /**
-     * Returns true if an insurance package with the same identity as {@code insurancePackage} exists in the insurance catalog.
+     * Returns true if an insurance package with the same identity as {@code insurancePackage}
+     * exists in the insurance catalog.
      */
     boolean hasInsurancePackage(InsurancePackage insurancePackage);
 

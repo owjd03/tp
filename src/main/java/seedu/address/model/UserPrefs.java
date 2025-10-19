@@ -61,9 +61,9 @@ public class UserPrefs implements ReadOnlyUserPrefs {
         return this.insuranceCatalogFilePath;
     }
 
-    public void setInsuranceCatalogFilePath(Path InsuranceCatalogFilePath) {
-        requireNonNull(InsuranceCatalogFilePath);
-        this.insuranceCatalogFilePath = InsuranceCatalogFilePath;
+    public void setInsuranceCatalogFilePath(Path insuranceCatalogFilePath) {
+        requireNonNull(insuranceCatalogFilePath);
+        this.insuranceCatalogFilePath = insuranceCatalogFilePath;
     }
 
     @Override
