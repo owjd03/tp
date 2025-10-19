@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Person;
 
 /**
@@ -21,24 +22,32 @@ public class ModelManager implements Model {
     private static final Logger logger = LogsCenter.getLogger(ModelManager.class);
 
     private final AddressBook addressBook;
+    private final InsuranceCatalog insuranceCatalog;
     private final UserPrefs userPrefs;
+    private final FilteredList<InsurancePackage> filteredInsurancePackage;
     private final FilteredList<Person> filteredPersons;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
-    public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyUserPrefs userPrefs) {
-        requireAllNonNull(addressBook, userPrefs);
+    public ModelManager(ReadOnlyAddressBook addressBook,
+                        ReadOnlyInsuranceCatalog insuranceCatalog,
+                        ReadOnlyUserPrefs userPrefs) {
+        requireAllNonNull(addressBook, insuranceCatalog, userPrefs);
 
-        logger.fine("Initializing with address book: " + addressBook + " and user prefs " + userPrefs);
+        logger.fine("Initializing with address book: " + addressBook
+                + " and user prefs " + userPrefs
+                + " and insurance catalog " + insuranceCatalog);
 
         this.addressBook = new AddressBook(addressBook);
+        this.insuranceCatalog = new InsuranceCatalog(insuranceCatalog);
         this.userPrefs = new UserPrefs(userPrefs);
+        this.filteredInsurancePackage = new FilteredList<>(this.insuranceCatalog.getInsurancePackageList());
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
     }
 
     public ModelManager() {
-        this(new AddressBook(), new UserPrefs());
+        this(new AddressBook(), new InsuranceCatalog(), new UserPrefs());
     }
 
     //=========== UserPrefs ==================================================================================
@@ -74,6 +83,17 @@ public class ModelManager implements Model {
     public void setAddressBookFilePath(Path addressBookFilePath) {
         requireNonNull(addressBookFilePath);
         userPrefs.setAddressBookFilePath(addressBookFilePath);
+    }
+
+    @Override
+    public Path getInsuranceCatalogFilePath() {
+        return userPrefs.getInsuranceCatalogFilePath();
+    }
+
+    @Override
+    public void setInsuranceCatalogFilePath(Path insuranceCatalogFilePath) {
+        requireNonNull(insuranceCatalogFilePath);
+        userPrefs.setInsuranceCatalogFilePath(insuranceCatalogFilePath);
     }
 
     //=========== AddressBook ================================================================================
@@ -134,6 +154,58 @@ public class ModelManager implements Model {
         filteredPersons.setPredicate(predicate);
     }
 
+    //=========== Insurance Package-Level Accessors ==========================================================
+
+    @Override
+    public void setInsuranceCatalog(ReadOnlyInsuranceCatalog insuranceCatalog) {
+        this.insuranceCatalog.resetData(insuranceCatalog);
+    }
+
+    @Override
+    public ReadOnlyInsuranceCatalog getInsuranceCatalog() {
+        return this.insuranceCatalog;
+    }
+
+    @Override
+    public boolean hasInsurancePackage(InsurancePackage insurancePackage) {
+        requireNonNull(insurancePackage);
+        return this.insuranceCatalog.hasInsurancePackage(insurancePackage);
+    }
+
+    @Override
+    public void deleteInsurancePackage(InsurancePackage target) {
+        this.insuranceCatalog.removeInsurancePackage(target);
+    }
+
+    @Override
+    public void addInsurancePackage(InsurancePackage insurancePackage) {
+        this.insuranceCatalog.addInsurancePackage(insurancePackage);
+    }
+
+    @Override
+    public void setInsurancePackage(InsurancePackage target, InsurancePackage editedInsurancePackage) {
+        requireAllNonNull(target, editedInsurancePackage);
+        this.insuranceCatalog.setInsurancePackage(target, editedInsurancePackage);
+    }
+
+    @Override
+    public void sortInsurancePackageList(Comparator<InsurancePackage> comparator) {
+        this.insuranceCatalog.sortInsurancePackageList(comparator);
+    }
+
+    //=========== Filtered Insurance Package List Accessors ==================================================
+
+    @Override
+    public ObservableList<InsurancePackage> getFilteredInsurancePackageList() {
+        return filteredInsurancePackage;
+    }
+
+    @Override
+    public void updateFilteredInsurancePackageList(Predicate<InsurancePackage> predicate) {
+        requireNonNull(predicate);
+        filteredInsurancePackage.setPredicate(predicate);
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other == this) {
@@ -150,5 +222,4 @@ public class ModelManager implements Model {
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredPersons.equals(otherModelManager.filteredPersons);
     }
-
 }
