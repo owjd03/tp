@@ -15,12 +15,15 @@ import static seedu.address.testutil.TypicalPersons.BENSON;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Comparator;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.testutil.AddressBookBuilder;
+import seedu.address.testutil.InsuranceCatalogBuilder;
 
 public class ModelManagerTest {
 
@@ -188,5 +191,84 @@ public class ModelManagerTest {
         UserPrefs differentUserPrefs = new UserPrefs();
         differentUserPrefs.setAddressBookFilePath(Paths.get("differentFilePath"));
         assertFalse(modelManager.equals(new ModelManager(addressBook, insuranceCatalog, differentUserPrefs)));
+    }
+
+    @Test
+    public void setInsuranceCatalog_nullInsuranceCatalog_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.setInsuranceCatalog(null));
+    }
+
+    @Test
+    public void setInsuranceCatalog_withValidInsuranceCatalog_replacesExistingInsuranceCatalog() {
+        InsuranceCatalog insuranceCatalog = new InsuranceCatalogBuilder().withInsurancePackage(BRONZE).build();
+        modelManager.setInsuranceCatalog(insuranceCatalog);
+        assertEquals(insuranceCatalog, modelManager.getInsuranceCatalog());
+    }
+
+    @Test
+    public void deleteInsurancePackage_nullInsurancePackage_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.deleteInsurancePackage(null));
+    }
+
+    @Test
+    public void deleteInsurancePackage_insurancePackageInList_removesInsurancePackage() {
+        ModelManager modelManager = new ModelManager(new AddressBook(),
+                new InsuranceCatalogBuilder().withInsurancePackage(GOLD).withInsurancePackage(SILVER).build(),
+                new UserPrefs());
+
+        modelManager.deleteInsurancePackage(GOLD);
+
+        ModelManager expectedModelManager = new ModelManager(new AddressBook(),
+                new InsuranceCatalogBuilder().withInsurancePackage(SILVER).build(), new UserPrefs());
+
+        assertEquals(expectedModelManager, modelManager);
+    }
+
+    @Test
+    public void setInsurancePackage_nullTargetInsurancePackage_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.setInsurancePackage(null, GOLD));
+    }
+
+    @Test
+    public void setInsurancePackage_nullEditedInsurancePackage_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.setInsurancePackage(GOLD, null));
+    }
+
+    @Test
+    public void setInsurancePackage_validInsurancePackages_success() {
+        ModelManager modelManager = new ModelManager(new AddressBook(),
+                new InsuranceCatalogBuilder().withInsurancePackage(GOLD).withInsurancePackage(SILVER).build(),
+                new UserPrefs());
+
+        modelManager.setInsurancePackage(GOLD, BRONZE);
+
+        ModelManager expectedModelManager = new ModelManager(new AddressBook(),
+                new InsuranceCatalogBuilder().withInsurancePackage(SILVER).withInsurancePackage(BRONZE).build(),
+                new UserPrefs());
+
+        assertEquals(expectedModelManager, modelManager);
+    }
+
+    @Test
+    public void sortInsurancePackageList_nullComparator_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.sortInsurancePackageList(null));
+    }
+
+    @Test
+    public void sortInsurancePackageList_validComparator_sortsList() {
+        ModelManager modelManager = new ModelManager(new AddressBook(),
+                new InsuranceCatalogBuilder().withInsurancePackage(GOLD).withInsurancePackage(SILVER).build(),
+                new UserPrefs());
+
+        // Sort by package name in reverse alphabetical order
+        Comparator<InsurancePackage> comparator = Comparator.comparing(InsurancePackage::getPackageName).reversed();
+        modelManager.sortInsurancePackageList(comparator);
+
+        ModelManager expectedModelManager = new ModelManager(new AddressBook(),
+                new InsuranceCatalogBuilder().withInsurancePackage(SILVER).withInsurancePackage(GOLD).build(),
+                new UserPrefs());
+
+        assertEquals(expectedModelManager.getFilteredInsurancePackageList(),
+                modelManager.getFilteredInsurancePackageList());
     }
 }

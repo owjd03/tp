@@ -221,6 +221,7 @@ public class ModelManager implements Model {
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredPersons.equals(otherModelManager.filteredPersons)
-                && filteredInsurancePackages.equals(otherModelManager.filteredInsurancePackages);
+                && insuranceCatalog.equals(otherModelManager.insuranceCatalog);
+        // filteredInsurancePackages is order dependent, while insuranceCatalog is not
     }
 }

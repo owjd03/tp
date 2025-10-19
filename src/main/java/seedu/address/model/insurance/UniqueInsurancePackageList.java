@@ -104,6 +104,7 @@ public class UniqueInsurancePackageList implements Iterable<InsurancePackage> {
      * Sorts the list using the provided comparator.
      */
     public void sort(Comparator<InsurancePackage> comparator) {
+        requireNonNull(comparator);
         internalList.sort(comparator);
     }
 
@@ -131,7 +132,8 @@ public class UniqueInsurancePackageList implements Iterable<InsurancePackage> {
         }
 
         UniqueInsurancePackageList otherUniqueInsurancePackageList = (UniqueInsurancePackageList) other;
-        return internalList.equals(otherUniqueInsurancePackageList.internalList);
+        return this.internalUnmodifiableList.containsAll(otherUniqueInsurancePackageList.internalUnmodifiableList)
+                && otherUniqueInsurancePackageList.internalUnmodifiableList.containsAll(this.internalUnmodifiableList);
     }
 
     @Override
