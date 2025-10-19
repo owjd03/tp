@@ -5,36 +5,50 @@ package seedu.address.model.insurance;
  * Each enum constant has a human-readable string representation.
  */
 public enum InsurancePackageEnum {
-    GOLD("Gold"),
-    SILVER("Silver"),
-    BRONZE("Bronze"),
-    UNDECIDED("Undecided");
+    GOLD("Gold",
+            "Our premium, all-inclusive plan offering maximum benefits and total peace of mind."),
+    SILVER("Silver",
+            "Our most popular plan, offering a balanced blend of coverage and value."),
+    BRONZE("Bronze",
+            "A foundational plan that covers all your core, essential needs."),
+    UNDECIDED("Undecided", "No insurance package selected.");
 
-    private final String displayValue;
+    private final String packageName;
+    private final String packageDescription;
 
-
-    InsurancePackageEnum(String displayValue) {
-        this.displayValue = displayValue;
+    InsurancePackageEnum(String name, String description) {
+        this.packageName = name;
+        this.packageDescription = description;
     }
 
     /**
      * Returns the human-readable string representation of the insurance package.
+     * In other words, this also returns the name of the insurance package.
+     *
      * @return The string representation of the insurance package.
      */
     @Override
     public String toString() {
-        return displayValue;
+        return packageName;
+    }
+
+    /**
+     * @return The description of the insurance package.
+     */
+    public String getDescription() {
+        return packageDescription;
     }
 
     /**
      * Checks whether a given string is a valid insurance package.
+     * Packages with the same name but different descriptions are considered valid.
      * @param test
      * @return true if the string is a valid insurance package, false otherwise.
      */
     public static boolean isValidInsurancePackage(String test) {
         for (seedu.address.model.insurance.InsurancePackageEnum insurancePackage
                 : seedu.address.model.insurance.InsurancePackageEnum.values()) {
-            if (insurancePackage.displayValue.equals(test)) {
+            if (insurancePackage.packageName.equals(test)) {
                 return true;
             }
         }
@@ -50,7 +64,7 @@ public enum InsurancePackageEnum {
     public static seedu.address.model.insurance.InsurancePackageEnum fromString(String test) {
         for (seedu.address.model.insurance.InsurancePackageEnum insurancePackage
                 : seedu.address.model.insurance.InsurancePackageEnum.values()) {
-            if (insurancePackage.displayValue.equals(test)) {
+            if (insurancePackage.packageName.equals(test)) {
                 return insurancePackage;
             }
         }
