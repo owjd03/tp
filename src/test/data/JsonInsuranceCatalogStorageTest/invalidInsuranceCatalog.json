@@ -1,6 +1,6 @@
 {
   "insurancePackages": [ {
-    "packageName": "Invalid Name",
-    "packageDescription": "Package name is not a valid name"
+    "packageName": "",
+    "packageDescription": "Empty package name should be invalid"
   } ]
 }

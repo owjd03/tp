@@ -12,8 +12,9 @@ import java.util.Objects;
 public class InsurancePackage {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Insurance package must be one of the predefined constants: "
-                    + "Gold, Silver, Bronze, Undecided.";
+            "Insurance package must either one of the predefined constants: "
+                    + "Gold, Silver, Bronze, Undecided."
+            + "or a custom name";
 
     public final String packageName;
     public final String packageDescription;
@@ -26,13 +27,17 @@ public class InsurancePackage {
      */
     public InsurancePackage(String name, String description) {
         requireNonNull(name);
-        checkArgument(InsurancePackageEnum.isValidInsurancePackage(name), MESSAGE_CONSTRAINTS);
-        packageName = String.valueOf(InsurancePackageEnum.fromString(name));
+        checkArgument(!name.trim().isEmpty(), MESSAGE_CONSTRAINTS);
+        packageName = name.trim();
         packageDescription = description;
     }
 
     public String getPackageName() {
         return this.packageName;
+    }
+
+    public String getPackageDescription() {
+        return this.packageDescription;
     }
 
     /**
@@ -44,7 +49,8 @@ public class InsurancePackage {
             return true;
         }
 
-        return otherInsurancePackage != null && otherInsurancePackage.packageName.equals(packageName);
+        return otherInsurancePackage != null
+                && otherInsurancePackage.packageName.equalsIgnoreCase(packageName);
     }
 
     @Override
@@ -60,13 +66,13 @@ public class InsurancePackage {
 
         seedu.address.model.insurance.InsurancePackage otherInsurancePackage =
                 (seedu.address.model.insurance.InsurancePackage) other;
-        return packageName.equals(otherInsurancePackage.packageName)
+        return packageName.equalsIgnoreCase(otherInsurancePackage.packageName)
                 && packageDescription.equals(otherInsurancePackage.packageDescription);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.packageName, this.packageDescription);
+        return Objects.hash(this.packageName.toLowerCase(), this.packageDescription);
     }
 
     @Override

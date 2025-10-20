@@ -1,9 +1,9 @@
 {
   "insurancePackages": [ {
-    "packageName": "Invalid Name",
-    "packageDescription": "Package name is not a valid name."
+    "packageName": "",
+    "packageDescription": "Empty package name should be invalid"
   }, {
     "packageName": "Gold",
-    "packageDescription": "Ultra premium deluxe insurance package."
+    "packageDescription": "Our premium, all-inclusive plan offering maximum benefits and total peace of mind."
   } ]
 }

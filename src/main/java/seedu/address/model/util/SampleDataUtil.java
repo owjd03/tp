@@ -75,13 +75,13 @@ public class SampleDataUtil {
     public static InsurancePackage[] getSampleInsurancePackages() {
         return new InsurancePackage[]{
             new InsurancePackage("Gold",
-                    "The luxurious insurance plan covering all aspects of your life."),
+                    "Our premium, all-inclusive plan offering maximum benefits and total peace of mind."),
             new InsurancePackage("Silver",
-                    "The premium insurance plan covering most aspects of your life."),
+                    "Our most popular plan, offering a balanced blend of coverage and value."),
             new InsurancePackage("Bronze",
-                    "The standard insurance plan covering some aspects of your life"),
+                    "A foundational plan that covers all your core, essential needs."),
             new InsurancePackage("Undecided",
-                    "Undecided for now.")
+                    "No insurance package selected.")
         };
     }
 
