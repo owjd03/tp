@@ -5,7 +5,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import seedu.address.model.AddressBook;
+import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.ReadOnlyInsuranceCatalog;
+import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.DateOfBirth;
 import seedu.address.model.person.Dependents;
@@ -69,4 +72,24 @@ public class SampleDataUtil {
                 .collect(Collectors.toSet());
     }
 
+    public static InsurancePackage[] getSampleInsurancePackages() {
+        return new InsurancePackage[]{
+            new InsurancePackage("Gold",
+                    "Our premium, all-inclusive plan offering maximum benefits and total peace of mind."),
+            new InsurancePackage("Silver",
+                    "Our most popular plan, offering a balanced blend of coverage and value."),
+            new InsurancePackage("Bronze",
+                    "A foundational plan that covers all your core, essential needs."),
+            new InsurancePackage("Undecided",
+                    "No insurance package selected.")
+        };
+    }
+
+    public static ReadOnlyInsuranceCatalog getSampleInsuranceCatalog() {
+        InsuranceCatalog sampleIc = new InsuranceCatalog();
+        for (InsurancePackage sampleInsurancePackage : getSampleInsurancePackages()) {
+            sampleIc.addInsurancePackage(sampleInsurancePackage);
+        }
+        return sampleIc;
+    }
 }
