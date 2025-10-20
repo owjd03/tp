@@ -18,11 +18,11 @@
                 <URL value="@DarkTheme.css" />
                 <URL value="@Extensions.css" />
             </stylesheets>
-            <VBox fx:id="personList" prefHeight="350" prefWidth="340" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
+            <VBox fx:id="packageList" prefHeight="400" prefWidth="550" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
                 <padding>
                     <Insets bottom="10" left="10" right="10" top="10" />
                 </padding>
-                <StackPane fx:id="personListPanelPlaceholder" prefHeight="350.0" prefWidth="340.0" VBox.vgrow="ALWAYS" />
+                <StackPane fx:id="packageListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
             </VBox>
         </Scene>
     </scene>

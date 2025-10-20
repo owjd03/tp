@@ -36,7 +36,6 @@ public class MainWindow extends UiPart<Stage> {
 
     // Independent Ui parts residing in this Ui container
     private PersonListPanel personListPanel;
-    private PackageListPanel packageListPanel;
     private ResultDisplay resultDisplay;
     private HelpWindow helpWindow;
     private ViewWindow viewWindow;
@@ -77,7 +76,7 @@ public class MainWindow extends UiPart<Stage> {
 
         helpWindow = new HelpWindow();
         viewWindow = new ViewWindow();
-        packageWindow = new PackageWindow();
+        packageWindow = new PackageWindow(logic.getFilteredInsurancePackageList());
     }
 
     public Stage getPrimaryStage() {

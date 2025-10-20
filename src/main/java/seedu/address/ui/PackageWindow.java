@@ -2,33 +2,43 @@ package seedu.address.ui;
 
 import java.util.logging.Logger;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.insurance.InsurancePackage;
 
 public class PackageWindow extends UiPart<Stage> {
 
     private static final Logger logger = LogsCenter.getLogger(PackageWindow.class);
     private static final String FXML = "PackageWindow.fxml";
 
+    private PackageListPanel packageListPanel;
+
+    @FXML
+    private StackPane packageListPanelPlaceholder;
+
     /**
      * Creates a new PackageWindow.
      *
      * @param root Stage to use as the root of the PackageWindow.
      */
-    public PackageWindow(Stage root) {
+    public PackageWindow(Stage root, ObservableList<InsurancePackage> packageObservableList) {
         super(FXML, root);
+        packageListPanel = new PackageListPanel(packageObservableList);
+        packageListPanelPlaceholder.getChildren().add(packageListPanel.getRoot());
     }
 
     /**
      * Creates a new PackageWindow.
      */
-    public PackageWindow() {
-        this(new Stage());
+    public PackageWindow(ObservableList<InsurancePackage> packageObservableList) {
+        this(new Stage(), packageObservableList);
     }
 
     /**
