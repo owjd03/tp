@@ -4,6 +4,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE_OF_BIRTH;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPENDENTS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MARITAL_STATUS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_OCCUPATION;
@@ -62,6 +63,8 @@ public class PersonContainsKeywordsPredicate implements Predicate<Person> {
             return containStringCaseInsensitive(person.getPhone().value, keyword);
         } else if (prefix.equals(PREFIX_SALARY)) {
             return containStringCaseInsensitive(person.getSalary().value, keyword);
+        } else if (prefix.equals(PREFIX_INSURANCE_PACKAGE)) {
+            return containStringCaseInsensitive(person.getInsurancePackage().packageName, keyword);
         } else if (prefix.equals(PREFIX_TAG)) {
             return person.getTags().stream()
                     .anyMatch(tag -> containStringCaseInsensitive(tag.tagName, keyword));

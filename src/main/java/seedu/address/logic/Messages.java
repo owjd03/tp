@@ -53,6 +53,8 @@ public class Messages {
                 .append(person.getDependents())
                 .append("; Occupation: ")
                 .append(person.getOccupation())
+                .append("; Insurance Package: ")
+                .append(person.getInsurancePackage())
                 .append("; Tags: ");
         person.getTags().forEach(builder::append);
         return builder.toString();

@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.insurance.InsurancePackage;
+import seedu.address.model.insurance.InsurancePackageEnum;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.DateOfBirth;
 import seedu.address.model.person.Dependents;
@@ -39,6 +41,7 @@ class JsonAdaptedPerson {
     private final String maritalStatus;
     private final String occupation;
     private final int dependents;
+    private final String insurancePackage;
 
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
 
@@ -52,6 +55,7 @@ class JsonAdaptedPerson {
                              @JsonProperty("maritalStatus") String maritalStatus,
                              @JsonProperty("occupation") String occupation,
                              @JsonProperty("dependents") int dependents,
+                             @JsonProperty("insurancePackage") String insurancePackage,
                              @JsonProperty("tags") List<JsonAdaptedTag> tags) {
         this.name = name;
         this.phone = phone;
@@ -62,6 +66,7 @@ class JsonAdaptedPerson {
         this.maritalStatus = maritalStatus;
         this.occupation = occupation;
         this.dependents = dependents;
+        this.insurancePackage = insurancePackage;
         if (tags != null) {
             this.tags.addAll(tags);
         }
@@ -80,6 +85,7 @@ class JsonAdaptedPerson {
         maritalStatus = source.getMaritalStatus().value;
         occupation = source.getOccupation().value;
         dependents = source.getDependents().value;
+        insurancePackage = source.getInsurancePackage().packageName;
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
@@ -131,10 +137,13 @@ class JsonAdaptedPerson {
         if (salary == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Salary.class.getSimpleName()));
         }
-        if (!Salary.isValidSalary(salary)) {
+
+        String sanitizedSalary = salary.replace("$", "").replace(",", "");
+
+        if (!Salary.isValidSalary(sanitizedSalary)) {
             throw new IllegalValueException(Salary.MESSAGE_CONSTRAINTS);
         }
-        final Salary modelSalary = new Salary(salary);
+        final Salary modelSalary = new Salary(sanitizedSalary);
 
         if (dateOfBirth == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
@@ -168,10 +177,21 @@ class JsonAdaptedPerson {
         }
         final Dependents modelDependents = new Dependents(dependents);
 
+        if (insurancePackage == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    InsurancePackage.class.getSimpleName()));
+        }
+        if (!InsurancePackageEnum.isValidInsurancePackage(insurancePackage)) {
+            throw new IllegalValueException(InsurancePackage.MESSAGE_CONSTRAINTS);
+        }
+        InsurancePackage modelInsurancePackage = new InsurancePackage(insurancePackage,
+                InsurancePackageEnum.fromString(insurancePackage).getDescription());
+
+
         final Set<Tag> modelTags = new HashSet<>(personTags);
 
         return new Person(modelName, modelPhone, modelEmail, modelAddress, modelSalary, modelDateOfBirth,
-                modelMaritalStatus, modelOccupation, modelDependents, modelTags);
+                modelMaritalStatus, modelOccupation, modelDependents, modelInsurancePackage, modelTags);
     }
 
 }

@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -29,14 +30,16 @@ public class Person {
     private final Occupation occupation;
     private final MaritalStatus maritalStatus;
     private final Dependents dependents;
+    private final InsurancePackage insurancePackage;
 
     /**
      * Every compulsory field must be present and not null.
      */
     public Person(Name name, Phone phone, Email email, Address address,
                   Salary salary, DateOfBirth dateOfBirth, MaritalStatus maritalStatus,
-                  Occupation occupation, Dependents dependents, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, tags, salary, dateOfBirth);
+                  Occupation occupation, Dependents dependents, InsurancePackage insurancePackage, Set<Tag> tags) {
+        requireAllNonNull(name, phone, email, address, tags, salary, dateOfBirth, maritalStatus, occupation, dependents,
+                insurancePackage);
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -46,6 +49,7 @@ public class Person {
         this.maritalStatus = maritalStatus;
         this.occupation = occupation;
         this.dependents = dependents;
+        this.insurancePackage = insurancePackage;
         this.tags.addAll(tags);
     }
 
@@ -93,6 +97,10 @@ public class Person {
         return dependents;
     }
 
+    public InsurancePackage getInsurancePackage() {
+        return insurancePackage;
+    }
+
     /**
      * Returns true if both persons have the same name.
      * This defines a weaker notion of equality between two persons.
@@ -128,13 +136,18 @@ public class Person {
                 && address.equals(otherPerson.address)
                 && tags.equals(otherPerson.tags)
                 && dateOfBirth.equals(otherPerson.dateOfBirth)
-                && salary.equals(otherPerson.salary);
+                && salary.equals(otherPerson.salary)
+                && maritalStatus.equals(otherPerson.maritalStatus)
+                && occupation.equals(otherPerson.occupation)
+                && dependents.equals(otherPerson.dependents)
+                && insurancePackage.equals(otherPerson.insurancePackage);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, salary, dateOfBirth, tags);
+        return Objects.hash(name, phone, email, address, salary, dateOfBirth, maritalStatus, occupation, dependents,
+                insurancePackage, tags);
     }
 
     @Override
@@ -149,6 +162,7 @@ public class Person {
                 .add("maritalStatus", maritalStatus)
                 .add("occupation", occupation)
                 .add("dependents", dependents)
+                .add("insurancePackage", insurancePackage)
                 .add("tags", tags)
                 .toString();
     }

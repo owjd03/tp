@@ -12,8 +12,8 @@ import java.util.Objects;
 public class InsurancePackage {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Insurance package must be one of the predefined constants: "
-                    + "Gold, Silver, Bronze, Undecided.";
+            "Insurance package must either one of the predefined constants: "
+                    + "Gold, Silver, Bronze, Undecided, or a custom name";
 
     public final String packageName;
     public final String packageDescription;
@@ -60,8 +60,7 @@ public class InsurancePackage {
 
         seedu.address.model.insurance.InsurancePackage otherInsurancePackage =
                 (seedu.address.model.insurance.InsurancePackage) other;
-        return packageName.equals(otherInsurancePackage.packageName)
-                && packageDescription.equals(otherInsurancePackage.packageDescription);
+        return packageName.equals(otherInsurancePackage.packageName);
     }
 
     @Override

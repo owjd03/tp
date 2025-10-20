@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
+import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.DateOfBirth;
 import seedu.address.model.person.Dependents;
@@ -46,6 +47,7 @@ public class EditPersonDescriptorBuilder {
         descriptor.setMaritalStatus(person.getMaritalStatus());
         descriptor.setOccupation(person.getOccupation());
         descriptor.setDependents(person.getDependents());
+        descriptor.setInsurancePackage(person.getInsurancePackage());
         descriptor.setTags(person.getTags());
     }
 
@@ -118,6 +120,14 @@ public class EditPersonDescriptorBuilder {
      */
     public EditPersonDescriptorBuilder withDependents(int dependents) {
         descriptor.setDependents(new Dependents(dependents));
+        return this;
+    }
+
+    /**
+     * Sets the {@code InsurancePackage} of the {@code EditPersonDescriptor} that we are building.
+     */
+    public EditPersonDescriptorBuilder withInsurancePackage(String packageName, String packageDescription) {
+        descriptor.setInsurancePackage(new InsurancePackage(packageName, packageDescription));
         return this;
     }
 

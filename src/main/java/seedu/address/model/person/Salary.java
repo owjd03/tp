@@ -14,7 +14,7 @@ public class Salary {
     public static final String MESSAGE_CONSTRAINTS =
             "Salaries can take any non-negative values, "
                     + "should not be blank, "
-                    + "and should have up to 2 decimal places.";
+                    + "and should have up to 2 decimal places";
 
     /*
      * For a salary to be valid, it must be non-negative.

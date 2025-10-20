@@ -16,5 +16,6 @@ public class CliSyntax {
     public static final Prefix PREFIX_OCCUPATION = new Prefix("occ/");
     public static final Prefix PREFIX_MARITAL_STATUS = new Prefix("ms/");
     public static final Prefix PREFIX_DEPENDENTS = new Prefix("dep/");
+    public static final Prefix PREFIX_INSURANCE_PACKAGE = new Prefix("ip/");
 
 }

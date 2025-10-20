@@ -9,6 +9,7 @@
     "maritalStatus": "Single",
     "dependents": 0,
     "occupation": "Engineer",
+    "insurancePackage": "Gold",
     "tags" : [ "friends" ]
   }, {
     "name" : "Alice Pauline",
@@ -20,6 +21,7 @@
     "maritalStatus": "Single",
     "dependents": 0,
     "occupation": "Engineer",
+    "insurancePackage": "Gold",
     "tags" : [ "friends" ]
   } ]
 }
