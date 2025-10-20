@@ -3,6 +3,8 @@ package seedu.address.model.insurance;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
+import java.util.Objects;
+
 /**
  * Represents an insurance package that a Person can be assigned to.
  * Guarantees: immutable; must be one of the predefined constants in {@link InsurancePackageEnum}.
@@ -27,6 +29,10 @@ public class InsurancePackage {
         checkArgument(InsurancePackageEnum.isValidInsurancePackage(name), MESSAGE_CONSTRAINTS);
         packageName = String.valueOf(InsurancePackageEnum.fromString(name));
         packageDescription = description;
+    }
+
+    public String getPackageName() {
+        return this.packageName;
     }
 
     /**
@@ -54,12 +60,13 @@ public class InsurancePackage {
 
         seedu.address.model.insurance.InsurancePackage otherInsurancePackage =
                 (seedu.address.model.insurance.InsurancePackage) other;
-        return packageName.equals(otherInsurancePackage.packageName);
+        return packageName.equals(otherInsurancePackage.packageName)
+                && packageDescription.equals(otherInsurancePackage.packageDescription);
     }
 
     @Override
     public int hashCode() {
-        return packageName.hashCode();
+        return Objects.hash(this.packageName, this.packageDescription);
     }
 
     @Override

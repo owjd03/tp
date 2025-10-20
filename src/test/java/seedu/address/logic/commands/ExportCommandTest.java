@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.testutil.TypicalInsurancePackages.getTypicalInsuranceCatalog;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class ExportCommandTest {
     @TempDir
     public Path testFolder;
 
-    private Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+    private Model model = new ModelManager(getTypicalAddressBook(), getTypicalInsuranceCatalog(), new UserPrefs());
 
     @Test
     public void execute_success() throws IOException {
@@ -41,7 +42,7 @@ public class ExportCommandTest {
         String expectedMessage = String.format(ExportCommand.MESSAGE_SUCCESS, exportFilePath.toString());
 
         // 4. The model is not expected to change
-        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Model expectedModel = new ModelManager(model.getAddressBook(), model.getInsuranceCatalog(), new UserPrefs());
 
         // 5. Assert that the command executes successfully
         assertCommandSuccess(exportCommand, model, expectedMessage, expectedModel);
