@@ -2,6 +2,7 @@ package seedu.address.ui;
 
 import java.util.logging.Logger;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
@@ -16,6 +17,8 @@ import seedu.address.logic.Logic;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.insurance.InsurancePackage;
+import seedu.address.model.insurance.UniqueInsurancePackageList;
 import seedu.address.model.person.Person;
 
 /**
@@ -33,6 +36,7 @@ public class MainWindow extends UiPart<Stage> {
 
     // Independent Ui parts residing in this Ui container
     private PersonListPanel personListPanel;
+    private PackageListPanel packageListPanel;
     private ResultDisplay resultDisplay;
     private HelpWindow helpWindow;
     private ViewWindow viewWindow;
@@ -43,6 +47,9 @@ public class MainWindow extends UiPart<Stage> {
 
     @FXML
     private MenuItem helpMenuItem;
+
+    @FXML
+    private MenuItem packageMenuItem;
 
     @FXML
     private StackPane personListPanelPlaceholder;
@@ -79,6 +86,7 @@ public class MainWindow extends UiPart<Stage> {
 
     private void setAccelerators() {
         setAccelerator(helpMenuItem, KeyCombination.valueOf("F1"));
+        setAccelerator(packageMenuItem, KeyCombination.valueOf("F2"));
     }
 
     /**
