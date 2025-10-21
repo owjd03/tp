@@ -9,7 +9,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Occupation {
 
-    public static final String MESSAGE_CONSTRAINTS = "Occupation cannot be an empty string";
+    public static final String MESSAGE_CONSTRAINTS = "Occupation cannot be left empty";
 
     /*
      * The first character of the occupation must not be a whitespace,
