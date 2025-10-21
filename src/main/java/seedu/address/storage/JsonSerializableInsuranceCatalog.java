@@ -12,6 +12,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.ReadOnlyInsuranceCatalog;
 import seedu.address.model.insurance.InsurancePackage;
+import seedu.address.model.insurance.exceptions.DuplicateInsurancePackageException;
 
 /**
  * An Immutable InsuranceCatalog that is serializable to JSON format.
@@ -51,12 +52,15 @@ public class JsonSerializableInsuranceCatalog {
      */
     public InsuranceCatalog toModelType() throws IllegalValueException {
         InsuranceCatalog insuranceCatalog = new InsuranceCatalog();
+        List<InsurancePackage> modelInsurancePackages = new ArrayList<>();
         for (JsonAdaptedInsurancePackage jsonAdaptedInsurancePackage : this.insurancePackages) {
             InsurancePackage insurancePackage = jsonAdaptedInsurancePackage.toModelType();
-            if (insuranceCatalog.hasInsurancePackage(insurancePackage)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_PACKAGE);
-            }
-            insuranceCatalog.addInsurancePackage(insurancePackage);
+            modelInsurancePackages.add(insurancePackage);
+        }
+        try {
+            insuranceCatalog.setInsurancePackages(modelInsurancePackages);
+        } catch (DuplicateInsurancePackageException e) {
+            throw new IllegalValueException(MESSAGE_DUPLICATE_PACKAGE, e);
         }
         return insuranceCatalog;
     }

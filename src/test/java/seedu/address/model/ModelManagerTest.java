@@ -24,6 +24,7 @@ import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.testutil.AddressBookBuilder;
 import seedu.address.testutil.InsuranceCatalogBuilder;
+import seedu.address.testutil.InsurancePackageBuilder;
 
 public class ModelManagerTest {
 
@@ -240,10 +241,12 @@ public class ModelManagerTest {
                 new InsuranceCatalogBuilder().withInsurancePackage(GOLD).withInsurancePackage(SILVER).build(),
                 new UserPrefs());
 
-        modelManager.setInsurancePackage(GOLD, BRONZE);
+        InsurancePackage anotherGoldPackage =
+                new InsurancePackageBuilder().withName("Gold").withDescription("Another Gold Package").build();
+        modelManager.setInsurancePackage(GOLD, anotherGoldPackage);
 
         ModelManager expectedModelManager = new ModelManager(new AddressBook(),
-                new InsuranceCatalogBuilder().withInsurancePackage(SILVER).withInsurancePackage(BRONZE).build(),
+                new InsuranceCatalogBuilder().withInsurancePackage(SILVER).withInsurancePackage(GOLD).build(),
                 new UserPrefs());
 
         assertEquals(expectedModelManager, modelManager);

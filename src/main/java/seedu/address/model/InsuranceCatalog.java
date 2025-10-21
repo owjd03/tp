@@ -2,6 +2,7 @@ package seedu.address.model;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.insurance.UniqueInsurancePackageList;
+import seedu.address.model.insurance.exceptions.InsurancePackageNotFoundException;
 
 /**
  * Wraps all insurance package data at the insurance catalog level.
@@ -18,6 +20,11 @@ import seedu.address.model.insurance.UniqueInsurancePackageList;
  */
 public class InsuranceCatalog implements ReadOnlyInsuranceCatalog {
 
+    /**
+     * A static list of valid insurance package names, used for quick validation by commands and parsers.
+     * This list is kept in sync with the master list of insurance packages.
+     */
+    public static final List<String> VALID_PACKAGE_NAMES = new ArrayList<>();
     private final UniqueInsurancePackageList insurancePackages;
 
     /*
@@ -37,6 +44,36 @@ public class InsuranceCatalog implements ReadOnlyInsuranceCatalog {
         resetData(toBeCopied);
     }
 
+    //// Static validation checks
+
+    /**
+     * Checks whether a given string is a valid insurance package.
+     * Packages with the same name but different descriptions are considered valid.
+     * @param toCheck
+     * @return true if the string is a valid insurance package, false otherwise.
+     */
+    public static boolean isValidInsurancePackage(String toCheck) {
+        requireNonNull(toCheck);
+        return VALID_PACKAGE_NAMES.stream().anyMatch(name -> name.equalsIgnoreCase(toCheck));
+    }
+
+    /**
+     * Returns a string of valid insurance package names formatted nicely.
+     */
+    public static String getValidInsurancePackageNames() {
+        return String.join(", ", VALID_PACKAGE_NAMES);
+    }
+
+    /**
+     * This method should only be called by {@link InsuranceCatalog#setInsurancePackages}.
+     */
+    private static void loadInsurancePackages(List<InsurancePackage> insurancePackages) {
+        VALID_PACKAGE_NAMES.clear();
+        for (InsurancePackage pkg : insurancePackages) {
+            VALID_PACKAGE_NAMES.add(pkg.getPackageName());
+        }
+    }
+
     //// list overwrite operations
 
     /**
@@ -45,6 +82,7 @@ public class InsuranceCatalog implements ReadOnlyInsuranceCatalog {
      */
     public void setInsurancePackages(List<InsurancePackage> insurancePackages) {
         this.insurancePackages.setInsurancePackages(insurancePackages);
+        loadInsurancePackages(insurancePackages);
     }
 
     /**
@@ -71,12 +109,18 @@ public class InsuranceCatalog implements ReadOnlyInsuranceCatalog {
      */
     public void addInsurancePackage(InsurancePackage p) {
         this.insurancePackages.add(p);
+        VALID_PACKAGE_NAMES.add(p.getPackageName());
     }
 
     /**
      * Replaces the given insurance package {@code target} in the list with {@code editedInsurancePackage}.
      * {@code target} must exist in the insurance catalog.
-     * The insurance package name of {@code editedInsurancePackage} must not be the same as another existing package.
+     * The package name of {@code editedInsurancePackage} must be the same as {@code target}, as this method is
+     * used only for editing the package description.
+     *
+     * @throws InsurancePackageNotFoundException if {@code target} is not found in the list.
+     * @throws IllegalArgumentException if the package name of {@code editedInsurancePackage}
+     *      is different from {@code target}.
      */
     public void setInsurancePackage(InsurancePackage target, InsurancePackage editedInsurancePackage) {
         requireNonNull(editedInsurancePackage);
@@ -89,6 +133,7 @@ public class InsuranceCatalog implements ReadOnlyInsuranceCatalog {
      */
     public void removeInsurancePackage(InsurancePackage key) {
         this.insurancePackages.remove(key);
+        VALID_PACKAGE_NAMES.remove(key.getPackageName());
     }
 
     /**

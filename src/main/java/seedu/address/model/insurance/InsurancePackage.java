@@ -2,6 +2,8 @@ package seedu.address.model.insurance;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
+import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
+import static seedu.address.model.InsuranceCatalog.getValidInsurancePackageNames;
 
 import java.util.Objects;
 
@@ -11,13 +13,16 @@ import java.util.Objects;
  */
 public class InsurancePackage {
 
+    /**
+     * A static String to inform the user the constraints of the Insurance Package class.
+     * Usage of the MESSAGE_CONSTRAINTS will need to be with
+     * {@link seedu.address.model.InsuranceCatalog#getValidInsurancePackageNames()}
+     */
     public static final String MESSAGE_CONSTRAINTS =
-            "Insurance package must either one of the predefined constants: "
-                    + "Gold, Silver, Bronze, Undecided."
-            + "or a custom name";
+            "Insurance package name cannot be empty and must be one of the following: %s";
 
-    public final String packageName;
-    public final String packageDescription;
+    private final String packageName;
+    private final String packageDescription;
 
     /**
      * Constructs a {@code InsurancePackage}.
@@ -26,10 +31,32 @@ public class InsurancePackage {
      * @param description      Description of the insurance package.
      */
     public InsurancePackage(String name, String description) {
-        requireNonNull(name);
-        checkArgument(!name.trim().isEmpty(), MESSAGE_CONSTRAINTS);
-        packageName = name.trim();
+        requireAllNonNull(name, description);
+        packageName = formatPackageName(name);
         packageDescription = description;
+    }
+
+    /**
+     * Formats a package name to have the first letter of each word capitalized.
+     * e.g., "deluxe package" -> "Deluxe Package"
+     *
+     * @param name The inputted packageName by the user.
+     * @return A formatted, standardized package name.
+     */
+    private static String formatPackageName(String name) {
+        requireNonNull(name);
+        checkArgument(!name.trim().isEmpty(),
+                String.format(MESSAGE_CONSTRAINTS, getValidInsurancePackageNames()));
+        String[] words = name.trim().toLowerCase().split("\\s+");
+        StringBuilder formattedName = new StringBuilder();
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                formattedName.append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1))
+                        .append(" ");
+            }
+        }
+        return formattedName.toString().trim();
     }
 
     public String getPackageName() {
@@ -66,8 +93,9 @@ public class InsurancePackage {
 
         seedu.address.model.insurance.InsurancePackage otherInsurancePackage =
                 (seedu.address.model.insurance.InsurancePackage) other;
-        return packageName.equalsIgnoreCase(otherInsurancePackage.packageName)
-                && packageDescription.equals(otherInsurancePackage.packageDescription);
+        // 2 insurance packages are considered equal if they have the same packageName
+        // even if they have different packageDescription
+        return packageName.equalsIgnoreCase(otherInsurancePackage.packageName);
     }
 
     @Override
