@@ -11,7 +11,7 @@ import seedu.address.model.Model;
 import seedu.address.model.insurance.InsurancePackage;
 
 /**
- * Adds a insurance package to address book
+ * Adds an insurance package to address book
  */
 public class AddPackageCommand extends Command {
 
