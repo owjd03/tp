@@ -67,7 +67,7 @@ public class ViewCommandTest {
     public void execute_validIndexInput_successPersonToView() {
         Person expectedPerson = expectedModel.getFilteredPersonList().get(0);
         CommandResult result = new CommandResult(MESSAGE_VIEW_SUCCESS, false,
-                new ViewData(true, expectedPerson), false);
+                new ViewData(true, expectedPerson), false, false);
         ViewCommand command = new ViewCommand(INDEX_FIRST_PERSON);
         assertCommandSuccess(command, model, result, expectedModel);
     }
@@ -86,7 +86,7 @@ public class ViewCommandTest {
     public void execute_validKeywords_successPersonToView() {
         Person expectedPerson = expectedModel.getFilteredPersonList().get(0);
         CommandResult result = new CommandResult(MESSAGE_VIEW_SUCCESS, false,
-                new ViewData(true, expectedPerson), false);
+                new ViewData(true, expectedPerson), false, false);
         ViewCommand command = new ViewCommand("Alice");
         assertCommandSuccess(command, model, result, expectedModel);
     }
