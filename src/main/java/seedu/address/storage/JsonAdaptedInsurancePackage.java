@@ -30,8 +30,8 @@ public class JsonAdaptedInsurancePackage {
      * Converts a given {@code InsurancePackage} into this class for Jackson use.
      */
     public JsonAdaptedInsurancePackage(InsurancePackage source) {
-        this.packageName = source.packageName;
-        this.packageDescription = source.packageDescription;
+        this.packageName = source.getPackageName();
+        this.packageDescription = source.getPackageDescription();
     }
 
     /**

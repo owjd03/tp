@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.model.insurance.exceptions.DuplicateInsurancePackageException;
 import seedu.address.model.insurance.exceptions.InsurancePackageNotFoundException;
+import seedu.address.testutil.InsurancePackageBuilder;
 
 public class UniqueInsurancePackageListTest {
 
@@ -81,9 +82,11 @@ public class UniqueInsurancePackageListTest {
     @Test
     public void setInsurancePackage_editedInsurancePackageHasDifferentPackageName_success() {
         uniqueInsurancePackageList.add(GOLD);
-        uniqueInsurancePackageList.setInsurancePackage(GOLD, SILVER);
+        InsurancePackage anotherGoldPackage =
+                new InsurancePackageBuilder().withName("Gold").withDescription("Another gold package").build();
+        uniqueInsurancePackageList.setInsurancePackage(GOLD, anotherGoldPackage);
         UniqueInsurancePackageList expectedUniqueInsurancePackageList = new UniqueInsurancePackageList();
-        expectedUniqueInsurancePackageList.add(SILVER);
+        expectedUniqueInsurancePackageList.add(GOLD);
         assertEquals(expectedUniqueInsurancePackageList, uniqueInsurancePackageList);
     }
 
@@ -91,8 +94,11 @@ public class UniqueInsurancePackageListTest {
     public void setInsurancePackage_editedPackageHasNonUniquePackageName_throwsDuplicateInsurancePackageException() {
         uniqueInsurancePackageList.add(GOLD);
         uniqueInsurancePackageList.add(SILVER);
-        assertThrows(DuplicateInsurancePackageException.class, () ->
-                uniqueInsurancePackageList.setInsurancePackage(GOLD, SILVER));
+
+        InsurancePackage anotherGoldPackage =
+                new InsurancePackageBuilder().withName("Gold").withDescription("Another gold package").build();
+        assertThrows(IllegalArgumentException.class, () ->
+                uniqueInsurancePackageList.setInsurancePackage(SILVER, anotherGoldPackage));
     }
 
     @Test
@@ -176,7 +182,7 @@ public class UniqueInsurancePackageListTest {
         uniqueInsurancePackageList.add(GOLD);
         uniqueInsurancePackageList.add(BRONZE);
         uniqueInsurancePackageList.add(SILVER);
-        uniqueInsurancePackageList.sort(Comparator.comparing(p -> p.packageName));
+        uniqueInsurancePackageList.sort(Comparator.comparing(InsurancePackage::getPackageName));
 
         UniqueInsurancePackageList expectedList = new UniqueInsurancePackageList();
         expectedList.add(BRONZE);
