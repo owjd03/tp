@@ -17,14 +17,13 @@ public class EditPackageCommand extends Command {
     public static final String COMMAND_WORD = "editp";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the insurance package identified "
-            + "by the index number used in the displayed insurance package list. "
+            + "by the package name used in the displayed insurance package list. "
             + "Existing values will be overwritten by the input values.\n"
-            + "Parameters: INDEX (must be a positive integer) "
+            + "Parameters: "
             + "[" + PREFIX_INSURANCE_NAME + "PACKAGE_NAME "
             + "[" + PREFIX_DESCRIPTION + "PACKAGE_DESC\n"
-            + "Example: " + COMMAND_WORD + " 1 "
-            + PREFIX_INSURANCE_NAME + "Edited Package Name "
-            + PREFIX_DESCRIPTION + "This is an edited package description";
+            + "Example: " + COMMAND_WORD + PREFIX_INSURANCE_NAME + "Package to edit "
+            + PREFIX_DESCRIPTION + "This is an edited description";
 
     public static final String MESSAGE_SUCCESS = "Edited insurance package: %1$s";
     public static final String MESSAGE_EDIT_PACKAGE_SUCCESS = "Edited Insurance Package: %1$s";
