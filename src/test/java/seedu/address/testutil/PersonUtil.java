@@ -46,7 +46,7 @@ public class PersonUtil {
         sb.append(PREFIX_MARITAL_STATUS + person.getMaritalStatus().value + " ");
         sb.append(PREFIX_OCCUPATION + person.getOccupation().value + " ");
         sb.append(PREFIX_DEPENDENTS + String.valueOf(person.getDependents().value) + " ");
-        sb.append(PREFIX_INSURANCE_PACKAGE + person.getInsurancePackage().packageName + " ");
+        sb.append(PREFIX_INSURANCE_PACKAGE + person.getInsurancePackage().getPackageName() + " ");
         person.getTags().stream().forEach(
             s -> sb.append(PREFIX_TAG + s.tagName + " ")
         );
@@ -72,7 +72,7 @@ public class PersonUtil {
         descriptor.getOccupation().ifPresent(occ -> sb.append(PREFIX_OCCUPATION).append(occ.value)
                 .append(" "));
         descriptor.getInsurancePackage().ifPresent(ip -> sb.append(PREFIX_INSURANCE_PACKAGE)
-                .append(ip.packageName).append(" "));
+                .append(ip.getPackageName()).append(" "));
         if (descriptor.getTags().isPresent()) {
             Set<Tag> tags = descriptor.getTags().get();
             if (tags.isEmpty()) {

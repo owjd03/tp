@@ -4,7 +4,9 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
@@ -25,6 +27,14 @@ public class InsuranceCatalog implements ReadOnlyInsuranceCatalog {
      * This list is kept in sync with the master list of insurance packages.
      */
     public static final List<String> VALID_PACKAGE_NAMES = new ArrayList<>();
+
+    /**
+     * A static map to store descriptions, keyed by the package's lowercase name.
+     * This list is kept in sync with the master list of insurance packages.
+     */
+    private static final Map<String, String> PACKAGE_DESCRIPTIONS = new HashMap<>();
+
+
     private final UniqueInsurancePackageList insurancePackages;
 
     /*
@@ -71,8 +81,13 @@ public class InsuranceCatalog implements ReadOnlyInsuranceCatalog {
      */
     private static void loadInsurancePackages(List<InsurancePackage> insurancePackages) {
         VALID_PACKAGE_NAMES.clear();
+        PACKAGE_DESCRIPTIONS.clear();
         for (InsurancePackage pkg : insurancePackages) {
-            VALID_PACKAGE_NAMES.add(pkg.getPackageName());
+            String packageName = pkg.getPackageName();
+            String packageDesc = pkg.getPackageDescription();
+
+            VALID_PACKAGE_NAMES.add(packageName);
+            PACKAGE_DESCRIPTIONS.put(packageName.toLowerCase(), packageDesc);
         }
     }
 
@@ -112,6 +127,7 @@ public class InsuranceCatalog implements ReadOnlyInsuranceCatalog {
     public void addInsurancePackage(InsurancePackage p) {
         this.insurancePackages.add(p);
         VALID_PACKAGE_NAMES.add(p.getPackageName());
+        PACKAGE_DESCRIPTIONS.put(p.getPackageName().toLowerCase(), p.getPackageDescription());
     }
 
     /**
@@ -136,6 +152,7 @@ public class InsuranceCatalog implements ReadOnlyInsuranceCatalog {
     public void removeInsurancePackage(InsurancePackage key) {
         this.insurancePackages.remove(key);
         VALID_PACKAGE_NAMES.remove(key.getPackageName());
+        PACKAGE_DESCRIPTIONS.remove(key.getPackageName().toLowerCase());
     }
 
     /**
@@ -143,6 +160,20 @@ public class InsuranceCatalog implements ReadOnlyInsuranceCatalog {
      */
     public void sortInsurancePackageList(Comparator<InsurancePackage> comparator) {
         this.insurancePackages.sort(comparator);
+    }
+
+    /**
+     * Gets the description for a given package name (case-insensitive).
+     * Returns an empty string if no description is found.
+     *
+     * @param name The name of the package.
+     * @return The description, or an empty string if not found.
+     */
+    public static String getPackageDescription(String name) {
+        if (name == null) {
+            return "";
+        }
+        return PACKAGE_DESCRIPTIONS.getOrDefault(name.toLowerCase(), "");
     }
 
     //// util methods

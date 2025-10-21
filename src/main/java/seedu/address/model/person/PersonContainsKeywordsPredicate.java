@@ -64,7 +64,7 @@ public class PersonContainsKeywordsPredicate implements Predicate<Person> {
         } else if (prefix.equals(PREFIX_SALARY)) {
             return containStringCaseInsensitive(person.getSalary().value, keyword);
         } else if (prefix.equals(PREFIX_INSURANCE_PACKAGE)) {
-            return containStringCaseInsensitive(person.getInsurancePackage().packageName, keyword);
+            return containStringCaseInsensitive(person.getInsurancePackage().getPackageName(), keyword);
         } else if (prefix.equals(PREFIX_TAG)) {
             return person.getTags().stream()
                     .anyMatch(tag -> containStringCaseInsensitive(tag.tagName, keyword));

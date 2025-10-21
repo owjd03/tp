@@ -70,7 +70,7 @@ public class PersonCard extends UiPart<Region> {
         maritalStatus.setText("Marital Status (ms/): " + person.getMaritalStatus().value);
         dependents.setText("Dependents (dep/): " + person.getDependents().value);
         occupation.setText("Occupation (occ/): " + person.getOccupation().value);
-        insurancePackage.setText("Insurance Package (ip/): " + person.getInsurancePackage().packageName);
+        insurancePackage.setText("Insurance Package (ip/): " + person.getInsurancePackage().getPackageName());
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));

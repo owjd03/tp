@@ -9,13 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.util.SampleDataUtil;
 
 public class JsonAdaptedPersonTest {
     private static final String INVALID_NAME = "R@chel";
@@ -43,6 +46,14 @@ public class JsonAdaptedPersonTest {
     private static final List<JsonAdaptedTag> VALID_TAGS = BENSON.getTags().stream()
             .map(JsonAdaptedTag::new)
             .collect(Collectors.toList());
+
+    /**
+     * Populates the static lists in InsuranceCatalog before any tests are run.
+     */
+    @BeforeAll
+    public static void setupInsuranceCatalog() {
+        new InsuranceCatalog(SampleDataUtil.getSampleInsuranceCatalog());
+    }
 
     @Test
     public void toModelType_validPersonDetails_returnsPerson() throws Exception {
@@ -198,7 +209,7 @@ public class JsonAdaptedPersonTest {
         JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
                 VALID_SALARY, VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, INVALID_OCCUPATION, VALID_DEPENDENTS,
                 VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = "Occupation cannot be an empty string";
+        String expectedMessage = "Occupation cannot be left empty";
         assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
     }
 
@@ -227,8 +238,7 @@ public class JsonAdaptedPersonTest {
                 new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_SALARY,
                         VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
                         INVALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = "Insurance package must either one of the predefined constants: "
-                + "Gold, Silver, Bronze, Undecided, or a custom name";
+        String expectedMessage = "Insurance package name cannot be empty";
         assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
     }
 

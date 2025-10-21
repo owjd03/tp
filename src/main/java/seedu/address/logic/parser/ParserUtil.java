@@ -9,8 +9,8 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.insurance.InsurancePackage;
-import seedu.address.model.insurance.InsurancePackageEnum;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.DateOfBirth;
 import seedu.address.model.person.Dependents;
@@ -183,7 +183,7 @@ public class ParserUtil {
     public static InsurancePackage parseInsurancePackage(String insurancePackage) throws ParseException {
         requireNonNull(insurancePackage);
         String trimmedInsurancePackage = insurancePackage.trim();
-        if (!InsurancePackageEnum.isValidInsurancePackage(trimmedInsurancePackage)) {
+        if (!InsuranceCatalog.isValidInsurancePackage(trimmedInsurancePackage)) {
             throw new ParseException(InsurancePackage.MESSAGE_CONSTRAINTS);
         }
         return new InsurancePackage(trimmedInsurancePackage, "");
