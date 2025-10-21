@@ -28,7 +28,7 @@ public class PackageCard extends UiPart<Region> {
     public PackageCard(InsurancePackage insurancePackage) {
         super(FXML);
         this.insurancePackage = insurancePackage;
-        name.setText(insurancePackage.packageName);
-        description.setText(insurancePackage.packageDescription);
+        name.setText(insurancePackage.getPackageName());
+        description.setText(insurancePackage.getPackageDescription());
     }
 }
