@@ -3,7 +3,6 @@ package seedu.address.model.insurance;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
-import static seedu.address.model.InsuranceCatalog.getValidInsurancePackageNames;
 
 import java.util.Objects;
 
@@ -13,13 +12,7 @@ import java.util.Objects;
  */
 public class InsurancePackage {
 
-    /**
-     * A static String to inform the user the constraints of the Insurance Package class.
-     * Usage of the MESSAGE_CONSTRAINTS will need to be with
-     * {@link seedu.address.model.InsuranceCatalog#getValidInsurancePackageNames()}
-     */
-    public static final String MESSAGE_CONSTRAINTS =
-            "Insurance package name cannot be empty and must be one of the following: %s";
+    public static final String MESSAGE_CONSTRAINTS = "Insurance package name cannot be empty";
 
     private final String packageName;
     private final String packageDescription;
@@ -45,8 +38,7 @@ public class InsurancePackage {
      */
     private static String formatPackageName(String name) {
         requireNonNull(name);
-        checkArgument(!name.trim().isEmpty(),
-                String.format(MESSAGE_CONSTRAINTS, getValidInsurancePackageNames()));
+        checkArgument(!name.trim().isEmpty(), MESSAGE_CONSTRAINTS);
         String[] words = name.trim().toLowerCase().split("\\s+");
         StringBuilder formattedName = new StringBuilder();
         for (String word : words) {
