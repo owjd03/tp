@@ -35,7 +35,7 @@ public class UniqueInsurancePackageList implements Iterable<InsurancePackage> {
      */
     public boolean contains(InsurancePackage toCheck) {
         requireNonNull(toCheck);
-        return internalList.stream().anyMatch(toCheck::isSameInsurancePackage);
+        return this.internalList.stream().anyMatch(toCheck::isSameInsurancePackage);
     }
 
     /**
@@ -47,28 +47,33 @@ public class UniqueInsurancePackageList implements Iterable<InsurancePackage> {
         if (contains(toAdd)) {
             throw new DuplicateInsurancePackageException();
         }
-        internalList.add(toAdd);
+        this.internalList.add(toAdd);
     }
 
     /**
      * Replaces the insurance package {@code target} in the list with {@code editedInsurancePackage}.
      * {@code target} must exist in the list.
-     * The package name of {@code editedInsurancePackage} must not be the same as another
-     * existing insurance package in the list.
+     * The package name of {@code editedInsurancePackage} must be the same as {@code target}, as this method is
+     * used only for editing the package description.
+     *
+     * @throws InsurancePackageNotFoundException if {@code target} is not found in the list.
+     * @throws IllegalArgumentException if the package name of {@code editedInsurancePackage}
+     *      is different from {@code target}.
      */
     public void setInsurancePackage(InsurancePackage target, InsurancePackage editedInsurancePackage) {
         requireAllNonNull(target, editedInsurancePackage);
 
-        int index = internalList.indexOf(target);
+        int index = this.internalList.indexOf(target);
         if (index == -1) {
             throw new InsurancePackageNotFoundException();
         }
 
-        if (!target.isSameInsurancePackage(editedInsurancePackage) && contains(editedInsurancePackage)) {
-            throw new DuplicateInsurancePackageException();
+        if (!target.isSameInsurancePackage(editedInsurancePackage)) {
+            throw new IllegalArgumentException(
+                    "Edited insurance package must have the same package name as the target");
         }
 
-        internalList.set(index, editedInsurancePackage);
+        this.internalList.set(index, editedInsurancePackage);
     }
 
     /**
@@ -77,7 +82,7 @@ public class UniqueInsurancePackageList implements Iterable<InsurancePackage> {
      */
     public void remove(InsurancePackage toRemove) {
         requireNonNull(toRemove);
-        if (!internalList.remove(toRemove)) {
+        if (!this.internalList.remove(toRemove)) {
             throw new InsurancePackageNotFoundException();
         }
     }
@@ -91,13 +96,12 @@ public class UniqueInsurancePackageList implements Iterable<InsurancePackage> {
         if (!insurancePackagesAreUnique(insurancePackages)) {
             throw new DuplicateInsurancePackageException();
         }
-
-        internalList.setAll(insurancePackages);
+        this.internalList.setAll(insurancePackages);
     }
 
     public void setInsurancePackages(UniqueInsurancePackageList replacement) {
         requireNonNull(replacement);
-        internalList.setAll(replacement.internalList);
+        this.internalList.setAll(replacement.internalList);
     }
 
     /**
@@ -147,7 +151,10 @@ public class UniqueInsurancePackageList implements Iterable<InsurancePackage> {
     }
 
     /**
-     * Returns true if {@code insurancePackages} contains only unique insurancePackages.
+     * Returns true if {@code insurancePackages} contains only unique insurance packages.
+     * 2 {@code insurancePackages} are considered different iff they have different {@code packageNames}.
+     *
+     * @seealso {@link InsurancePackage#isSameInsurancePackage(InsurancePackage)}
      */
     private boolean insurancePackagesAreUnique(List<InsurancePackage> insurancePackages) {
         for (int i = 0; i < insurancePackages.size() - 1; i++) {
