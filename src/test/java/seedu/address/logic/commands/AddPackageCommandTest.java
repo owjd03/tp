@@ -52,8 +52,8 @@ public class AddPackageCommandTest {
         AddPackageCommand addPackageCommand = new AddPackageCommand(validInsurancePackage);
         ModelStub modelStub = new ModelStubWithInsurancePackage(validInsurancePackage);
 
-        assertThrows(CommandException.class, AddPackageCommand.MESSAGE_DUPLICATE_PACKAGE,
-                () -> addPackageCommand.execute(modelStub));
+        assertThrows(CommandException.class, AddPackageCommand.MESSAGE_DUPLICATE_PACKAGE, () ->
+                addPackageCommand.execute(modelStub));
     }
 
     @Test
@@ -63,8 +63,8 @@ public class AddPackageCommandTest {
         AddPackageCommand addPackageCommand = new AddPackageCommand(duplicateInsurancePackage);
         ModelStub modelStub = new ModelStubWithInsurancePackage(validInsurancePackage);
 
-        assertThrows(CommandException.class, AddPackageCommand.MESSAGE_DUPLICATE_PACKAGE,
-                () -> addPackageCommand.execute(modelStub));
+        assertThrows(CommandException.class, AddPackageCommand.MESSAGE_DUPLICATE_PACKAGE, () ->
+                addPackageCommand.execute(modelStub));
     }
 
     @Test
