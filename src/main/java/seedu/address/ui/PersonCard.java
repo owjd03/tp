@@ -49,6 +49,8 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label occupation;
     @FXML
+    private Label insurancePackage;
+    @FXML
     private FlowPane tags;
 
     /**
@@ -66,8 +68,9 @@ public class PersonCard extends UiPart<Region> {
         salary.setText("Salary (s/): " + person.getSalary().toString());
         dateOfBirth.setText("Date of Birth (dob/): " + person.getDateOfBirth().value);
         maritalStatus.setText("Marital Status (ms/): " + person.getMaritalStatus().value);
-        dependents.setText("Dependents (dep/): " + String.valueOf(person.getDependents().value));
+        dependents.setText("Dependents (dep/): " + person.getDependents().value);
         occupation.setText("Occupation (occ/): " + person.getOccupation().value);
+        insurancePackage.setText("Insurance Package (ip/): " + person.getInsurancePackage().getPackageName());
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));

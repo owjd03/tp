@@ -9,6 +9,7 @@ import static seedu.address.model.util.SampleDataUtil.getTagSet;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.ViewData;
+import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.DateOfBirth;
 import seedu.address.model.person.Dependents;
@@ -25,7 +26,9 @@ public class CommandResultTest {
     private final Person testPerson = new Person(new Name("Alex Yeoh"), new Phone("87438807"),
             new Email("alexyeoh@example.com"), new Address("Blk 30 Geylang Street 29, #06-40"), new Salary("3000"),
             new DateOfBirth("2001-01-01"), new MaritalStatus("Single"), new Occupation("Engineer"),
-            new Dependents(0), getTagSet("friends"));
+            new Dependents(0), new InsurancePackage("Gold",
+                    "Our premium, all-inclusive plan offering maximum benefits and total peace of mind."),
+            getTagSet("friends"));
 
     @Test
     public void equals() {

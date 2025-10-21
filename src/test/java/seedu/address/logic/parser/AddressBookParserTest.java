@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
@@ -30,9 +31,11 @@ import seedu.address.logic.commands.ListPackageCommand;
 import seedu.address.logic.commands.SortCommand;
 import seedu.address.logic.commands.ViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonContainsKeywordsPredicate;
+import seedu.address.model.util.SampleDataUtil;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
@@ -40,6 +43,15 @@ import seedu.address.testutil.PersonUtil;
 public class AddressBookParserTest {
 
     private final AddressBookParser parser = new AddressBookParser();
+
+    /**
+     * Populates the static lists in InsuranceCatalog before any tests are run.
+     * This mimics the application loading sample data.
+     */
+    @BeforeAll
+    public static void setupInsuranceCatalog() {
+        new InsuranceCatalog(SampleDataUtil.getSampleInsuranceCatalog());
+    }
 
     @Test
     public void parseCommand_add() throws Exception {

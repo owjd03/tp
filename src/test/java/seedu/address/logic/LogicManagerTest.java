@@ -7,6 +7,7 @@ import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DEPENDENTS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DOB_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
+import static seedu.address.logic.commands.CommandTestUtil.INSURANCE_PACKAGE_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.MARITAL_STATUS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.OCCUPATION_DESC_AMY;
@@ -37,6 +38,7 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyInsuranceCatalog;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.model.util.SampleDataUtil;
 import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonInsuranceCatalogStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
@@ -67,7 +69,10 @@ public class LogicManagerTest {
         this.userPrefsStorage = new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json"));
         StorageManager storage =
                 new StorageManager(this.addressBookStorage, this.insuranceCatalogStorage, this.userPrefsStorage);
-        this.model = new ModelManager();
+        this.model = new ModelManager(
+                SampleDataUtil.getSampleAddressBook(),
+                SampleDataUtil.getSampleInsuranceCatalog(),
+                new UserPrefs());
         this.logic = new LogicManager(this.model, storage);
     }
 
@@ -237,8 +242,11 @@ public class LogicManagerTest {
         String addCommand = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY
                 + EMAIL_DESC_AMY + ADDRESS_DESC_AMY + SALARY_DESC_AMY + DOB_DESC_AMY
                 + MARITAL_STATUS_DESC_AMY + OCCUPATION_DESC_AMY + DEPENDENTS_DESC_AMY
-                + TAG_DESC_FRIEND;
-        ModelManager expectedModel = new ModelManager();
+                + INSURANCE_PACKAGE_DESC_AMY + TAG_DESC_FRIEND;
+        Model expectedModel = new ModelManager(
+                model.getAddressBook(),
+                model.getInsuranceCatalog(),
+                new UserPrefs());
         Person expectedPerson = new PersonBuilder(AMY).withTags(VALID_TAG_FRIEND).build();
         expectedModel.addPerson(expectedPerson);
         assertCommandFailure(addCommand, CommandException.class, expectedMessage, expectedModel);
@@ -271,8 +279,11 @@ public class LogicManagerTest {
         String addCommand = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY
                 + EMAIL_DESC_AMY + ADDRESS_DESC_AMY + SALARY_DESC_AMY + DOB_DESC_AMY
                 + MARITAL_STATUS_DESC_AMY + OCCUPATION_DESC_AMY + DEPENDENTS_DESC_AMY
-                + TAG_DESC_FRIEND;
-        ModelManager expectedModel = new ModelManager();
+                + INSURANCE_PACKAGE_DESC_AMY + TAG_DESC_FRIEND;
+        Model expectedModel = new ModelManager(
+                model.getAddressBook(),
+                model.getInsuranceCatalog(),
+                new UserPrefs());
         Person expectedPerson = new PersonBuilder(AMY).withTags(VALID_TAG_FRIEND).build();
         expectedModel.addPerson(expectedPerson);
         assertCommandFailure(addCommand, CommandException.class, expectedMessage, expectedModel);

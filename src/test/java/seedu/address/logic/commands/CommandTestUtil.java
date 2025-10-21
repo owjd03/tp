@@ -6,6 +6,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE_OF_BIRTH;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPENDENTS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MARITAL_STATUS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_OCCUPATION;
@@ -49,6 +50,12 @@ public class CommandTestUtil {
     public static final String VALID_OCCUPATION_BOB = "Doctor";
     public static final int VALID_DEPENDENTS_AMY = 0;
     public static final int VALID_DEPENDENTS_BOB = 2;
+    public static final String VALID_INSURANCE_PACKAGE_NAME_AMY = "Gold";
+    public static final String VALID_INSURANCE_PACKAGE_NAME_BOB = "Silver";
+    public static final String VALID_INSURANCE_PACKAGE_DESCRIPTION_AMY =
+            "Our premium, all-inclusive plan offering maximum benefits and total peace of mind.";
+    public static final String VALID_INSURANCE_PACKAGE_DESCRIPTION_BOB =
+            "Our most popular plan, offering a balanced blend of coverage and value.";
     public static final String VALID_TAG_HUSBAND = "husband";
     public static final String VALID_TAG_FRIEND = "friend";
 
@@ -70,6 +77,10 @@ public class CommandTestUtil {
     public static final String OCCUPATION_DESC_BOB = " " + PREFIX_OCCUPATION + VALID_OCCUPATION_BOB;
     public static final String DEPENDENTS_DESC_AMY = " " + PREFIX_DEPENDENTS + VALID_DEPENDENTS_AMY;
     public static final String DEPENDENTS_DESC_BOB = " " + PREFIX_DEPENDENTS + VALID_DEPENDENTS_BOB;
+    public static final String INSURANCE_PACKAGE_DESC_AMY = " " + PREFIX_INSURANCE_PACKAGE
+            + VALID_INSURANCE_PACKAGE_NAME_AMY;
+    public static final String INSURANCE_PACKAGE_DESC_BOB = " " + PREFIX_INSURANCE_PACKAGE
+            + VALID_INSURANCE_PACKAGE_NAME_BOB;
     public static final String TAG_DESC_FRIEND = " " + PREFIX_TAG + VALID_TAG_FRIEND;
     public static final String TAG_DESC_HUSBAND = " " + PREFIX_TAG + VALID_TAG_HUSBAND;
 
@@ -82,6 +93,8 @@ public class CommandTestUtil {
     public static final String INVALID_MARITAL_STATUS_DESC = " " + PREFIX_MARITAL_STATUS + "Complicated"; // not in enum
     public static final String INVALID_OCCUPATION_DESC = " " + PREFIX_OCCUPATION; // empty string not allowed
     public static final String INVALID_DEPENDENTS_DESC = " " + PREFIX_DEPENDENTS + "-1"; // no negative dependents
+    public static final String INVALID_INSURANCE_PACKAGE_DESC = " " + PREFIX_INSURANCE_PACKAGE
+            + "Platinum"; // not in enum
     public static final String INVALID_TAG_DESC = " " + PREFIX_TAG + "hubby*"; // '*' not allowed in tags
 
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
@@ -100,6 +113,7 @@ public class CommandTestUtil {
                 .withMaritalStatus(VALID_MARITAL_STATUS_AMY)
                 .withDependents(VALID_DEPENDENTS_AMY)
                 .withOccupation(VALID_OCCUPATION_AMY)
+                .withInsurancePackage(VALID_INSURANCE_PACKAGE_NAME_AMY, VALID_INSURANCE_PACKAGE_DESCRIPTION_AMY)
                 .withTags(VALID_TAG_FRIEND).build();
         DESC_BOB = new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB)
                 .withPhone(VALID_PHONE_BOB)
@@ -108,8 +122,9 @@ public class CommandTestUtil {
                 .withSalary(VALID_SALARY_BOB)
                 .withDateOfBirth(VALID_DOB_BOB)
                 .withMaritalStatus(VALID_MARITAL_STATUS_BOB)
-                .withOccupation(VALID_OCCUPATION_BOB)
                 .withDependents(VALID_DEPENDENTS_BOB)
+                .withOccupation(VALID_OCCUPATION_BOB)
+                .withInsurancePackage(VALID_INSURANCE_PACKAGE_NAME_BOB, VALID_INSURANCE_PACKAGE_DESCRIPTION_BOB)
                 .withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND).build();
     }
 
