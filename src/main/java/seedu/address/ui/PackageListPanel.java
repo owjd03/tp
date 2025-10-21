@@ -10,6 +10,9 @@ import javafx.scene.layout.Region;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.insurance.InsurancePackage;
 
+/**
+ * Panel containing the list of packages.
+ */
 public class PackageListPanel extends UiPart<Region> {
     private static final String FXML = "PackageListPanel.fxml";
     private final Logger logger = LogsCenter.getLogger(PackageListPanel.class);
