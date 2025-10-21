@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import seedu.address.logic.parser.Prefix;
+import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Person;
 
 /**
@@ -60,4 +61,14 @@ public class Messages {
         return builder.toString();
     }
 
+    /**
+     * Formats the {@code insurancePackage} for display to the user.
+     */
+    public static String format(InsurancePackage insurancePackage) {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(insurancePackage.getPackageName())
+                .append("; Description: ")
+                .append(insurancePackage.getPackageDescription());
+        return builder.toString();
+    }
 }

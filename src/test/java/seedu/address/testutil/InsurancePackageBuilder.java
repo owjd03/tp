@@ -25,8 +25,8 @@ public class InsurancePackageBuilder {
      * Initializes the InsurancePackageBuilder with the data of {@code insurancePackageToCopy}.
      */
     public InsurancePackageBuilder(InsurancePackage insurancePackageToCopy) {
-        packageName = insurancePackageToCopy.packageName;
-        packageDescription = insurancePackageToCopy.packageDescription;
+        packageName = insurancePackageToCopy.getPackageName();
+        packageDescription = insurancePackageToCopy.getPackageDescription();
     }
 
     /**
