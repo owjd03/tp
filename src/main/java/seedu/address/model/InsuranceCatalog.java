@@ -53,7 +53,9 @@ public class InsuranceCatalog implements ReadOnlyInsuranceCatalog {
      * @return true if the string is a valid insurance package, false otherwise.
      */
     public static boolean isValidInsurancePackage(String toCheck) {
-        requireNonNull(toCheck);
+        if (toCheck == null) {
+            return false;
+        }
         return VALID_PACKAGE_NAMES.stream().anyMatch(name -> name.equalsIgnoreCase(toCheck));
     }
 

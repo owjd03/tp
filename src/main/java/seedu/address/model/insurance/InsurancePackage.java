@@ -9,7 +9,7 @@ import java.util.Objects;
 
 /**
  * Represents an insurance package that a Person can be assigned to.
- * Guarantees: immutable; must be one of the predefined constants in {@link InsurancePackageEnum}.
+ * Guarantees: immutable;
  */
 public class InsurancePackage {
 
