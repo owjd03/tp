@@ -27,19 +27,19 @@ public class InsurancePackageTest {
 
     @Test
     public void constructor_validArguments_createsInsurancePackage() {
-        InsurancePackage insurancePackage = new InsurancePackage("Testing123", "Testing456");
-        assertEquals("Testing123", insurancePackage.getPackageName());
-        assertEquals("Testing456", insurancePackage.getPackageDescription());
+        InsurancePackage validInsurancePackage = new InsurancePackage("Testing123", "Testing456");
+        assertEquals("Testing123", validInsurancePackage.getPackageName());
+        assertEquals("Testing456", validInsurancePackage.getPackageDescription());
 
         // Check that empty descriptions are allowed
-        InsurancePackage anotherInsurancePackage = new InsurancePackage("Testing789", "");
-        assertEquals("Testing789", anotherInsurancePackage.getPackageName());
-        assertEquals("", anotherInsurancePackage.getPackageDescription());
+        InsurancePackage insurancePackageEmptyDescription = new InsurancePackage("Testing789", "");
+        assertEquals("Testing789", insurancePackageEmptyDescription.getPackageName());
+        assertEquals("", insurancePackageEmptyDescription.getPackageDescription());
 
         // Check that descriptions with spaces only are just empty descriptions
-        InsurancePackage lastPackage = new InsurancePackage("Last", "      ");
-        assertEquals("Last", lastPackage.getPackageName());
-        assertEquals("", lastPackage.getPackageDescription());
+        InsurancePackage insurancePackageWhiteSpaceDescription = new InsurancePackage("Last", "      ");
+        assertEquals("Last", insurancePackageWhiteSpaceDescription.getPackageName());
+        assertEquals("", insurancePackageWhiteSpaceDescription.getPackageDescription());
     }
 
     @Test
