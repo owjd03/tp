@@ -58,6 +58,12 @@ public class FilterCommandParserTest {
     }
 
     @Test
+    public void parse_noKeywordsAndNoTags_throwsParseException() {
+        assertParseFailure(parser, " ", MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, "", MESSAGE_INVALID_FORMAT);
+    }
+
+    @Test
     public void parse_duplicatePrefixes_throwsParseException() {
         // Duplicate name prefix
         assertParseFailure(parser, " " + PREFIX_NAME + "Alice " + PREFIX_NAME + "Bob",

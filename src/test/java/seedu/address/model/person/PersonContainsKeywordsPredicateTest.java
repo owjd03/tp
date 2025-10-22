@@ -6,6 +6,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE_OF_BIRTH;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPENDENTS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MARITAL_STATUS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_OCCUPATION;
@@ -193,6 +194,16 @@ public class PersonContainsKeywordsPredicateTest {
     }
 
     @Test
+    public void test_insurancePackageContainsKeyword_returnsTrue() {
+        Map<Prefix, String> keywords = new HashMap<>();
+        keywords.put(PREFIX_INSURANCE_PACKAGE, "Gold");
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
+        assertTrue(predicate.test(new PersonBuilder()
+                .withInsurancePackage("Gold", "").build()));
+    }
+
+    @Test
     public void test_singleTagMatches_returnsTrue() {
         Set<Tag> tags = Collections.singleton(new Tag("friends"));
         PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(Collections.emptyMap(), tags);
@@ -242,6 +253,13 @@ public class PersonContainsKeywordsPredicateTest {
         Set<Tag> tags = Collections.singleton(new Tag("owesMoney")); // Mismatch
         PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords, tags);
         assertFalse(predicate.test(new PersonBuilder().withName("Alice").withTags("friends").build()));
+    }
+
+    @Test
+    public void test_emptyTagSetKeywordsMap_returnsFalse() {
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(Collections.emptyMap(), Collections.emptySet());
+        assertFalse(predicate.test(new PersonBuilder().withTags("friends").build()));
     }
 
     @Test
