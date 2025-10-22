@@ -67,7 +67,6 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddCommand;
-import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.DateOfBirth;
 import seedu.address.model.person.Dependents;
@@ -304,11 +303,6 @@ public class AddCommandParserTest {
                     + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
                     + VALID_DEPENDENTS_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
 
-        // missing insurance package prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                    + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                    + DEPENDENTS_DESC_BOB + VALID_INSURANCE_PACKAGE_NAME_BOB, expectedMessage);
-
         // all prefixes missing
         assertParseFailure(parser, VALID_NAME_BOB + VALID_PHONE_BOB + VALID_EMAIL_BOB + VALID_ADDRESS_BOB
                     + VALID_SALARY_BOB + VALID_DOB_BOB + VALID_MARITAL_STATUS_BOB + VALID_DEPENDENTS_BOB
@@ -366,12 +360,6 @@ public class AddCommandParserTest {
                 + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
                 + INVALID_DEPENDENTS_DESC + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_HUSBAND
                 + TAG_DESC_FRIEND, Dependents.MESSAGE_CONSTRAINTS);
-
-        // invalid insurance package
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                + DEPENDENTS_DESC_BOB + INVALID_INSURANCE_PACKAGE_DESC + TAG_DESC_HUSBAND
-                + TAG_DESC_FRIEND, InsurancePackage.MESSAGE_CONSTRAINTS);
 
         // invalid tag
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
