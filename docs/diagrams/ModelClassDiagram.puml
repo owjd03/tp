@@ -8,9 +8,11 @@ Package Model as ModelPackage <<Rectangle>>{
 Class "<<interface>>\nReadOnlyAddressBook" as ReadOnlyAddressBook
 Class "<<interface>>\nReadOnlyUserPrefs" as ReadOnlyUserPrefs
 Class "<<interface>>\nModel" as Model
+Class "<<interface>>\nReadOnlyInsuranceCatalog" as ReadOnlyInsuranceCatalog
 Class AddressBook
 Class ModelManager
 Class UserPrefs
+Class InsuranceCatalog
 
 Class UniquePersonList
 Class Person
@@ -18,7 +20,17 @@ Class Address
 Class Email
 Class Name
 Class Phone
+Class Salary
+Class DateOfBirth
+Class MaritalStatus
+Class Dependents
+Class Occupation
+Class InsurancePackage
 Class Tag
+
+Class UniqueInsurancePackageList
+Class PackageName
+Class PackageDescription
 
 Class I #FFFFFF
 }
@@ -29,26 +41,57 @@ HiddenOutside ..> Model
 AddressBook .up.|> ReadOnlyAddressBook
 
 ModelManager .up.|> Model
-Model .right.> ReadOnlyUserPrefs
-Model .left.> ReadOnlyAddressBook
+Model ..> ReadOnlyUserPrefs
+Model ..> ReadOnlyAddressBook
+Model ..> ReadOnlyInsuranceCatalog
+
 ModelManager -left-> "1" AddressBook
 ModelManager -right-> "1" UserPrefs
 UserPrefs .up.|> ReadOnlyUserPrefs
 
 AddressBook *--> "1" UniquePersonList
 UniquePersonList --> "~* all" Person
+
+ModelManager -down-> "1" InsuranceCatalog
+InsuranceCatalog .up.|> ReadOnlyInsuranceCatalog
+InsuranceCatalog *--> "1" UniqueInsurancePackageList
+UniqueInsurancePackageList --> "~* all" InsurancePackage
+
 Person *--> Name
 Person *--> Phone
 Person *--> Email
 Person *--> Address
+Person *--> Salary
+Person *--> DateOfBirth
+Person *--> MaritalStatus
+Person *--> Dependents
+Person *--> Occupation
+Person *--> InsurancePackage
 Person *--> "*" Tag
+
+InsurancePackage *--> PackageName
+InsurancePackage *--> PackageDescription
 
 Person -[hidden]up--> I
 UniquePersonList -[hidden]right-> I
 
 Name -[hidden]right-> Phone
-Phone -[hidden]right-> Address
-Address -[hidden]right-> Email
+Phone -[hidden]right-> Email
+Email -[hidden]right-> Address
+Address -[hidden]right-> DateOfBirth
+DateOfBirth -[hidden]right-> MaritalStatus
+
+Name -[hidden]down- Salary
+Salary -[hidden]right-> Dependents
+Dependents -[hidden]right-> Occupation
+Occupation -[hidden]right-> InsurancePackage
+InsurancePackage -[hidden]right-> Tag
+
+PackageName -[hidden]right-> PackageDescription
+InsurancePackage -[hidden]down- PackageName
+
+UserPrefs -[hidden]down- InsuranceCatalog
+AddressBook -[hidden]down- Person
 
 ModelManager --> "~* filtered" Person
 @enduml
