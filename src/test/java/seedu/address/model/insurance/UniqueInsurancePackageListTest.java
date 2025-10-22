@@ -202,7 +202,7 @@ public class UniqueInsurancePackageListTest {
     }
 
     @Test
-    public void equals_wordsCorrectly() {
+    public void equals_worksCorrectly() {
         // same object returns true
         assertTrue(uniqueInsurancePackageList.equals(uniqueInsurancePackageList));
 

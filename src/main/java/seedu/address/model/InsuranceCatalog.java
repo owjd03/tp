@@ -26,7 +26,7 @@ public class InsuranceCatalog implements ReadOnlyInsuranceCatalog {
      * A static list of valid insurance package names, used for quick validation by commands and parsers.
      * This list is kept in sync with the master list of insurance packages.
      */
-    public static final List<String> VALID_PACKAGE_NAMES = new ArrayList<>();
+    private static final List<String> VALID_PACKAGE_NAMES = new ArrayList<>();
 
     /**
      * A static map to store descriptions, keyed by the package's lowercase name.
