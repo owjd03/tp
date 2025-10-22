@@ -173,20 +173,25 @@ Invalid Usages:
 
 ### Sorting persons: `sort`
 
-Sorts the list of persons by the specified field in ascending order.
+Sorts the list of persons by the specified field in specified order.
 
-Format: `sort FIELD`
+Format: `sort FIELD DIRECTION`
 
-* The `FIELD` must be one of the following: `name`, `phone`, `email`, `address`, `salary`, `dateofbirth`, `maritalstatus`, `occupation`, `dependents`
+* The `FIELD` must be one of the following: `name`, `phone`, `email`, `address`, `salary`, `dateofbirth`, `maritalstatus`, `occupation` or `dependent`
+* The `DIRECTION` must be one of the following: `ascending` or `descending`. If not specified, defaults to `ascending`
 * The sort is case-insensitive for text fields (e.g., `name`, `email`, `address`, `maritalstatus`, `occupation`)
-* Numerical fields (`salary`, `dependents`) are sorted numerically
+* Numerical fields (`salary`, `dependent`) are sorted numerically
 * Date fields (`dateofbirth`) are sorted chronologically
 * The entire list will be sorted and displayed in the main window
-* Extra parameters after the field name will be ignored
+* Invalid direction parameters are ignored and will default to ascending
+* Extra parameters after the direction will be ignored
 
 Examples:
-* `sort name` sorts all persons alphabetically by name
-* `sort salary` sorts all persons by salary from lowest to highest
+* `sort name` sorts all persons alphabetically by name (ascending by default)
+* `sort name ascending` sorts all persons alphabetically by name from A to Z
+* `sort name descending` sorts all persons alphabetically by name from Z to A
+* `sort salary` sorts all persons by salary from lowest to highest (ascending by default)
+* `sort dependent descending` sort all persons by dependent from highest to lowest
 * `sort dateofbirth` sorts all persons by date of birth from oldest to youngest
 
 ### Exporting all persons: `export`
@@ -213,6 +218,24 @@ Examples:
 * `list` followed by `delete 2` deletes the 2nd person in the address book.
 * `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
 
+### Adding an insurance package: `addp`
+
+Adds an new custom insurance package in the address book.
+
+Format: `addp [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
+
+* Creates a new insurance package with the specified `PACKAGE_NAME` and `PACKAGE_DESCRIPTION`
+* The `i/` (package name) and `d/` (package description) fields are **both mandatory**.
+* Package names are automatically formatted with proper capitalization (e.g., "premium package" becomes "Premium Package").
+* Package names cannot be empty after removing whitespace
+* You can set an empty description by typing `d/` followed by a space (e.g., `d/ `).
+* Duplicate package names are not allowed (case-insensitive check).
+
+Examples:
+* `addp i/Premium Package d/Our top-tier insurance with comprehensive coverage and benefits.` Adds a "Premium Package" with the specified description.
+* `addp i/basic plan d/Essential coverage at an affordable price point.` Adds a "Basic Plan" (auto-formatted) with the description.
+* `addp i/Student Package d/` Adds a "Student Package" with an empty description.
+
 ### Editing an insurance package: `editp`
 
 Edits an existing insurance package in the address book.
@@ -221,7 +244,7 @@ Format: `editp INDEX [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
 
 * Finds the insurance package specified by `PACKAGE_NAME`. The search is case-insensitive.
 * Updates the description of the found package to the `NEW_DESCRIPTION`.
-* The `n/` (package name) and `d/` (new description) fields are **both mandatory**.
+* The `i/` (package name) and `d/` (new description) fields are **both mandatory**.
 * The package name itself cannot be changed.
 * You can set an empty description by typing `d/` followed by a space (e.g., `d/ `).
 
