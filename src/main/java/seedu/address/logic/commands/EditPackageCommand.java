@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_NAME;
 
+import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -35,6 +36,8 @@ public class EditPackageCommand extends Command {
      * Creates an EditPackageCommand to add the specified {@code InsurancePackage}
      */
     public EditPackageCommand(String packageName, String editedPackageDesc) {
+        requireNonNull(packageName);
+        requireNonNull(editedPackageDesc);
         this.packageName = packageName;
         this.editedPackageDesc = editedPackageDesc;
     }
@@ -54,10 +57,8 @@ public class EditPackageCommand extends Command {
         requireNonNull(model);
 
         // Find the target package by name by filtering (case-insensitive)
-        InsurancePackage targetPackage = model.getFilteredInsurancePackageList().stream()
-                .filter(pkg -> pkg.getPackageName().equalsIgnoreCase(packageName))
-                .findFirst()
-                .orElse(null);
+        InsurancePackage targetPackage = model.getInsuranceCatalog().getInsurancePackageList().stream()
+                .filter(pkg -> pkg.getPackageName().equalsIgnoreCase(packageName)).findFirst().orElse(null);
 
         if (targetPackage == null) {
             throw new CommandException(Messages.MESSAGE_INVALID_PACKAGE);
@@ -75,5 +76,13 @@ public class EditPackageCommand extends Command {
                 || (other instanceof EditPackageCommand
                 && packageName.equals(((EditPackageCommand) other).packageName)
                 && editedPackageDesc.equals(((EditPackageCommand) other).editedPackageDesc));
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .add("packageName", packageName)
+                .add("newDescription", editedPackageDesc)
+                .toString();
     }
 }
