@@ -1,0 +1,9 @@
+{
+  "insurancePackages": [ {
+    "packageName": "",
+    "packageDescription": "Empty package name should be invalid"
+  }, {
+    "packageName": "Gold",
+    "packageDescription": "Our premium, all-inclusive plan offering maximum benefits and total peace of mind."
+  } ]
+}

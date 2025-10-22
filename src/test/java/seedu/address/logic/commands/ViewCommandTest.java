@@ -11,6 +11,7 @@ import static seedu.address.logic.commands.ViewCommand.MESSAGE_VIEW_SUCCESS;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_PERSON;
+import static seedu.address.testutil.TypicalInsurancePackages.getTypicalInsuranceCatalog;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.Arrays;
@@ -27,8 +28,9 @@ import seedu.address.model.person.Person;
 
 public class ViewCommandTest {
 
-    private Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-    private Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+    private Model model = new ModelManager(getTypicalAddressBook(), getTypicalInsuranceCatalog(), new UserPrefs());
+    private Model expectedModel =
+            new ModelManager(getTypicalAddressBook(), getTypicalInsuranceCatalog(), new UserPrefs());
 
     @Test
     public void equals() {
@@ -65,7 +67,7 @@ public class ViewCommandTest {
     public void execute_validIndexInput_successPersonToView() {
         Person expectedPerson = expectedModel.getFilteredPersonList().get(0);
         CommandResult result = new CommandResult(MESSAGE_VIEW_SUCCESS, false,
-                new ViewData(true, expectedPerson), false);
+                new ViewData(true, expectedPerson), false, false);
         ViewCommand command = new ViewCommand(INDEX_FIRST_PERSON);
         assertCommandSuccess(command, model, result, expectedModel);
     }
@@ -84,7 +86,7 @@ public class ViewCommandTest {
     public void execute_validKeywords_successPersonToView() {
         Person expectedPerson = expectedModel.getFilteredPersonList().get(0);
         CommandResult result = new CommandResult(MESSAGE_VIEW_SUCCESS, false,
-                new ViewData(true, expectedPerson), false);
+                new ViewData(true, expectedPerson), false, false);
         ViewCommand command = new ViewCommand("Alice");
         assertCommandSuccess(command, model, result, expectedModel);
     }

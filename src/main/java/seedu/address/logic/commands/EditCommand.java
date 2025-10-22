@@ -5,6 +5,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE_OF_BIRTH;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPENDENTS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MARITAL_STATUS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_OCCUPATION;
@@ -25,7 +26,9 @@ import seedu.address.commons.util.CollectionUtil;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.Model;
+import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.DateOfBirth;
 import seedu.address.model.person.Dependents;
@@ -55,9 +58,10 @@ public class EditCommand extends Command {
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_SALARY + "SALARY] "
             + "[" + PREFIX_DATE_OF_BIRTH + "AGE] "
-            + "[" + PREFIX_MARITAL_STATUS + "MARITAL STATUS] "
+            + "[" + PREFIX_MARITAL_STATUS + "MARITAL_STATUS] "
+            + "[" + PREFIX_DEPENDENTS + "NUMBER_OF_DEPENDENTS] "
             + "[" + PREFIX_OCCUPATION + "OCCUPATION] "
-            + "[" + PREFIX_DEPENDENTS + "DEPENDENTS] "
+            + "[" + PREFIX_INSURANCE_PACKAGE + "INSURANCE PACKAGE] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PHONE + "91234567 "
@@ -94,6 +98,15 @@ public class EditCommand extends Command {
         Person personToEdit = lastShownList.get(index.getZeroBased());
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
 
+
+        String desiredPackageName = personToEdit.getInsurancePackage().getPackageName();
+        if (!InsuranceCatalog.isValidInsurancePackage(desiredPackageName)) {
+            String validNamesString = InsuranceCatalog.getValidInsurancePackageNames();
+            throw new CommandException("The insurance package '"
+                    + desiredPackageName + "' does not exist.\n"
+                    + "Available packages are: " + validNamesString);
+        }
+
         if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
@@ -120,10 +133,13 @@ public class EditCommand extends Command {
                 .orElse(personToEdit.getMaritalStatus());
         Occupation updatedOccupation = editPersonDescriptor.getOccupation().orElse(personToEdit.getOccupation());
         Dependents updatedDependents = editPersonDescriptor.getDependents().orElse(personToEdit.getDependents());
+        InsurancePackage updatedInsurancePackage = editPersonDescriptor.getInsurancePackage()
+                .orElse(personToEdit.getInsurancePackage());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
 
         return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedSalary,
-                updatedDateOfBirth, updatedMaritalStatus, updatedOccupation, updatedDependents, updatedTags);
+                updatedDateOfBirth, updatedMaritalStatus, updatedOccupation, updatedDependents, updatedInsurancePackage,
+                updatedTags);
     }
 
     @Override
@@ -164,6 +180,7 @@ public class EditCommand extends Command {
         private MaritalStatus maritalStatus;
         private Occupation occupation;
         private Dependents dependents;
+        private InsurancePackage insurancePackage;
         private Set<Tag> tags;
 
         public EditPersonDescriptor() {}
@@ -182,6 +199,7 @@ public class EditCommand extends Command {
             setMaritalStatus(toCopy.maritalStatus);
             setOccupation(toCopy.occupation);
             setDependents(toCopy.dependents);
+            setInsurancePackage(toCopy.insurancePackage);
             setTags(toCopy.tags);
         }
 
@@ -190,7 +208,7 @@ public class EditCommand extends Command {
          */
         public boolean isAnyFieldEdited() {
             return CollectionUtil.isAnyNonNull(name, phone, email, address, salary, dateOfBirth, maritalStatus,
-                    occupation, dependents, tags);
+                    occupation, dependents, insurancePackage, tags);
         }
 
         public void setName(Name name) {
@@ -265,6 +283,14 @@ public class EditCommand extends Command {
             return Optional.ofNullable(dependents);
         }
 
+        public void setInsurancePackage(InsurancePackage insurancePackage) {
+            this.insurancePackage = insurancePackage;
+        }
+
+        public Optional<InsurancePackage> getInsurancePackage() {
+            return Optional.ofNullable(insurancePackage);
+        }
+
         /**
          * Sets {@code tags} to this object's {@code tags}.
          * A defensive copy of {@code tags} is used internally.
@@ -303,6 +329,7 @@ public class EditCommand extends Command {
                     && Objects.equals(maritalStatus, otherEditPersonDescriptor.maritalStatus)
                     && Objects.equals(occupation, otherEditPersonDescriptor.occupation)
                     && Objects.equals(dependents, otherEditPersonDescriptor.dependents)
+                    && Objects.equals(insurancePackage, otherEditPersonDescriptor.insurancePackage)
                     && Objects.equals(tags, otherEditPersonDescriptor.tags);
         }
 
@@ -318,6 +345,7 @@ public class EditCommand extends Command {
                     .add("maritalStatus", maritalStatus)
                     .add("occupation", occupation)
                     .add("dependents", dependents)
+                    .add("insurancePackage", insurancePackage)
                     .add("tags", tags)
                     .toString();
         }
