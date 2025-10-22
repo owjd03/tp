@@ -10,7 +10,7 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
 /**
- * Sorts all persons in the address book by name in alphabetical order.
+ * Sorts all persons in the address book in alphabetical order.
  */
 public class SortCommand extends Command {
 
@@ -28,6 +28,7 @@ public class SortCommand extends Command {
 
     /**
      * @param sortField of the selected sort criteria
+     * @param sortDirection of the selected sort criteria
      */
     public SortCommand(SortField sortField, SortDirection sortDirection) {
         this.sortField = sortField;
@@ -39,8 +40,8 @@ public class SortCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
 
-        Comparator<Person> nameComparator = createComparator(sortField, sortDirection);
-        model.sortPersonList(nameComparator);
+        Comparator<Person> comparator = createComparator(sortField, sortDirection);
+        model.sortPersonList(comparator);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         String directionText = sortDirection.toString().toLowerCase();
         String message = MESSAGE_SUCCESS + sortField + " in " + directionText + " order";
@@ -51,8 +52,10 @@ public class SortCommand extends Command {
      * Creates a comparator for sorting persons based on a particular field
      * and returns the comparator
      *
-     * @param sortField the field is sorted by NAME, PHONE, EMAIL, ADDRESS
-     * @return comparator that compares two persons based on the provided field
+     * @param sortField the field is sorted by NAME, PHONE, EMAIL, ADDRESS, SALARY,
+     *                  DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENT
+     * @param sortDirection the direction is sorted by ASCENDING OR DESCENDING
+     * @return comparator that compares two persons based on the provided field and direction
      * @throws AssertionError if an invalid field is provided
      **/
     private static Comparator<Person> createComparator(SortField sortField, SortDirection sortDirection) {
@@ -111,7 +114,8 @@ public class SortCommand extends Command {
         }
 
         SortCommand secondSortCommand = (SortCommand) object;
-        return sortField.equals(secondSortCommand.sortField);
+        return sortField.equals(secondSortCommand.sortField)
+                && sortDirection.equals(secondSortCommand.sortDirection);
     }
 
     /**
