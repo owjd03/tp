@@ -9,6 +9,8 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_DEPENDENTS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_DOB_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_INSURANCE_PACKAGE_DESCRIPTION_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_INSURANCE_PACKAGE_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_MARITAL_STATUS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_OCCUPATION_BOB;
@@ -77,6 +79,12 @@ public class EditPersonDescriptorTest {
         editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withOccupation(VALID_OCCUPATION_BOB).build();
         assertFalse(DESC_AMY.equals(editedAmy));
 
+        // different insurance package -> returns false
+        editedAmy = new EditPersonDescriptorBuilder(DESC_AMY)
+                .withInsurancePackage(VALID_INSURANCE_PACKAGE_NAME_BOB, VALID_INSURANCE_PACKAGE_DESCRIPTION_BOB)
+                .build();
+        assertFalse(DESC_AMY.equals(editedAmy));
+
         // different tags -> returns false
         editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withTags(VALID_TAG_HUSBAND).build();
         assertFalse(DESC_AMY.equals(editedAmy));
@@ -94,6 +102,7 @@ public class EditPersonDescriptorTest {
                 + editPersonDescriptor.getDateOfBirth().orElse(null) + ", maritalStatus="
                 + editPersonDescriptor.getMaritalStatus().orElse(null) + ", occupation="
                 + editPersonDescriptor.getOccupation().orElse(null) + ", dependents="
+                + editPersonDescriptor.getInsurancePackage().orElse(null) + ", insurancePackage="
                 + editPersonDescriptor.getDependents().orElse(null) + ", tags="
                 + editPersonDescriptor.getTags().orElse(null) + "}";
         assertEquals(expected, editPersonDescriptor.toString());

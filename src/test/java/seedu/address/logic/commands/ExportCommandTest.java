@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.testutil.TypicalInsurancePackages.getTypicalInsuranceCatalog;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.io.IOException;
@@ -27,10 +28,10 @@ public class ExportCommandTest {
     @TempDir
     public Path testFolder;
 
-    private Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+    private Model model = new ModelManager(getTypicalAddressBook(), getTypicalInsuranceCatalog(), new UserPrefs());
 
     @Test
-    public void execute_success() throws IOException {
+    public void execute_validPerson_success() throws IOException {
         // 1. Define the test file path within the temporary directory
         Path exportFilePath = testFolder.resolve("addressbook.csv");
 
@@ -41,7 +42,7 @@ public class ExportCommandTest {
         String expectedMessage = String.format(ExportCommand.MESSAGE_SUCCESS, exportFilePath.toString());
 
         // 4. The model is not expected to change
-        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Model expectedModel = new ModelManager(model.getAddressBook(), model.getInsuranceCatalog(), new UserPrefs());
 
         // 5. Assert that the command executes successfully
         assertCommandSuccess(exportCommand, model, expectedMessage, expectedModel);
@@ -50,7 +51,8 @@ public class ExportCommandTest {
         List<String> lines = Files.readAllLines(exportFilePath);
 
         // Check header
-        assertEquals("Name,Phone,Email,Address,Salary,Date of Birth,Marital Status,Occupation,Dependents,Tags",
+        assertEquals("Name,Phone,Email,Address,Salary,Date of Birth,Marital Status,Occupation,Dependents,"
+                + "Insurance Package,Tags",
                 lines.get(0));
 
         // Check number of persons exported (header + 7 typical persons)
@@ -59,7 +61,7 @@ public class ExportCommandTest {
         // Check a specific person's data (e.g., the first person, Alice Pauline)
         String expectedAliceCsv = "Alice Pauline,94351253,alice@example.com,"
                 + "\"123, Jurong West Ave 6, #08-111\",\"$5,000.00\",1999-01-01,Single,Engineer,"
-                + "0,friends";
+                + "0,Gold,friends";
         assertEquals(expectedAliceCsv, lines.get(1));
     }
 

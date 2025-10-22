@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 
@@ -11,22 +12,39 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
+import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.ReadOnlyInsuranceCatalog;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddCommandTest {
+
+    @BeforeEach
+    public void setUp() {
+        InsuranceCatalog tempCatalog = new InsuranceCatalog();
+
+        List<InsurancePackage> packages = new ArrayList<>();
+        packages.add(new InsurancePackage("Gold", "A gold package"));
+        packages.add(new InsurancePackage("Silver", "A silver package"));
+
+        tempCatalog.setInsurancePackages(packages);
+    }
 
     @Test
     public void constructor_nullPerson_throwsNullPointerException() {
@@ -36,7 +54,7 @@ public class AddCommandTest {
     @Test
     public void execute_personAcceptedByModel_addSuccessful() throws Exception {
         ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
-        Person validPerson = new PersonBuilder().build();
+        Person validPerson = new PersonBuilder().withInsurancePackage("Gold", "").build();
 
         CommandResult commandResult = new AddCommand(validPerson).execute(modelStub);
 
@@ -52,6 +70,19 @@ public class AddCommandTest {
         ModelStub modelStub = new ModelStubWithPerson(validPerson);
 
         assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_invalidInsurancePackage_throwsCommandException() {
+        Person personWithInvalidPackage = new PersonBuilder().withInsurancePackage("InvalidPackage", "").build();
+
+        AddCommand addCommand = new AddCommand(personWithInvalidPackage);
+
+        String validNamesString = InsuranceCatalog.getValidInsurancePackageNames();
+        String expectedError = "The insurance package 'Invalidpackage' does not exist.\n"
+                + "Available packages are: " + validNamesString;
+
+        assertCommandFailure(addCommand, new ModelStubAcceptingPersonAdded(), expectedError);
     }
 
     @Test
@@ -86,7 +117,7 @@ public class AddCommandTest {
     }
 
     /**
-     * A default model stub that have all of the methods failing.
+     * A default model stub that have all the methods failing.
      */
     private class ModelStub implements Model {
         @Override
@@ -115,7 +146,17 @@ public class AddCommandTest {
         }
 
         @Override
+        public Path getInsuranceCatalogFilePath() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void setAddressBookFilePath(Path addressBookFilePath) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setInsuranceCatalogFilePath(Path addressBookFilePath) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -125,7 +166,17 @@ public class AddCommandTest {
         }
 
         @Override
+        public void addInsurancePackage(InsurancePackage insurancePackage) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void setAddressBook(ReadOnlyAddressBook newData) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setInsuranceCatalog(ReadOnlyInsuranceCatalog newData) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -135,7 +186,17 @@ public class AddCommandTest {
         }
 
         @Override
+        public ReadOnlyInsuranceCatalog getInsuranceCatalog() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public boolean hasPerson(Person person) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean hasInsurancePackage(InsurancePackage insurancePackage) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -145,7 +206,17 @@ public class AddCommandTest {
         }
 
         @Override
+        public void deleteInsurancePackage(InsurancePackage target) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void setPerson(Person target, Person editedPerson) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setInsurancePackage(InsurancePackage target, InsurancePackage editedInsurancePackage) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -155,12 +226,27 @@ public class AddCommandTest {
         }
 
         @Override
+        public ObservableList<InsurancePackage> getFilteredInsurancePackageList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void updateFilteredPersonList(Predicate<Person> predicate) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
+        public void updateFilteredInsurancePackageList(Predicate<InsurancePackage> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void sortPersonList(Comparator<Person> comparator) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void sortInsurancePackageList(Comparator<InsurancePackage> comparator) {
             throw new AssertionError("This method should not be called.");
         }
     }
@@ -199,6 +285,11 @@ public class AddCommandTest {
         public void addPerson(Person person) {
             requireNonNull(person);
             personsAdded.add(person);
+        }
+
+        @Override
+        public ObservableList<Person> getFilteredPersonList() {
+            return FXCollections.emptyObservableList();
         }
 
         @Override

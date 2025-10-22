@@ -3,6 +3,7 @@ package seedu.address.testutil;
 import java.util.HashSet;
 import java.util.Set;
 
+import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.DateOfBirth;
 import seedu.address.model.person.Dependents;
@@ -30,6 +31,8 @@ public class PersonBuilder {
     public static final String DEFAULT_MARITAL_STATUS = "Single";
     public static final String DEFAULT_OCCUPATION = "Unemployed";
     public static final int DEFAULT_DEPENDENTS = 0;
+    public static final String DEFAULT_INSURANCE_PACKAGE_NAME = "Undecided";
+    public static final String DEFAULT_INSURANCE_PACKAGE_DESCRIPTION = "No insurance package selected.";
 
     private Name name;
     private Phone phone;
@@ -40,6 +43,7 @@ public class PersonBuilder {
     private MaritalStatus maritalStatus;
     private Occupation occupation;
     private Dependents dependents;
+    private InsurancePackage insurancePackage;
     private Set<Tag> tags;
 
     /**
@@ -55,6 +59,7 @@ public class PersonBuilder {
         maritalStatus = new MaritalStatus(DEFAULT_MARITAL_STATUS);
         occupation = new Occupation(DEFAULT_OCCUPATION);
         dependents = new Dependents(DEFAULT_DEPENDENTS);
+        insurancePackage = new InsurancePackage(DEFAULT_INSURANCE_PACKAGE_NAME, DEFAULT_INSURANCE_PACKAGE_DESCRIPTION);
         tags = new HashSet<>();
     }
 
@@ -71,6 +76,7 @@ public class PersonBuilder {
         maritalStatus = personToCopy.getMaritalStatus();
         occupation = personToCopy.getOccupation();
         dependents = personToCopy.getDependents();
+        insurancePackage = personToCopy.getInsurancePackage();
         tags = new HashSet<>(personToCopy.getTags());
     }
 
@@ -154,6 +160,15 @@ public class PersonBuilder {
         return this;
     }
 
+
+    /**
+     * Sets the {@code InsurancePackage} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withInsurancePackage(String packageName, String packageDescription) {
+        this.insurancePackage = new InsurancePackage(packageName, packageDescription);
+        return this;
+    }
+
     /**
      * Builds the Person object.
      *
@@ -161,7 +176,7 @@ public class PersonBuilder {
      */
     public Person build() {
         return new Person(name, phone, email, address, salary, dateOfBirth, maritalStatus, occupation, dependents,
-                tags);
+                insurancePackage, tags);
     }
 
 }

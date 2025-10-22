@@ -9,10 +9,13 @@ import static seedu.address.logic.commands.CommandTestUtil.DOB_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DOB_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.INSURANCE_PACKAGE_DESC_AMY;
+import static seedu.address.logic.commands.CommandTestUtil.INSURANCE_PACKAGE_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_ADDRESS_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_DEPENDENTS_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_DOB_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_EMAIL_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_INSURANCE_PACKAGE_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_MARITAL_STATUS_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_OCCUPATION_DESC;
@@ -37,6 +40,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_DEPENDENTS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_DOB_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_INSURANCE_PACKAGE_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_MARITAL_STATUS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_OCCUPATION_BOB;
@@ -48,6 +52,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE_OF_BIRTH;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPENDENTS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MARITAL_STATUS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_OCCUPATION;
@@ -85,7 +90,8 @@ public class AddCommandParserTest {
         // whitespace only preamble
         assertParseSuccess(parser, PREAMBLE_WHITESPACE + NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
                 + ADDRESS_DESC_BOB + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB
-                + DEPENDENTS_DESC_BOB + OCCUPATION_DESC_BOB + TAG_DESC_FRIEND, new AddCommand(expectedPerson));
+                + DEPENDENTS_DESC_BOB + OCCUPATION_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_FRIEND,
+                new AddCommand(expectedPerson));
 
 
         // multiple tags - all accepted
@@ -94,7 +100,7 @@ public class AddCommandParserTest {
         assertParseSuccess(parser,
                 NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB + TAG_DESC_HUSBAND
                         + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB
-                        + DEPENDENTS_DESC_BOB + OCCUPATION_DESC_BOB + TAG_DESC_FRIEND,
+                        + DEPENDENTS_DESC_BOB + OCCUPATION_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_FRIEND,
                 new AddCommand(expectedPersonMultipleTags));
     }
 
@@ -102,7 +108,7 @@ public class AddCommandParserTest {
     public void parse_repeatedNonTagValue_failure() {
         String validExpectedPersonString = NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
                 + ADDRESS_DESC_BOB + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB
-                + DEPENDENTS_DESC_BOB + OCCUPATION_DESC_BOB + TAG_DESC_FRIEND;
+                + DEPENDENTS_DESC_BOB + OCCUPATION_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_FRIEND;
 
         // multiple names
         assertParseFailure(parser, NAME_DESC_AMY + validExpectedPersonString,
@@ -140,14 +146,18 @@ public class AddCommandParserTest {
         assertParseFailure(parser, DEPENDENTS_DESC_AMY + validExpectedPersonString,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_DEPENDENTS));
 
+        // multiple insurance packages
+        assertParseFailure(parser, INSURANCE_PACKAGE_DESC_AMY + validExpectedPersonString,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_PACKAGE));
+
         // multiple fields repeated
         assertParseFailure(parser,
                 validExpectedPersonString + PHONE_DESC_AMY + EMAIL_DESC_AMY + NAME_DESC_AMY + ADDRESS_DESC_AMY
                         + SALARY_DESC_AMY + DOB_DESC_AMY + MARITAL_STATUS_DESC_AMY + OCCUPATION_DESC_AMY
-                        + DEPENDENTS_DESC_AMY + validExpectedPersonString,
+                        + DEPENDENTS_DESC_AMY + INSURANCE_PACKAGE_DESC_AMY + validExpectedPersonString,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NAME, PREFIX_ADDRESS, PREFIX_EMAIL, PREFIX_PHONE,
                         PREFIX_SALARY, PREFIX_DATE_OF_BIRTH, PREFIX_MARITAL_STATUS, PREFIX_OCCUPATION,
-                        PREFIX_DEPENDENTS));
+                        PREFIX_DEPENDENTS, PREFIX_INSURANCE_PACKAGE));
 
         // invalid value followed by valid value
 
@@ -187,6 +197,10 @@ public class AddCommandParserTest {
         assertParseFailure(parser, INVALID_DEPENDENTS_DESC + validExpectedPersonString,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_DEPENDENTS));
 
+        // invalid insurance package
+        assertParseFailure(parser, INVALID_INSURANCE_PACKAGE_DESC + validExpectedPersonString,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_PACKAGE));
+
         // valid value followed by invalid value
 
         // invalid name
@@ -224,6 +238,10 @@ public class AddCommandParserTest {
         // invalid dependents
         assertParseFailure(parser, validExpectedPersonString + INVALID_DEPENDENTS_DESC,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_DEPENDENTS));
+
+        // invalid insurance package
+        assertParseFailure(parser, validExpectedPersonString + INVALID_INSURANCE_PACKAGE_DESC,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_PACKAGE));
     }
 
     @Test
@@ -232,7 +250,7 @@ public class AddCommandParserTest {
         Person expectedPerson = new PersonBuilder(AMY).withTags().build();
         assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
                         + SALARY_DESC_AMY + DOB_DESC_AMY + MARITAL_STATUS_DESC_AMY + OCCUPATION_DESC_AMY
-                        + DEPENDENTS_DESC_AMY,
+                        + DEPENDENTS_DESC_AMY + INSURANCE_PACKAGE_DESC_AMY,
                 new AddCommand(expectedPerson));
     }
 
@@ -243,50 +261,52 @@ public class AddCommandParserTest {
         // missing name prefix
         assertParseFailure(parser, VALID_NAME_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                         + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                        + DEPENDENTS_DESC_BOB, expectedMessage);
+                        + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
 
         // missing phone prefix
         assertParseFailure(parser, NAME_DESC_BOB + VALID_PHONE_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                     + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                    + DEPENDENTS_DESC_BOB, expectedMessage);
+                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
 
         // missing email prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + VALID_EMAIL_BOB + ADDRESS_DESC_BOB
                     + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                    + DEPENDENTS_DESC_BOB, expectedMessage);
+                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
 
         // missing address prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + VALID_ADDRESS_BOB
                     + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                    + DEPENDENTS_DESC_BOB, expectedMessage);
+                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
 
         // missing salary prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                     + VALID_SALARY_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                    + DEPENDENTS_DESC_BOB, expectedMessage);
+                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
 
         // missing date of birth prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                     + SALARY_DESC_BOB + VALID_DOB_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                    + DEPENDENTS_DESC_BOB, expectedMessage);
+                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
+
         // missing marital status prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                     + SALARY_DESC_BOB + DOB_DESC_BOB + VALID_MARITAL_STATUS_BOB + OCCUPATION_DESC_BOB
-                    + DEPENDENTS_DESC_BOB, expectedMessage);
+                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
 
         // missing occupation prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                     + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + VALID_OCCUPATION_BOB
-                    + DEPENDENTS_DESC_BOB, expectedMessage);
+                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
 
         // missing dependents prefix
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                     + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                    + VALID_DEPENDENTS_BOB, expectedMessage);
+                    + VALID_DEPENDENTS_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
 
         // all prefixes missing
         assertParseFailure(parser, VALID_NAME_BOB + VALID_PHONE_BOB + VALID_EMAIL_BOB + VALID_ADDRESS_BOB
-                    + VALID_SALARY_BOB + VALID_DOB_BOB, expectedMessage);
+                    + VALID_SALARY_BOB + VALID_DOB_BOB + VALID_MARITAL_STATUS_BOB + VALID_DEPENDENTS_BOB
+                    + VALID_OCCUPATION_BOB + VALID_INSURANCE_PACKAGE_NAME_BOB, expectedMessage);
     }
 
     @Test
@@ -294,63 +314,68 @@ public class AddCommandParserTest {
         // invalid name
         assertParseFailure(parser, INVALID_NAME_DESC + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                 + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB + DEPENDENTS_DESC_BOB
-                + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, Name.MESSAGE_CONSTRAINTS);
+                + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, Name.MESSAGE_CONSTRAINTS);
 
         // invalid phone
         assertParseFailure(parser, NAME_DESC_BOB + INVALID_PHONE_DESC + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                 + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB + DEPENDENTS_DESC_BOB
-                + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, Phone.MESSAGE_CONSTRAINTS);
+                + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, Phone.MESSAGE_CONSTRAINTS);
 
         // invalid email
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + INVALID_EMAIL_DESC + ADDRESS_DESC_BOB
                 + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB + DEPENDENTS_DESC_BOB
-                + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, Email.MESSAGE_CONSTRAINTS);
+                + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, Email.MESSAGE_CONSTRAINTS);
 
         // invalid address
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + INVALID_ADDRESS_DESC
                 + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB + DEPENDENTS_DESC_BOB
-                + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, Address.MESSAGE_CONSTRAINTS);
+                + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, Address.MESSAGE_CONSTRAINTS);
 
         // invalid salary
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                 + INVALID_SALARY_DESC + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                + DEPENDENTS_DESC_BOB + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, Salary.MESSAGE_CONSTRAINTS);
+                + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_HUSBAND
+                + TAG_DESC_FRIEND, Salary.MESSAGE_CONSTRAINTS);
 
         // invalid date of birth
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                 + SALARY_DESC_BOB + INVALID_DOB_DESC + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                + DEPENDENTS_DESC_BOB + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, DateOfBirth.MESSAGE_CONSTRAINTS);
+                + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_HUSBAND
+                + TAG_DESC_FRIEND, DateOfBirth.MESSAGE_CONSTRAINTS);
 
         // invalid marital status
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                 + SALARY_DESC_BOB + DOB_DESC_BOB + INVALID_MARITAL_STATUS_DESC + OCCUPATION_DESC_BOB
-                + DEPENDENTS_DESC_BOB + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, MaritalStatus.MESSAGE_CONSTRAINTS);
+                + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_HUSBAND
+                + TAG_DESC_FRIEND, MaritalStatus.MESSAGE_CONSTRAINTS);
 
         // invalid occupation
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                 + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + INVALID_OCCUPATION_DESC
-                + DEPENDENTS_DESC_BOB + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, Occupation.MESSAGE_CONSTRAINTS);
+                + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_HUSBAND
+                + TAG_DESC_FRIEND, Occupation.MESSAGE_CONSTRAINTS);
 
         // invalid dependents
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                 + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                + INVALID_DEPENDENTS_DESC + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, Dependents.MESSAGE_CONSTRAINTS);
+                + INVALID_DEPENDENTS_DESC + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_HUSBAND
+                + TAG_DESC_FRIEND, Dependents.MESSAGE_CONSTRAINTS);
 
         // invalid tag
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
                 + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB + DEPENDENTS_DESC_BOB
-                + INVALID_TAG_DESC + VALID_TAG_FRIEND, Tag.MESSAGE_CONSTRAINTS);
+                + INSURANCE_PACKAGE_DESC_BOB + INVALID_TAG_DESC + VALID_TAG_FRIEND, Tag.MESSAGE_CONSTRAINTS);
 
         // two invalid values, only first invalid value reported
         assertParseFailure(parser, INVALID_NAME_DESC + PHONE_DESC_BOB + EMAIL_DESC_BOB + INVALID_ADDRESS_DESC
                         + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                        + DEPENDENTS_DESC_BOB,
+                        + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB,
                 Name.MESSAGE_CONSTRAINTS);
 
         // non-empty preamble
         assertParseFailure(parser, PREAMBLE_NON_EMPTY + NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
                 + ADDRESS_DESC_BOB + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                + DEPENDENTS_DESC_BOB + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
+                + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
     }
 }

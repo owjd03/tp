@@ -5,6 +5,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE_OF_BIRTH;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPENDENTS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MARITAL_STATUS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_OCCUPATION;
@@ -15,6 +16,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
@@ -34,8 +36,9 @@ public class AddCommand extends Command {
             + PREFIX_SALARY + "SALARY "
             + PREFIX_DATE_OF_BIRTH + "DATE_OF_BIRTH "
             + PREFIX_MARITAL_STATUS + "MARITAL_STATUS "
+            + PREFIX_DEPENDENTS + "NUMBER_OF_DEPENDENTS "
             + PREFIX_OCCUPATION + "OCCUPATION "
-            + PREFIX_DEPENDENTS + "DEPENDENTS "
+            + PREFIX_INSURANCE_PACKAGE + "INSURANCE_PACKAGE "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "John Doe "
@@ -47,6 +50,7 @@ public class AddCommand extends Command {
             + PREFIX_MARITAL_STATUS + "Single "
             + PREFIX_OCCUPATION + "Engineer "
             + PREFIX_DEPENDENTS + "2 "
+            + PREFIX_INSURANCE_PACKAGE + "Gold "
             + PREFIX_TAG + "friends "
             + PREFIX_TAG + "owesMoney";
 
@@ -69,6 +73,14 @@ public class AddCommand extends Command {
 
         if (model.hasPerson(toAdd)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
+        }
+
+        String desiredPackageName = toAdd.getInsurancePackage().getPackageName();
+        if (!InsuranceCatalog.isValidInsurancePackage(desiredPackageName)) {
+            String validNamesString = InsuranceCatalog.getValidInsurancePackageNames();
+            throw new CommandException("The insurance package '"
+                    + desiredPackageName + "' does not exist.\n"
+                    + "Available packages are: " + validNamesString);
         }
 
         model.addPerson(toAdd);
