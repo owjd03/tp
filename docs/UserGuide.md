@@ -229,6 +229,14 @@ Examples:
 * `editp n/Gold d/New description.` Edits the description of "Gold" package to be `New description.`
 * `editp n/Basic Plan d/ ` Edits the description of "Basic Plan" to be empty.
 
+### Listing existing insurance packages: `listp`
+
+Shows all existing insurance package in the address book.
+
+![list package message](images/listPackage.png)
+
+Format: `listp`
+
 ### Clearing all entries : `clear`
 
 Clears all entries from the address book.
@@ -289,3 +297,4 @@ Action | Format, Examples
 **List** | `list`
 **Help** | `help`
 **Sort** | `sort FIELD`<br> e.g., `sort name`, `sort salary`
+**List Package** | `listp`
