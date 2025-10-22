@@ -8,8 +8,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_NAME;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
-import org.junit.jupiter.api.Test;
 import java.util.logging.Logger;
+
+import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.Messages;
