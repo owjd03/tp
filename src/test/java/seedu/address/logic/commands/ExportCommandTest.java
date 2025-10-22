@@ -31,7 +31,7 @@ public class ExportCommandTest {
     private Model model = new ModelManager(getTypicalAddressBook(), getTypicalInsuranceCatalog(), new UserPrefs());
 
     @Test
-    public void execute_success() throws IOException {
+    public void execute_validPerson_success() throws IOException {
         // 1. Define the test file path within the temporary directory
         Path exportFilePath = testFolder.resolve("addressbook.csv");
 
@@ -51,7 +51,8 @@ public class ExportCommandTest {
         List<String> lines = Files.readAllLines(exportFilePath);
 
         // Check header
-        assertEquals("Name,Phone,Email,Address,Salary,Date of Birth,Marital Status,Occupation,Dependents,Tags",
+        assertEquals("Name,Phone,Email,Address,Salary,Date of Birth,Marital Status,Occupation,Dependents,"
+                + "Insurance Package,Tags",
                 lines.get(0));
 
         // Check number of persons exported (header + 7 typical persons)
@@ -60,7 +61,7 @@ public class ExportCommandTest {
         // Check a specific person's data (e.g., the first person, Alice Pauline)
         String expectedAliceCsv = "Alice Pauline,94351253,alice@example.com,"
                 + "\"123, Jurong West Ave 6, #08-111\",\"$5,000.00\",1999-01-01,Single,Engineer,"
-                + "0,friends";
+                + "0,Gold,friends";
         assertEquals(expectedAliceCsv, lines.get(1));
     }
 
