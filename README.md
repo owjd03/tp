@@ -13,7 +13,9 @@ ClientCore offers a comprehensive desktop application for financial advisors to 
 ClientCore allows users to:
 
 * Add, view, edit, and delete client profiles.
-* Store detailed client information including name, contact details, salary, date of birth, marital status, number of dependents, occupation and other custom tags.
+* Store detailed client information including name, contact details, salary, date of birth, marital status, number of dependents, occupation, insurance package and other custom tags.
+* Add and delete insurance packages and associate them with clients.
+* Edit the description of insurance packages to keep them up-to-date.
 * Find and filter for clients using the above criteria.
 * View a summary of each client's information at a glance.
 * Sort clients based on different criteria.
