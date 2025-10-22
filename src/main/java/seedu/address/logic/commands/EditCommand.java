@@ -99,7 +99,7 @@ public class EditCommand extends Command {
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
 
 
-        String desiredPackageName = personToEdit.getInsurancePackage().getPackageName();
+        String desiredPackageName = editedPerson.getInsurancePackage().getPackageName();
         if (!InsuranceCatalog.isValidInsurancePackage(desiredPackageName)) {
             String validNamesString = InsuranceCatalog.getValidInsurancePackageNames();
             throw new CommandException("The insurance package '"
