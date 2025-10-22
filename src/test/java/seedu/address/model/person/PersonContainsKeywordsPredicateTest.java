@@ -11,14 +11,17 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_OCCUPATION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.parser.Prefix;
+import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
 
 public class PersonContainsKeywordsPredicateTest {
@@ -30,27 +33,66 @@ public class PersonContainsKeywordsPredicateTest {
         Map<Prefix, String> secondPredicateKeywordMap = new HashMap<>();
         secondPredicateKeywordMap.put(PREFIX_NAME, "second");
 
-        PersonContainsKeywordsPredicate firstPredicate = new PersonContainsKeywordsPredicate(firstPredicateKeywordMap);
-        PersonContainsKeywordsPredicate secondPredicate =
-                new PersonContainsKeywordsPredicate(secondPredicateKeywordMap);
+        Set<Tag> firstTagSet = Collections.singleton(new Tag("friends"));
+        Set<Tag> secondTagSet = Collections.singleton(new Tag("colleagues"));
+
+        // Predicates with keywords only
+        PersonContainsKeywordsPredicate firstPredicateKeywordsOnly =
+                new PersonContainsKeywordsPredicate(firstPredicateKeywordMap, Collections.emptySet());
+        PersonContainsKeywordsPredicate secondPredicateKeywordsOnly =
+                new PersonContainsKeywordsPredicate(secondPredicateKeywordMap, Collections.emptySet());
+
+        // Predicates with tags only
+        PersonContainsKeywordsPredicate firstPredicateTagsOnly =
+                new PersonContainsKeywordsPredicate(Collections.emptyMap(), firstTagSet);
+        PersonContainsKeywordsPredicate secondPredicateTagsOnly =
+                new PersonContainsKeywordsPredicate(Collections.emptyMap(), secondTagSet);
+
+        // Predicates with both keywords and tags
+        Map<Prefix, String> combinedKeywordMap = new HashMap<>(firstPredicateKeywordMap);
+        combinedKeywordMap.put(PREFIX_ADDRESS, "street");
+        Set<Tag> combinedTagSet = new HashSet<>(firstTagSet);
+        combinedTagSet.add(new Tag("family"));
+        PersonContainsKeywordsPredicate firstPredicateCombined =
+                new PersonContainsKeywordsPredicate(combinedKeywordMap, combinedTagSet);
 
         // same object -> returns true
-        assertTrue(firstPredicate.equals(firstPredicate));
+        assertTrue(firstPredicateKeywordsOnly.equals(firstPredicateKeywordsOnly));
+        assertTrue(firstPredicateTagsOnly.equals(firstPredicateTagsOnly));
+        assertTrue(firstPredicateCombined.equals(firstPredicateCombined));
 
-        // same values -> returns true
-        PersonContainsKeywordsPredicate firstPredicateCopy =
-                new PersonContainsKeywordsPredicate(firstPredicateKeywordMap);
-        assertTrue(firstPredicate.equals(firstPredicateCopy));
+        // same values (keywords only) -> returns true
+        PersonContainsKeywordsPredicate firstPredicateKeywordsOnlyCopy =
+                new PersonContainsKeywordsPredicate(firstPredicateKeywordMap, Collections.emptySet());
+        assertTrue(firstPredicateKeywordsOnly.equals(firstPredicateKeywordsOnlyCopy));
+
+        // same values (tags only) -> returns true
+        PersonContainsKeywordsPredicate firstPredicateTagsOnlyCopy =
+                new PersonContainsKeywordsPredicate(Collections.emptyMap(), firstTagSet);
+        assertTrue(firstPredicateTagsOnly.equals(firstPredicateTagsOnlyCopy));
+
+        // same values (combined) -> returns true
+        PersonContainsKeywordsPredicate firstPredicateCombinedCopy =
+                new PersonContainsKeywordsPredicate(combinedKeywordMap, combinedTagSet);
+        assertTrue(firstPredicateCombined.equals(firstPredicateCombinedCopy));
 
         // different types -> returns false
-        assertFalse(firstPredicate.equals(1));
-        assertFalse(firstPredicate.equals(new Object()));
+        assertFalse(firstPredicateKeywordsOnly.equals(1));
+        assertFalse(firstPredicateKeywordsOnly.equals(new Object()));
 
         // null -> returns false
-        assertFalse(firstPredicate.equals(null));
+        assertFalse(firstPredicateKeywordsOnly.equals(null));
 
-        // different person -> returns false
-        assertFalse(firstPredicate.equals(secondPredicate));
+        // different keywords -> returns false
+        assertFalse(firstPredicateKeywordsOnly.equals(secondPredicateKeywordsOnly));
+
+        // different tags -> returns false
+        assertFalse(firstPredicateTagsOnly.equals(secondPredicateTagsOnly));
+
+        // different keywords and tags -> returns false
+        assertFalse(firstPredicateKeywordsOnly.equals(firstPredicateTagsOnly)); // keywords vs tags
+        assertFalse(firstPredicateCombined.equals(firstPredicateKeywordsOnly)); // combined vs keywords only
+        assertFalse(firstPredicateCombined.equals(firstPredicateTagsOnly)); // combined vs tags only
     }
 
     @Test
@@ -58,13 +100,14 @@ public class PersonContainsKeywordsPredicateTest {
         // Empty keyword for name
         Map<Prefix, String> keywords = new HashMap<>();
         keywords.put(PREFIX_NAME, "");
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
         assertFalse(predicate.test(new PersonBuilder().withName("Alice").build()));
 
         // Empty keyword for address
         keywords = new HashMap<>();
         keywords.put(PREFIX_ADDRESS, "");
-        predicate = new PersonContainsKeywordsPredicate(keywords);
+        predicate = new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
         assertFalse(predicate.test(new PersonBuilder().withAddress("Main Street").build()));
     }
 
@@ -72,7 +115,8 @@ public class PersonContainsKeywordsPredicateTest {
     public void test_nameContainsKeyword_returnsTrue() {
         Map<Prefix, String> keywords = new HashMap<>();
         keywords.put(PREFIX_NAME, "Alice");
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
         assertTrue(predicate.test(new PersonBuilder().withName("Alice Bob").build()));
     }
 
@@ -80,7 +124,8 @@ public class PersonContainsKeywordsPredicateTest {
     public void test_addressContainsKeyword_returnsTrue() {
         Map<Prefix, String> keywords = new HashMap<>();
         keywords.put(PREFIX_ADDRESS, "Main");
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
         assertTrue(predicate.test(new PersonBuilder().withAddress("Main Street").build()));
     }
 
@@ -88,7 +133,8 @@ public class PersonContainsKeywordsPredicateTest {
     public void test_dateOfBirthContainsKeyword_returnsTrue() {
         Map<Prefix, String> keywords = new HashMap<>();
         keywords.put(PREFIX_DATE_OF_BIRTH, "2025-10-10");
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
         assertTrue(predicate.test(new PersonBuilder().withDateOfBirth("2025-10-10").build()));
     }
 
@@ -96,7 +142,8 @@ public class PersonContainsKeywordsPredicateTest {
     public void test_dependentsContainsKeyword_returnsTrue() {
         Map<Prefix, String> keywords = new HashMap<>();
         keywords.put(PREFIX_DEPENDENTS, "2");
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
         assertTrue(predicate.test(new PersonBuilder().withDependents(2).build()));
     }
 
@@ -104,7 +151,8 @@ public class PersonContainsKeywordsPredicateTest {
     public void test_emailContainsKeyword_returnsTrue() {
         Map<Prefix, String> keywords = new HashMap<>();
         keywords.put(PREFIX_EMAIL, "alice");
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
         assertTrue(predicate.test(new PersonBuilder().withEmail("alice@example.com").build()));
     }
 
@@ -112,7 +160,8 @@ public class PersonContainsKeywordsPredicateTest {
     public void test_maritalStatusContainsKeyword_returnsTrue() {
         Map<Prefix, String> keywords = new HashMap<>();
         keywords.put(PREFIX_MARITAL_STATUS, "Single");
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
         assertTrue(predicate.test(new PersonBuilder().withMaritalStatus("Single").build()));
     }
 
@@ -120,7 +169,8 @@ public class PersonContainsKeywordsPredicateTest {
     public void test_occupationContainsKeyword_returnsTrue() {
         Map<Prefix, String> keywords = new HashMap<>();
         keywords.put(PREFIX_OCCUPATION, "Engineer");
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
         assertTrue(predicate.test(new PersonBuilder().withOccupation("Software Engineer").build()));
     }
 
@@ -128,7 +178,8 @@ public class PersonContainsKeywordsPredicateTest {
     public void test_phoneContainsKeyword_returnsTrue() {
         Map<Prefix, String> keywords = new HashMap<>();
         keywords.put(PREFIX_PHONE, "98765432");
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
         assertTrue(predicate.test(new PersonBuilder().withPhone("98765432").build()));
     }
 
@@ -136,16 +187,61 @@ public class PersonContainsKeywordsPredicateTest {
     public void test_salaryContainsKeyword_returnsTrue() {
         Map<Prefix, String> keywords = new HashMap<>();
         keywords.put(PREFIX_SALARY, "5000");
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
         assertTrue(predicate.test(new PersonBuilder().withSalary("5000").build()));
     }
 
     @Test
-    public void test_tagContainsKeyword_returnsTrue() {
+    public void test_singleTagMatches_returnsTrue() {
+        Set<Tag> tags = Collections.singleton(new Tag("friends"));
+        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(Collections.emptyMap(), tags);
+        assertTrue(predicate.test(new PersonBuilder().withTags("friends", "colleagues").build()));
+    }
+
+    @Test
+    public void test_multipleTagsAllMatch_returnsTrue() {
+        Set<Tag> tags = new HashSet<>();
+        tags.add(new Tag("friends"));
+        tags.add(new Tag("owesMoney"));
+        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(Collections.emptyMap(), tags);
+        assertTrue(predicate.test(new PersonBuilder().withTags("friends", "owesMoney", "family").build()));
+    }
+
+    @Test
+    public void test_multipleTagsOneDoesNotMatch_returnsFalse() {
+        Set<Tag> tags = new HashSet<>();
+        tags.add(new Tag("friends"));
+        tags.add(new Tag("owesMoney"));
+        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(Collections.emptyMap(), tags);
+        assertFalse(predicate.test(new PersonBuilder().withTags("friends", "family").build()));
+    }
+
+    @Test
+    public void test_keywordsAndTagsAllMatch_returnsTrue() {
         Map<Prefix, String> keywords = new HashMap<>();
-        keywords.put(PREFIX_TAG, "friend");
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
-        assertTrue(predicate.test(new PersonBuilder().withTags("friend", "colleague").build()));
+        keywords.put(PREFIX_NAME, "Alice");
+        Set<Tag> tags = Collections.singleton(new Tag("friends"));
+        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords, tags);
+        assertTrue(predicate.test(new PersonBuilder().withName("Alice Bob").withTags("friends").build()));
+    }
+
+    @Test
+    public void test_keywordsAndTagsKeywordsMismatch_returnsFalse() {
+        Map<Prefix, String> keywords = new HashMap<>();
+        keywords.put(PREFIX_NAME, "Bob"); // Mismatch
+        Set<Tag> tags = Collections.singleton(new Tag("friends"));
+        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords, tags);
+        assertFalse(predicate.test(new PersonBuilder().withName("Alice").withTags("friends").build()));
+    }
+
+    @Test
+    public void test_keywordsAndTagsTagsMismatch_returnsFalse() {
+        Map<Prefix, String> keywords = new HashMap<>();
+        keywords.put(PREFIX_NAME, "Alice");
+        Set<Tag> tags = Collections.singleton(new Tag("owesMoney")); // Mismatch
+        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords, tags);
+        assertFalse(predicate.test(new PersonBuilder().withName("Alice").withTags("friends").build()));
     }
 
     @Test
@@ -153,7 +249,8 @@ public class PersonContainsKeywordsPredicateTest {
         Map<Prefix, String> keywords = new HashMap<>();
         keywords.put(PREFIX_NAME, "Alice");
         keywords.put(PREFIX_ADDRESS, "Main");
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
         assertTrue(predicate.test(new PersonBuilder().withName("Alice Bob").withAddress("Main Street").build()));
     }
 
@@ -162,7 +259,8 @@ public class PersonContainsKeywordsPredicateTest {
         Map<Prefix, String> keywords = new HashMap<>();
         keywords.put(PREFIX_NAME, "Alice");
         keywords.put(PREFIX_ADDRESS, "Jurong");
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
         assertFalse(predicate.test(new PersonBuilder().withName("Alice Bob").withAddress("Main Street").build()));
     }
 
@@ -172,7 +270,8 @@ public class PersonContainsKeywordsPredicateTest {
         Prefix unknownPrefix = new Prefix("unknown/");
         Map<Prefix, String> keywords = new HashMap<>();
         keywords.put(unknownPrefix, "someValue");
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(keywords);
+        PersonContainsKeywordsPredicate predicate =
+                new PersonContainsKeywordsPredicate(keywords, Collections.emptySet());
         assertFalse(predicate.test(new PersonBuilder().build()));
     }
 }

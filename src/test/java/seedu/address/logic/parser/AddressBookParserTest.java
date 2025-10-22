@@ -8,6 +8,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +97,8 @@ public class AddressBookParserTest {
         Map<Prefix, String> expectedKeywords = new HashMap<>();
         expectedKeywords.put(CliSyntax.PREFIX_NAME, "foo");
         expectedKeywords.put(CliSyntax.PREFIX_ADDRESS, "bar");
-        PersonContainsKeywordsPredicate expectedPredicate = new PersonContainsKeywordsPredicate(expectedKeywords);
+        PersonContainsKeywordsPredicate expectedPredicate =
+                new PersonContainsKeywordsPredicate(expectedKeywords, Collections.emptySet());
 
         assertEquals(new FilterCommand(expectedPredicate), command);
     }

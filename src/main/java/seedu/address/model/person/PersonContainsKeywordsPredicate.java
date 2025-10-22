@@ -10,71 +10,111 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_OCCUPATION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.parser.Prefix;
+import seedu.address.model.tag.Tag;
 
 /**
  * Tests that a {@code Person}'s attributes matches all the keywords given.
  */
 public class PersonContainsKeywordsPredicate implements Predicate<Person> {
     private final Map<Prefix, String> keywords;
+    private final Set<Tag> tags;
 
-    public PersonContainsKeywordsPredicate(Map<Prefix, String> keywords) {
+    /**
+     * Constructs a {@code PersonContainsKeywordsPredicate} with the specified keywords.
+     * @param keywords Map mapping prefixes to the keyword to filter for.
+     * @param tags Set of tags to filter for.
+     */
+    public PersonContainsKeywordsPredicate(Map<Prefix, String> keywords, Set<Tag> tags) {
         this.keywords = keywords;
+        this.tags = tags;
     }
 
     @Override
     public boolean test(Person person) {
         // returns true if the person matches ALL specified filter criteria.
         // filter n/josh a/kent ridge ->  filter (name=josh AND address=kent ridge)
-        return keywords.entrySet().stream().allMatch(entry -> {
-            if (entry.getValue().isEmpty()) {
-                return false;
-            }
-            return checkPersonAttribute(person, entry);
-        });
+        // Keywords or tags may be empty
+        boolean matchKeywords;
+        boolean matchTags;
+
+        if (this.keywords.isEmpty() && this.tags.isEmpty()) {
+            // This case should not happen as this check will have been done in FilterCommandParser.
+            return false;
+        }
+
+        if (this.keywords.isEmpty()) {
+            // If keywords is empty, then it is vacuously true.
+            matchKeywords = true;
+        } else {
+            matchKeywords = this.keywords.entrySet()
+                    .stream().allMatch(entry -> checkKeywordsMatch(person, entry));
+        }
+
+        if (this.tags.isEmpty()) {
+            // If tags is empty, then it is vacuously true.
+            matchTags = true;
+        } else {
+            matchTags = this.tags.stream().allMatch(tag -> checkTagsMatch(person, tag.tagName));
+        }
+        return matchKeywords && matchTags;
     }
 
-    private boolean checkPersonAttribute(Person person, Entry<Prefix, String> entry) {
+    private boolean checkKeywordsMatch(Person person, Entry<Prefix, String> entry) {
         Prefix prefix = entry.getKey();
         String keyword = entry.getValue();
 
         if (prefix.equals(PREFIX_ADDRESS)) {
-            return containStringCaseInsensitive(person.getAddress().value, keyword);
+            return containsIgnoreCase(person.getAddress().value, keyword);
         } else if (prefix.equals(PREFIX_DATE_OF_BIRTH)) {
-            return containStringCaseInsensitive(person.getDateOfBirth().value, keyword);
+            return containsIgnoreCase(person.getDateOfBirth().value, keyword);
         } else if (prefix.equals(PREFIX_DEPENDENTS)) {
-            return containStringCaseInsensitive(person.getDependents().toString(), keyword);
+            return containsIgnoreCase(person.getDependents().toString(), keyword);
         } else if (prefix.equals(PREFIX_EMAIL)) {
-            return containStringCaseInsensitive(person.getEmail().value, keyword);
-        } else if (prefix.equals(PREFIX_MARITAL_STATUS)) {
-            return containStringCaseInsensitive(person.getMaritalStatus().value, keyword);
-        } else if (prefix.equals(PREFIX_NAME)) {
-            return containStringCaseInsensitive(person.getName().fullName, keyword);
-        } else if (prefix.equals(PREFIX_OCCUPATION)) {
-            return containStringCaseInsensitive(person.getOccupation().value, keyword);
-        } else if (prefix.equals(PREFIX_PHONE)) {
-            return containStringCaseInsensitive(person.getPhone().value, keyword);
-        } else if (prefix.equals(PREFIX_SALARY)) {
-            return containStringCaseInsensitive(person.getSalary().value, keyword);
+            return containsIgnoreCase(person.getEmail().value, keyword);
         } else if (prefix.equals(PREFIX_INSURANCE_PACKAGE)) {
-            return containStringCaseInsensitive(person.getInsurancePackage().getPackageName(), keyword);
-        } else if (prefix.equals(PREFIX_TAG)) {
-            return person.getTags().stream()
-                    .anyMatch(tag -> containStringCaseInsensitive(tag.tagName, keyword));
+            return containsIgnoreCase(person.getInsurancePackage().getPackageName(), keyword);
+        } else if (prefix.equals(PREFIX_MARITAL_STATUS)) {
+            return containsIgnoreCase(person.getMaritalStatus().value, keyword);
+        } else if (prefix.equals(PREFIX_NAME)) {
+            return containsIgnoreCase(person.getName().fullName, keyword);
+        } else if (prefix.equals(PREFIX_OCCUPATION)) {
+            return containsIgnoreCase(person.getOccupation().value, keyword);
+        } else if (prefix.equals(PREFIX_PHONE)) {
+            return containsIgnoreCase(person.getPhone().value, keyword);
+        } else if (prefix.equals(PREFIX_SALARY)) {
+            return containsIgnoreCase(person.getSalary().value, keyword);
+        } else if (prefix.equals(PREFIX_INSURANCE_PACKAGE)) {
+            return containsIgnoreCase(person.getInsurancePackage().getPackageName(), keyword);
         }
 
         return false;
     }
 
-    private boolean containStringCaseInsensitive(String first, String second) {
+    /**
+     * Returns true if the first string contains the second string, ignoring case.
+     */
+    private boolean containsIgnoreCase(String first, String second) {
+        if (first == null || second == null || first.isEmpty() || second.isEmpty()) {
+            return false;
+        }
+
         return first.toLowerCase().contains(second.toLowerCase());
+    }
+
+    private boolean checkTagsMatch(Person person, String keyword) {
+        if (keyword == null || keyword.isEmpty()) {
+            return false;
+        }
+
+        return person.getTags().stream().anyMatch(tag -> containsIgnoreCase(tag.tagName, keyword));
     }
 
     @Override
@@ -89,11 +129,15 @@ public class PersonContainsKeywordsPredicate implements Predicate<Person> {
         }
 
         PersonContainsKeywordsPredicate otherPersonContainsKeywordsPredicate = (PersonContainsKeywordsPredicate) other;
-        return keywords.equals(otherPersonContainsKeywordsPredicate.keywords);
+        return this.keywords.equals(otherPersonContainsKeywordsPredicate.keywords)
+                && this.tags.equals(otherPersonContainsKeywordsPredicate.tags);
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).add("keywords", keywords).toString();
+        return new ToStringBuilder(this)
+                .add("keywords", this.keywords)
+                .add("tags", this.tags)
+                .toString();
     }
 }

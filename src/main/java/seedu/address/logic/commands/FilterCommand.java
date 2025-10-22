@@ -5,6 +5,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE_OF_BIRTH;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPENDENTS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MARITAL_STATUS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_OCCUPATION;
@@ -25,11 +26,20 @@ public class FilterCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Filters all persons whose attributes match ALL "
             + "of the specified keywords (case-insensitive) for each respective attribute.\n"
+            + "Empty keywords are not allowed."
             + "The filter will only display persons that match every keyword provided.\n"
-            + "Parameters: [" + PREFIX_NAME + "NAME] [" + PREFIX_PHONE + "PHONE] [" + PREFIX_ADDRESS + "ADDRESS] "
-            + "[" + PREFIX_EMAIL + "EMAIL] [" + PREFIX_SALARY + "SALARY] [" + PREFIX_DATE_OF_BIRTH + "DOB] "
-            + "[" + PREFIX_MARITAL_STATUS + "MARITAL STATUS] " + "[" + PREFIX_DEPENDENTS + "DEPENDENTS] ["
-            + PREFIX_OCCUPATION + "OCCUPATION] [" + PREFIX_TAG + "TAG]\n"
+            + "Parameters: "
+            + "[" + PREFIX_NAME + "NAME] "
+            + "[" + PREFIX_PHONE + "PHONE] "
+            + "[" + PREFIX_EMAIL + "EMAIL] "
+            + "[" + PREFIX_ADDRESS + "ADDRESS] "
+            + "[" + PREFIX_SALARY + "SALARY] "
+            + "[" + PREFIX_DATE_OF_BIRTH + "AGE] "
+            + "[" + PREFIX_MARITAL_STATUS + "MARITAL_STATUS] "
+            + "[" + PREFIX_DEPENDENTS + "NUMBER_OF_DEPENDENTS] "
+            + "[" + PREFIX_OCCUPATION + "OCCUPATION] "
+            + "[" + PREFIX_INSURANCE_PACKAGE + "INSURANCE PACKAGE] "
+            + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_NAME + "Alex " + PREFIX_ADDRESS + "Geylang Street";
 
     private final PersonContainsKeywordsPredicate predicate;
