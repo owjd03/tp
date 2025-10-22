@@ -13,7 +13,7 @@ import seedu.address.logic.parser.exceptions.ParseException;
 /**
  * Parses input arguments and creates a new EditPackageCommand object
  */
-public class EditPackageCommandParser {
+public class EditPackageCommandParser implements Parser<EditPackageCommand> {
     /**
      * Parses the given {@code String} of arguments in the context of the EditPackageCommand
      * and returns an EditPackageCommand object for execution.
@@ -28,12 +28,10 @@ public class EditPackageCommandParser {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditPackageCommand.MESSAGE_USAGE));
         }
 
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_INSURANCE_NAME, PREFIX_DESCRIPTION);
+
         String packageName = argMultimap.getValue(PREFIX_INSURANCE_NAME).get().trim();
         String packageDescription = argMultimap.getValue(PREFIX_DESCRIPTION).get().trim();
-
-        if (packageName.isEmpty()) {
-            throw new ParseException("Package name cannot be empty");
-        }
 
         return new EditPackageCommand(packageName, packageDescription);
     }
