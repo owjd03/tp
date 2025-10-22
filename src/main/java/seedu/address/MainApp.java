@@ -82,23 +82,6 @@ public class MainApp extends Application {
     private Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
         logger.info("Using data file : " + storage.getAddressBookFilePath());
 
-        Optional<ReadOnlyAddressBook> addressBookOptional;
-        ReadOnlyAddressBook initialData;
-        try {
-            addressBookOptional = storage.readAddressBook();
-            if (!addressBookOptional.isPresent()) {
-                logger.info("Creating a new data file " + storage.getAddressBookFilePath()
-                        + " populated with a sample AddressBook.");
-            }
-            initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
-        } catch (DataLoadingException e) {
-            logger.warning("Data file at " + storage.getAddressBookFilePath() + " could not be loaded."
-                    + " Will be starting with an empty AddressBook.");
-            initialData = new AddressBook();
-        }
-
-        logger.info("Using insurance catalog file: " + storage.getInsuranceCatalogFilePath());
-
         Optional<ReadOnlyInsuranceCatalog> insuranceCatalogOptional;
         ReadOnlyInsuranceCatalog initialInsuranceCatalog;
         try {
@@ -116,6 +99,23 @@ public class MainApp extends Application {
                     + " Will be starting with an empty InsuranceCatalog.");
             initialInsuranceCatalog = new InsuranceCatalog();
         }
+
+        Optional<ReadOnlyAddressBook> addressBookOptional;
+        ReadOnlyAddressBook initialData;
+        try {
+            addressBookOptional = storage.readAddressBook();
+            if (!addressBookOptional.isPresent()) {
+                logger.info("Creating a new data file " + storage.getAddressBookFilePath()
+                        + " populated with a sample AddressBook.");
+            }
+            initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
+        } catch (DataLoadingException e) {
+            logger.warning("Data file at " + storage.getAddressBookFilePath() + " could not be loaded."
+                    + " Will be starting with an empty AddressBook.");
+            initialData = new AddressBook();
+        }
+
+        logger.info("Using insurance catalog file: " + storage.getInsuranceCatalogFilePath());
 
         return new ModelManager(initialData, initialInsuranceCatalog, userPrefs);
     }
