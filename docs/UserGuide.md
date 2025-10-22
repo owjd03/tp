@@ -240,7 +240,7 @@ Examples:
 
 Edits an existing insurance package in the address book.
 
-Format: `editp INDEX [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
+Format: `editp [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
 
 * Finds the insurance package specified by `PACKAGE_NAME`. The search is case-insensitive.
 * Updates the description of the found package to the `NEW_DESCRIPTION`.
@@ -249,8 +249,24 @@ Format: `editp INDEX [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
 * You can set an empty description by typing `d/` followed by a space (e.g., `d/ `).
 
 Examples:
-* `editp n/Gold d/New description.` Edits the description of "Gold" package to be `New description.`
-* `editp n/Basic Plan d/ ` Edits the description of "Basic Plan" to be empty.
+* `editp i/Gold d/New description.` Edits the description of "Gold" package to be `New description.`
+* `editp i/Basic Plan d/ ` Edits the description of "Basic Plan" to be empty.
+
+### Deleting an insurance package: `deletep`
+
+Deletes an existing insurance package in the address book. The insurance package to be deleted
+cannot be one of the 4 default ones (Gold, Silver, Bronze, Undecided) and must not have a client 
+currently using it. 
+
+Format: `deletep [i/PACKAGE_NAME]`
+
+* Finds the insurance package specified by `PACKAGE_NAME`. The search is case-insensitive.
+* If the found package is one of the 4 default packages, an error message will be displayed and deletion will not occur.  
+* If the found package has at least one client currently using, an error message will be displayed and deletion will not occur.
+
+Examples:
+* `deletep i/PackageToBeDeleted` Deletes the insurance package named "PackageToBeDeleted".
+* `deletep i/Gold` Displays an error message as default packages cannot be deleted. 
 
 ### Listing existing insurance packages: `listp`
 
@@ -321,3 +337,6 @@ Action | Format, Examples
 **Help** | `help`
 **Sort** | `sort FIELD`<br> e.g., `sort name`, `sort salary`
 **List Package** | `listp`
+**Add Package** | `addp [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
+**Edit Package** | `editp [i/PACKAGE_NAME] [d/EDITED_PACKAGE_DESCRIPTION]`
+**Delete Package** | `deletep [i/PACKAGE_NAME] `
