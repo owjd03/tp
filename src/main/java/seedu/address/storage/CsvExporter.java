@@ -16,7 +16,7 @@ import seedu.address.model.person.Person;
 public class CsvExporter {
 
     private static final String CSV_HEADER = "Name,Phone,Email,Address,Salary,Date of Birth,"
-            + "Marital Status,Occupation,Dependents,Tags";
+            + "Marital Status,Occupation,Dependents,Insurance Package,Tags";
 
     /**
      * Exports a list of persons to a CSV file at the specified path.
@@ -64,6 +64,7 @@ public class CsvExporter {
                         person.getMaritalStatus(),
                         person.getOccupation(),
                         person.getDependents(),
+                        person.getInsurancePackage(),
                         tagsString
                 )
                 // Convert field to string, or empty if null
