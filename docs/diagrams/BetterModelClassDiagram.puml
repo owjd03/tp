@@ -18,4 +18,12 @@ Person *--> Name
 Person *--> Phone
 Person *--> Email
 Person *--> Address
+Person *--> Salary
+Person *--> DateOfBirth
+Person *--> MaritalStatus
+Person *--> Occupation
+Person *--> Dependents
+Person *--> InsurancePackage
+InsurancePackage *--> InsurancePackageName
+InsurancePackage *--> InsurancePackageDescription
 @enduml
