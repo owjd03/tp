@@ -64,7 +64,7 @@ public class CsvExporter {
                         person.getMaritalStatus(),
                         person.getOccupation(),
                         person.getDependents(),
-                        person.getInsurancePackage(),
+                        person.getInsurancePackage().getPackageName(),
                         tagsString
                 )
                 // Convert field to string, or empty if null
