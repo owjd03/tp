@@ -13,7 +13,7 @@ import seedu.address.model.insurance.InsurancePackage;
 /**
  * Parses input arguments and creates a new AddPackageCommand object
  */
-public class AddPackageCommandParser {
+public class AddPackageCommandParser implements Parser<AddPackageCommand> {
 
     /**
      * Parses the given {@code String} of arguments in the context of the AddPackageCommand
@@ -36,7 +36,7 @@ public class AddPackageCommandParser {
         String packageDescription = argMultimap.getValue(PREFIX_DESCRIPTION).get().trim();
 
         if (packageName.isEmpty()) {
-            throw new ParseException("Package name cannot be empty");
+            throw new ParseException(InsurancePackage.MESSAGE_CONSTRAINTS);
         }
 
         InsurancePackage insurancePackage = new InsurancePackage(packageName, packageDescription);
