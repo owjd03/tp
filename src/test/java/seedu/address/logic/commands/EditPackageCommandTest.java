@@ -9,11 +9,13 @@ import static seedu.address.testutil.Assert.assertThrows;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Test;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.Messages;
 import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.Model;
@@ -25,6 +27,8 @@ import seedu.address.model.person.Person;
 import seedu.address.testutil.InsurancePackageBuilder;
 
 public class EditPackageCommandTest {
+
+    private static final Logger logger = LogsCenter.getLogger(EditPackageCommandTest.class);
 
     private static final String NEW_PACKAGE_DESCRIPTION = "New description";
     private static final String OLD_PACKAGE_DESCRIPTION = "Old description";
@@ -40,6 +44,7 @@ public class EditPackageCommandTest {
     public void execute_packageFound_editSuccessful() throws Exception {
         InsurancePackage originalPackage = new InsurancePackageBuilder().withName(PACKAGE_NAME)
                 .withDescription(OLD_PACKAGE_DESCRIPTION).build();
+        logger.info("Created originalPackage: " + originalPackage);
 
         ModelStubWithPackage modelStub = new ModelStubWithPackage(originalPackage);
 
@@ -47,6 +52,7 @@ public class EditPackageCommandTest {
                 .withDescription(NEW_PACKAGE_DESCRIPTION).build();
 
         CommandResult commandResult = new EditPackageCommand(PACKAGE_NAME, NEW_PACKAGE_DESCRIPTION).execute(modelStub);
+        logger.info("Command executed. Result: " + commandResult.getFeedbackToUser());
 
         assertEquals(String.format(EditPackageCommand.MESSAGE_EDIT_PACKAGE_SUCCESS, Messages.format(editedPackage)),
                 commandResult.getFeedbackToUser());

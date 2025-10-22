@@ -9,11 +9,15 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailur
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
 import org.junit.jupiter.api.Test;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EditPackageCommand;
 
 public class EditPackageCommandParserTest {
+
+    private static final Logger logger = LogsCenter.getLogger(EditPackageCommandParserTest.class);
 
     private static final String DESC_DESC_NEW = " " + PREFIX_DESCRIPTION + VALID_INSURANCE_PACKAGE_DESCRIPTION_BOB;
     private static final String MESSAGE_INVALID_FORMAT =
@@ -26,6 +30,8 @@ public class EditPackageCommandParserTest {
     public void parse_allFieldsPresent_success() {
         String expectedName = VALID_INSURANCE_PACKAGE_NAME_BOB;
         String expectedDesc = VALID_INSURANCE_PACKAGE_DESCRIPTION_BOB;
+        EditPackageCommand expectedCommand = new EditPackageCommand(expectedName, expectedDesc);
+        logger.info("Expected command: " + expectedCommand);
 
         // whitespace only preamble
         assertParseSuccess(parser, "   " + NAME_DESC_GOLD + DESC_DESC_NEW,
