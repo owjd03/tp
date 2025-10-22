@@ -16,6 +16,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
@@ -72,6 +73,14 @@ public class AddCommand extends Command {
 
         if (model.hasPerson(toAdd)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
+        }
+
+        String desiredPackageName = toAdd.getInsurancePackage().getPackageName();
+        if (!InsuranceCatalog.isValidInsurancePackage(desiredPackageName)) {
+            String validNamesString = InsuranceCatalog.getValidInsurancePackageNames();
+            throw new CommandException("The insurance package '"
+                    + desiredPackageName + "' does not exist.\n"
+                    + "Available packages are: " + validNamesString);
         }
 
         model.addPerson(toAdd);

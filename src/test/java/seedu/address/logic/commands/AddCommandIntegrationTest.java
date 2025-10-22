@@ -29,7 +29,7 @@ public class AddCommandIntegrationTest {
 
     @Test
     public void execute_newPerson_success() {
-        Person validPerson = new PersonBuilder().build();
+        Person validPerson = new PersonBuilder().withInsurancePackage("Gold", "").build();
 
         Model expectedModel = new ModelManager(model.getAddressBook(), model.getInsuranceCatalog(), new UserPrefs());
         expectedModel.addPerson(validPerson);

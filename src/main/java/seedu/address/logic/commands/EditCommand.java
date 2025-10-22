@@ -26,6 +26,7 @@ import seedu.address.commons.util.CollectionUtil;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.Model;
 import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
@@ -96,6 +97,15 @@ public class EditCommand extends Command {
 
         Person personToEdit = lastShownList.get(index.getZeroBased());
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
+
+
+        String desiredPackageName = personToEdit.getInsurancePackage().getPackageName();
+        if (!InsuranceCatalog.isValidInsurancePackage(desiredPackageName)) {
+            String validNamesString = InsuranceCatalog.getValidInsurancePackageNames();
+            throw new CommandException("The insurance package '"
+                    + desiredPackageName + "' does not exist.\n"
+                    + "Available packages are: " + validNamesString);
+        }
 
         if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);

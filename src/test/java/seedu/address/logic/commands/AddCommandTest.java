@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 
@@ -11,15 +12,19 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
+import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyInsuranceCatalog;
@@ -30,6 +35,17 @@ import seedu.address.testutil.PersonBuilder;
 
 public class AddCommandTest {
 
+    @BeforeEach
+    public void setUp() {
+        InsuranceCatalog tempCatalog = new InsuranceCatalog();
+
+        List<InsurancePackage> packages = new ArrayList<>();
+        packages.add(new InsurancePackage("Gold", "A gold package"));
+        packages.add(new InsurancePackage("Silver", "A silver package"));
+
+        tempCatalog.setInsurancePackages(packages);
+    }
+
     @Test
     public void constructor_nullPerson_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new AddCommand(null));
@@ -38,7 +54,7 @@ public class AddCommandTest {
     @Test
     public void execute_personAcceptedByModel_addSuccessful() throws Exception {
         ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
-        Person validPerson = new PersonBuilder().build();
+        Person validPerson = new PersonBuilder().withInsurancePackage("Gold", "").build();
 
         CommandResult commandResult = new AddCommand(validPerson).execute(modelStub);
 
@@ -54,6 +70,19 @@ public class AddCommandTest {
         ModelStub modelStub = new ModelStubWithPerson(validPerson);
 
         assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_invalidInsurancePackage_throwsCommandException() {
+        Person personWithInvalidPackage = new PersonBuilder().withInsurancePackage("InvalidPackage", "").build();
+
+        AddCommand addCommand = new AddCommand(personWithInvalidPackage);
+
+        String validNamesString = InsuranceCatalog.getValidInsurancePackageNames();
+        String expectedError = "The insurance package 'Invalidpackage' does not exist.\n"
+                + "Available packages are: " + validNamesString;
+
+        assertCommandFailure(addCommand, new ModelStubAcceptingPersonAdded(), expectedError);
     }
 
     @Test
@@ -256,6 +285,11 @@ public class AddCommandTest {
         public void addPerson(Person person) {
             requireNonNull(person);
             personsAdded.add(person);
+        }
+
+        @Override
+        public ObservableList<Person> getFilteredPersonList() {
+            return FXCollections.emptyObservableList();
         }
 
         @Override
