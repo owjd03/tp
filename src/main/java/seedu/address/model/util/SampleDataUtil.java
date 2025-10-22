@@ -22,7 +22,7 @@ import seedu.address.model.person.Salary;
 import seedu.address.model.tag.Tag;
 
 /**
- * Contains utility methods for populating {@code AddressBook} with sample data.
+ * Contains utility methods for populating {@code AddressBook} and {@code InsuranceCatalog} with sample data.
  */
 public class SampleDataUtil {
     public static Person[] getSamplePersons() {
