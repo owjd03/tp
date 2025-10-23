@@ -60,7 +60,7 @@ public class ViewWindow extends UiPart<Stage> {
      */
     void fillInnerParts() {
         ObservableList<Person> viewList = FXCollections.observableArrayList(personToView);
-        personListPanel = new PersonListPanel(viewList);
+        personListPanel = new PersonListPanel(viewList, true);
         personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
     }
 
