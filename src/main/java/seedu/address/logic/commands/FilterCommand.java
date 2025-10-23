@@ -34,11 +34,11 @@ public class FilterCommand extends Command {
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_SALARY + "SALARY] "
-            + "[" + PREFIX_DATE_OF_BIRTH + "AGE] "
+            + "[" + PREFIX_DATE_OF_BIRTH + "DATE_OF_BIRTH] "
             + "[" + PREFIX_MARITAL_STATUS + "MARITAL_STATUS] "
             + "[" + PREFIX_DEPENDENTS + "NUMBER_OF_DEPENDENTS] "
             + "[" + PREFIX_OCCUPATION + "OCCUPATION] "
-            + "[" + PREFIX_INSURANCE_PACKAGE + "INSURANCE PACKAGE] "
+            + "[" + PREFIX_INSURANCE_PACKAGE + "INSURANCE_PACKAGE] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_NAME + "Alex " + PREFIX_ADDRESS + "Geylang Street";
 
