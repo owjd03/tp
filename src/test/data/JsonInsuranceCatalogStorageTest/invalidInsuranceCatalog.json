@@ -1,0 +1,6 @@
+{
+  "insurancePackages": [ {
+    "packageName": "",
+    "packageDescription": "Empty package name should be invalid"
+  } ]
+}

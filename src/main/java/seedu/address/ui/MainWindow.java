@@ -16,6 +16,7 @@ import seedu.address.logic.Logic;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.Person;
 
 /**
  * The Main Window. Provides the basic application layout containing
@@ -34,12 +35,17 @@ public class MainWindow extends UiPart<Stage> {
     private PersonListPanel personListPanel;
     private ResultDisplay resultDisplay;
     private HelpWindow helpWindow;
+    private ViewWindow viewWindow;
+    private PackageWindow packageWindow;
 
     @FXML
     private StackPane commandBoxPlaceholder;
 
     @FXML
     private MenuItem helpMenuItem;
+
+    @FXML
+    private MenuItem packageMenuItem;
 
     @FXML
     private StackPane personListPanelPlaceholder;
@@ -66,6 +72,8 @@ public class MainWindow extends UiPart<Stage> {
         setAccelerators();
 
         helpWindow = new HelpWindow();
+        viewWindow = new ViewWindow();
+        packageWindow = new PackageWindow(logic.getFilteredInsurancePackageList());
     }
 
     public Stage getPrimaryStage() {
@@ -74,6 +82,7 @@ public class MainWindow extends UiPart<Stage> {
 
     private void setAccelerators() {
         setAccelerator(helpMenuItem, KeyCombination.valueOf("F1"));
+        setAccelerator(packageMenuItem, KeyCombination.valueOf("F2"));
     }
 
     /**
@@ -147,6 +156,31 @@ public class MainWindow extends UiPart<Stage> {
         }
     }
 
+    /**
+     * Opens the view window or focuses on it if it's already opened.
+     */
+    @FXML
+    public void handleView(Person personToView) {
+        viewWindow.setPerson(personToView);
+        if (!viewWindow.isShowing()) {
+            viewWindow.show();
+        } else {
+            viewWindow.focus();
+        }
+    }
+
+    /**
+     * Opens the package window or focuses on it if it's already opened.
+     */
+    @FXML
+    public void handlePackage() {
+        if (!packageWindow.isShowing()) {
+            packageWindow.show();
+        } else {
+            packageWindow.focus();
+        }
+    }
+
     void show() {
         primaryStage.show();
     }
@@ -160,6 +194,7 @@ public class MainWindow extends UiPart<Stage> {
                 (int) primaryStage.getX(), (int) primaryStage.getY());
         logic.setGuiSettings(guiSettings);
         helpWindow.hide();
+        viewWindow.hide();
         primaryStage.hide();
     }
 
@@ -180,6 +215,14 @@ public class MainWindow extends UiPart<Stage> {
 
             if (commandResult.isShowHelp()) {
                 handleHelp();
+            }
+
+            if (commandResult.isShowView()) {
+                handleView(commandResult.getPersonToView());
+            }
+
+            if (commandResult.isShowPackage()) {
+                handlePackage();
             }
 
             if (commandResult.isExit()) {

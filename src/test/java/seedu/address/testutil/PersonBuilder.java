@@ -3,11 +3,17 @@ package seedu.address.testutil;
 import java.util.HashSet;
 import java.util.Set;
 
+import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.DateOfBirth;
+import seedu.address.model.person.Dependents;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.MaritalStatus;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Occupation;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Salary;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.util.SampleDataUtil;
 
@@ -20,11 +26,24 @@ public class PersonBuilder {
     public static final String DEFAULT_PHONE = "85355255";
     public static final String DEFAULT_EMAIL = "amy@gmail.com";
     public static final String DEFAULT_ADDRESS = "123, Jurong West Ave 6, #08-111";
+    public static final String DEFAULT_SALARY = "1000";
+    public static final String DEFAULT_DATE_OF_BIRTH = "2000-01-01";
+    public static final String DEFAULT_MARITAL_STATUS = "Single";
+    public static final String DEFAULT_OCCUPATION = "Unemployed";
+    public static final int DEFAULT_DEPENDENTS = 0;
+    public static final String DEFAULT_INSURANCE_PACKAGE_NAME = "Undecided";
+    public static final String DEFAULT_INSURANCE_PACKAGE_DESCRIPTION = "No insurance package selected.";
 
     private Name name;
     private Phone phone;
     private Email email;
     private Address address;
+    private Salary salary;
+    private DateOfBirth dateOfBirth;
+    private MaritalStatus maritalStatus;
+    private Occupation occupation;
+    private Dependents dependents;
+    private InsurancePackage insurancePackage;
     private Set<Tag> tags;
 
     /**
@@ -35,6 +54,12 @@ public class PersonBuilder {
         phone = new Phone(DEFAULT_PHONE);
         email = new Email(DEFAULT_EMAIL);
         address = new Address(DEFAULT_ADDRESS);
+        salary = new Salary(DEFAULT_SALARY);
+        dateOfBirth = new DateOfBirth(DEFAULT_DATE_OF_BIRTH);
+        maritalStatus = new MaritalStatus(DEFAULT_MARITAL_STATUS);
+        occupation = new Occupation(DEFAULT_OCCUPATION);
+        dependents = new Dependents(DEFAULT_DEPENDENTS);
+        insurancePackage = new InsurancePackage(DEFAULT_INSURANCE_PACKAGE_NAME, DEFAULT_INSURANCE_PACKAGE_DESCRIPTION);
         tags = new HashSet<>();
     }
 
@@ -46,6 +71,12 @@ public class PersonBuilder {
         phone = personToCopy.getPhone();
         email = personToCopy.getEmail();
         address = personToCopy.getAddress();
+        salary = personToCopy.getSalary();
+        dateOfBirth = personToCopy.getDateOfBirth();
+        maritalStatus = personToCopy.getMaritalStatus();
+        occupation = personToCopy.getOccupation();
+        dependents = personToCopy.getDependents();
+        insurancePackage = personToCopy.getInsurancePackage();
         tags = new HashSet<>(personToCopy.getTags());
     }
 
@@ -89,8 +120,63 @@ public class PersonBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code Salary} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withSalary(String salary) {
+        this.salary = new Salary(salary);
+        return this;
+    }
+
+    /**
+     * Sets the {@code DateOfBirth} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = new DateOfBirth(dateOfBirth);
+        return this;
+    }
+
+    /**
+     * Sets the {@code MaritalStatus} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withMaritalStatus(String maritalStatus) {
+        this.maritalStatus = new MaritalStatus(maritalStatus);
+        return this;
+    }
+
+    /**
+     * Sets the {@code Occupation} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withOccupation(String occupation) {
+        this.occupation = new Occupation(occupation);
+        return this;
+    }
+
+    /**
+     * Sets the {@code Dependents} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withDependents(int dependents) {
+        this.dependents = new Dependents(dependents);
+        return this;
+    }
+
+
+    /**
+     * Sets the {@code InsurancePackage} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withInsurancePackage(String packageName, String packageDescription) {
+        this.insurancePackage = new InsurancePackage(packageName, packageDescription);
+        return this;
+    }
+
+    /**
+     * Builds the Person object.
+     *
+     * @return The constructed Person object.
+     */
     public Person build() {
-        return new Person(name, phone, email, address, tags);
+        return new Person(name, phone, email, address, salary, dateOfBirth, maritalStatus, occupation, dependents,
+                insurancePackage, tags);
     }
 
 }

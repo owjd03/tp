@@ -16,14 +16,18 @@ import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.Logic;
 import seedu.address.logic.LogicManager;
 import seedu.address.model.AddressBook;
+import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.ReadOnlyInsuranceCatalog;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.util.SampleDataUtil;
 import seedu.address.storage.AddressBookStorage;
+import seedu.address.storage.InsuranceCatalogStorage;
 import seedu.address.storage.JsonAddressBookStorage;
+import seedu.address.storage.JsonInsuranceCatalogStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.Storage;
 import seedu.address.storage.StorageManager;
@@ -58,7 +62,10 @@ public class MainApp extends Application {
         UserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(config.getUserPrefsFilePath());
         UserPrefs userPrefs = initPrefs(userPrefsStorage);
         AddressBookStorage addressBookStorage = new JsonAddressBookStorage(userPrefs.getAddressBookFilePath());
-        storage = new StorageManager(addressBookStorage, userPrefsStorage);
+        InsuranceCatalogStorage insuranceCatalogStorage =
+                new JsonInsuranceCatalogStorage(userPrefs.getInsuranceCatalogFilePath());
+
+        storage = new StorageManager(addressBookStorage, insuranceCatalogStorage, userPrefsStorage);
 
         model = initModelManager(storage, userPrefs);
 
@@ -75,6 +82,24 @@ public class MainApp extends Application {
     private Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
         logger.info("Using data file : " + storage.getAddressBookFilePath());
 
+        Optional<ReadOnlyInsuranceCatalog> insuranceCatalogOptional;
+        ReadOnlyInsuranceCatalog initialInsuranceCatalog;
+        try {
+            insuranceCatalogOptional = storage.readInsuranceCatalog();
+            if (!insuranceCatalogOptional.isPresent()) {
+                logger.info("Creating a new insurance catalog file "
+                        + storage.getInsuranceCatalogFilePath()
+                        + " populated with a sample InsuranceCatalog.");
+            }
+            initialInsuranceCatalog = insuranceCatalogOptional.orElseGet(SampleDataUtil::getSampleInsuranceCatalog);
+        } catch (DataLoadingException e) {
+            logger.warning("Insurance catalog file at "
+                    + storage.getInsuranceCatalogFilePath()
+                    + " could not be loaded."
+                    + " Will be starting with an empty InsuranceCatalog.");
+            initialInsuranceCatalog = new InsuranceCatalog();
+        }
+
         Optional<ReadOnlyAddressBook> addressBookOptional;
         ReadOnlyAddressBook initialData;
         try {
@@ -90,7 +115,9 @@ public class MainApp extends Application {
             initialData = new AddressBook();
         }
 
-        return new ModelManager(initialData, userPrefs);
+        logger.info("Using insurance catalog file: " + storage.getInsuranceCatalogFilePath());
+
+        return new ModelManager(initialData, initialInsuranceCatalog, userPrefs);
     }
 
     private void initLogging(Config config) {
