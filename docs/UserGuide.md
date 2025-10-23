@@ -151,25 +151,26 @@ Examples:
 
 Filters the list of persons to show only those who match all specified criteria.
 
-Format: `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`
+Format: `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`
 
 * At least one of the optional fields must be provided.
 * The filter is case-insensitive. e.g `josh` will match `Josh`
 * Keywords do not need to be complete words. The command matches any entry that **contains** the keyword. e.g. `n/jo` will match names like `John` or `Joseph`
 * Keywords can be single words or phrases (e.g. `a/changi village` is allowed).
 * Only persons who match **all** specified criteria will be shown.
-* If you specify the same prefix multiple times, only the last one will be used for filtering.
+* Only multiple `t/` (tag) prefixes are allowed, and all specified tags must be present in the person's tags. Duplicate prefixes for other categories are strictly not allowed and will result in an error.
 
 Examples:
 * `filter n/josh` displays all persons whose name contains `josh`.
 * `filter n/josh a/kent ridge` displays all persons whose name contains `josh` **AND** whose address contains `kent ridge`.
-* `filter n/josh n/david` is equivalent to `filter n/david`. It will display all persons whose name contains `david`.
+* `filter t/friend t/rich`will display all persons who have the tags containing `friend` **AND** `rich`.
 
 Invalid Usages:
 * `filter` (no parameters)
 * `filter some random text` (preamble is not allowed)
 * `filter n/` (empty description for a prefix)
 * `filter n/ a/changi` (empty description for a prefix)
+* `filter n/josh n/david` (duplicate prefixes except for `t/` (tag) are not allowed)
 
 ### Sorting persons: `sort`
 
@@ -330,7 +331,7 @@ Action | Format, Examples
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
 **Export** | `export`
-**Filter** | `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g., `filter n/James Lee e/jameslee`
+**Filter** | `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g., `filter n/James Lee e/jameslee`
 **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **View** | `view NAME-KEYWORD` `view INDEX` <br> e.g. `view Alex` `view 1`
 **List** | `list`
