@@ -365,7 +365,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 1.  FA requests to list clients
 2.  ClientCore shows a list of clients
 3.  FA requests to view a specific client in the list.
-4.  ClientCore shows the client's full detail.
+4.  ClientCore shows the client's full detail in a new window.
 
     Use case ends.
 
@@ -389,8 +389,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 3c. The given name matches with 2 or more client
 
-    * 3c1. ClientCore shows a list of matching clients with their 
-	   index and prompt FA to view based on index instead of name.
+    * 3c1. ClientCore shows an error message and 
+           prompt FA to view based on index instead of name.
 
       Use case resumes at step 2.
 
@@ -401,8 +401,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1.  FA requests to list persons
-2.  ClientCore shows a list of persons
+1.  FA requests to list clients
+2.  ClientCore shows a list of clients
 3.  FA requests to filter the list based on input field.
 4.  ClientCore shows the filtered list.
 
@@ -461,7 +461,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-**Use case: U6. Sort a client based on a criteria**
+**Use case: U6. Sort a client based on a category**
 
 **Precondition:**
 
@@ -472,12 +472,16 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 1.  FA requests to list clients
 2.  ClientCore shows a list of clients
-3.  FA requests to sort clients based on existing category, ascending/descending
+3.  FA requests to sort clients based on existing category, stating ascending/descending
 4.  ClientCore sorts the list based on FA's input.
 
     Use case ends.
 
 **Extensions**
+
+* 2a. The list is empty.
+
+  Use case ends.
 
 * 3a. The given input is not based on existing category.
       
@@ -533,6 +537,28 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 3a7. ClientCore logs the user in with latest data in previous account.
       
       Use case ends.
+
+**Use case: U8. Exporting data**
+
+**Precondition:**
+
+1. FA is logged into the app
+2. The list contains 1 or more client
+
+**MSS**
+
+1.  FA requests to export the data
+2.  ClientCore write the data into a csv file and store it into data path
+
+    Use case ends.
+
+**Extensions**
+
+* 2a. FA wants to rewrite exported data.
+
+    * 2a1. FA edits the data.
+  
+        Use case resumes at step 1.
 
 *{More to be added}*
 
