@@ -163,7 +163,7 @@ Format: `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF
 Examples:
 * `filter n/josh` displays all persons whose name contains `josh`.
 * `filter n/josh a/kent ridge` displays all persons whose name contains `josh` **AND** whose address contains `kent ridge`.
-* `filter t/friend t/owes money`will display all persons who have the tags containing `friend` **AND** `owes money`.
+* `filter t/friend t/rich`will display all persons who have the tags containing `friend` **AND** `rich`.
 
 Invalid Usages:
 * `filter` (no parameters)
