@@ -31,6 +31,13 @@ public class Dependents {
         return test >= 0;
     }
 
+    /**
+     * Returns the numerical value of the dependents as a double.
+     */
+    public double getNumericValue() {
+        return (double) this.value;
+    }
+
     public int toInt() {
         return value;
     }

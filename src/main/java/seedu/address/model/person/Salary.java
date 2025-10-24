@@ -48,6 +48,13 @@ public class Salary {
     }
 
     /**
+     * Returns the numerical value of the salary as a double.
+     */
+    public double getNumericValue() {
+        return Double.parseDouble(this.value);
+    }
+
+    /**
      * Formats the salary with a '$' sign in front and commas separating thousands.
      * If the salary has decimal places, it will be formatted to two decimal places.
      * @return A formatted string representation of the salary.
