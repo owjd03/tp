@@ -13,6 +13,8 @@ public class MaritalStatus {
             "Marital status must be one of the predefined constants: "
                     + "Single, Married, Divorced, Widowed";
 
+    public static final String UNSPECIFIED_VALUE = "Unspecified";
+
     public final String value;
 
     /**
@@ -27,9 +29,18 @@ public class MaritalStatus {
     }
 
 
+    /**
+     * Static factory method for creating the default "Unspecified" MaritalStatus
+     * @return A MaritalStatus object with value "Unspecified".
+     */
+    public static MaritalStatus createUnspecified() {
+        return new MaritalStatus(UNSPECIFIED_VALUE);
+    }
+
+
     @Override
     public String toString() {
-        return value.toString();
+        return value;
     }
 
     @Override

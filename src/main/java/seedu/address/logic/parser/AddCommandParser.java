@@ -48,7 +48,6 @@ public class AddCommandParser implements Parser<AddCommand> {
                                 PREFIX_DEPENDENTS, PREFIX_OCCUPATION, PREFIX_INSURANCE_PACKAGE, PREFIX_TAG);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_ADDRESS, PREFIX_PHONE, PREFIX_EMAIL,
-                PREFIX_SALARY, PREFIX_DATE_OF_BIRTH, PREFIX_MARITAL_STATUS, PREFIX_DEPENDENTS, PREFIX_OCCUPATION,
                 PREFIX_INSURANCE_PACKAGE) || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
         }
@@ -56,22 +55,41 @@ public class AddCommandParser implements Parser<AddCommand> {
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS,
                 PREFIX_SALARY, PREFIX_DATE_OF_BIRTH, PREFIX_MARITAL_STATUS, PREFIX_DEPENDENTS, PREFIX_OCCUPATION,
                 PREFIX_INSURANCE_PACKAGE);
+
+
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
         Phone phone = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get());
         Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
         Address address = ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get());
-        Salary salary = ParserUtil.parseSalary(argMultimap.getValue(PREFIX_SALARY).get());
-        DateOfBirth dateOfBirth = ParserUtil.parseDateOfBirth(argMultimap.getValue(PREFIX_DATE_OF_BIRTH).get());
-        MaritalStatus maritalStatus = ParserUtil.parseMaritalStatus(argMultimap.getValue(PREFIX_MARITAL_STATUS).get());
-        Occupation occupation = ParserUtil.parseOccupation(argMultimap.getValue(PREFIX_OCCUPATION).get());
-        Dependents dependents = ParserUtil.parseDependents(
-                Integer.parseInt(argMultimap.getValue(CliSyntax.PREFIX_DEPENDENTS).get()));
         InsurancePackage insurancePackage = ParserUtil.parseInsurancePackage(argMultimap
                 .getValue(PREFIX_INSURANCE_PACKAGE).get());
         Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
 
+        Salary salary = Salary.createUnspecified();
+        DateOfBirth dateOfBirth = DateOfBirth.createUnspecified();
+        MaritalStatus maritalStatus = MaritalStatus.createUnspecified();
+        Occupation occupation = Occupation.createUnspecified();
+        Dependents numberOfDependents = Dependents.createUnspecified();
+
+
+        if (argMultimap.getValue(PREFIX_SALARY).isPresent()) {
+            salary = ParserUtil.parseSalary(argMultimap.getValue(PREFIX_SALARY).get());
+        }
+        if (argMultimap.getValue(PREFIX_DATE_OF_BIRTH).isPresent()) {
+            dateOfBirth = ParserUtil.parseDateOfBirth(argMultimap.getValue(PREFIX_DATE_OF_BIRTH).get());
+        }
+        if (argMultimap.getValue(PREFIX_MARITAL_STATUS).isPresent()) {
+            maritalStatus = ParserUtil.parseMaritalStatus(argMultimap.getValue(PREFIX_MARITAL_STATUS).get());
+        }
+        if (argMultimap.getValue(PREFIX_OCCUPATION).isPresent()) {
+            occupation = ParserUtil.parseOccupation(argMultimap.getValue(PREFIX_OCCUPATION).get());
+        }
+        if (argMultimap.getValue(PREFIX_DEPENDENTS).isPresent()) {
+            numberOfDependents = ParserUtil.parseDependents(argMultimap.getValue(PREFIX_DEPENDENTS).get());
+        }
+
         Person person = new Person(name, phone, email, address, salary, dateOfBirth, maritalStatus,
-                occupation, dependents, insurancePackage, tagList);
+                occupation, numberOfDependents, insurancePackage, tagList);
 
         return new AddCommand(person);
     }

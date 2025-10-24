@@ -278,31 +278,6 @@ public class AddCommandParserTest {
                     + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
                     + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
 
-        // missing salary prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                    + VALID_SALARY_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
-
-        // missing date of birth prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                    + SALARY_DESC_BOB + VALID_DOB_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
-
-        // missing marital status prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                    + SALARY_DESC_BOB + DOB_DESC_BOB + VALID_MARITAL_STATUS_BOB + OCCUPATION_DESC_BOB
-                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
-
-        // missing occupation prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                    + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + VALID_OCCUPATION_BOB
-                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
-
-        // missing dependents prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                    + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                    + VALID_DEPENDENTS_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
-
         // all prefixes missing
         assertParseFailure(parser, VALID_NAME_BOB + VALID_PHONE_BOB + VALID_EMAIL_BOB + VALID_ADDRESS_BOB
                     + VALID_SALARY_BOB + VALID_DOB_BOB + VALID_MARITAL_STATUS_BOB + VALID_DEPENDENTS_BOB

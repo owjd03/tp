@@ -1,6 +1,5 @@
 package seedu.address.model.person;
 
-import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
 /**
@@ -11,6 +10,8 @@ public class Dependents {
 
     public static final String MESSAGE_CONSTRAINTS = "Number of dependents must be a non-negative integer";
 
+    public static final int UNSPECIFIED_VALUE = -1;
+
     public final int value;
 
     /**
@@ -19,16 +20,20 @@ public class Dependents {
      * @param numberOfDependents A valid number of dependents.
      */
     public Dependents(int numberOfDependents) {
-        requireNonNull(numberOfDependents);
         checkArgument(isValidDependents(numberOfDependents), MESSAGE_CONSTRAINTS);
         value = numberOfDependents;
     }
 
     /**
-     * Returns true if a given integer is a valid number of dependents.
+     * Returns true if a given integer is a valid number of dependents
+     * or is the unspecified value (-1).
      */
     public static boolean isValidDependents(int test) {
-        return test >= 0;
+        return test >= 0 || test == UNSPECIFIED_VALUE;
+    }
+
+    public static Dependents createUnspecified() {
+        return new Dependents(UNSPECIFIED_VALUE);
     }
 
     public int toInt() {
@@ -37,6 +42,9 @@ public class Dependents {
 
     @Override
     public String toString() {
+        if (this.value == UNSPECIFIED_VALUE) {
+            return "Unspecified";
+        }
         return String.valueOf(value);
     }
 
