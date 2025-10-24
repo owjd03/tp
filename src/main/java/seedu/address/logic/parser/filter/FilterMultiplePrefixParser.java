@@ -90,7 +90,8 @@ public class FilterMultiplePrefixParser implements FilterPrefixParser {
         FilterMultiplePrefixParser otherParser = (FilterMultiplePrefixParser) other;
 
         return this.prefix.equals(otherParser.prefix)
-                && this.parsedTags.equals(otherParser.parsedTags);
+                && this.parsedTags.containsAll(otherParser.parsedTags)
+                && otherParser.parsedTags.containsAll(this.parsedTags);
     }
 
     @Override

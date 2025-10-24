@@ -118,9 +118,10 @@ public class FilterNumericalPrefixParser implements FilterPrefixParser {
 
     @Override
     public String toString() {
+        // Can't use toString on predicate
         return new ToStringBuilder(this)
                 .add("prefix", this.prefix)
-                .add("predicate", this.predicate)
+                .add("user input", this.filterString)
                 .toString();
     }
 
