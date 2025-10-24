@@ -247,10 +247,14 @@ public class AddCommandParserTest {
     @Test
     public void parse_optionalFieldsMissing_success() {
         // zero tags
-        Person expectedPerson = new PersonBuilder(AMY).withTags().build();
+        Person expectedPerson = new PersonBuilder(AMY).withSalary(Salary.UNSPECIFIED_VALUE)
+                .withDateOfBirth(DateOfBirth.UNSPECIFIED_VALUE)
+                .withMaritalStatus(MaritalStatus.UNSPECIFIED_VALUE)
+                .withOccupation(Occupation.UNSPECIFIED_VALUE)
+                .withDependents(Dependents.UNSPECIFIED_VALUE)
+                .withTags().build();
         assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
-                        + SALARY_DESC_AMY + DOB_DESC_AMY + MARITAL_STATUS_DESC_AMY + OCCUPATION_DESC_AMY
-                        + DEPENDENTS_DESC_AMY + INSURANCE_PACKAGE_DESC_AMY,
+                        + INSURANCE_PACKAGE_DESC_AMY,
                 new AddCommand(expectedPerson));
     }
 
