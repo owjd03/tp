@@ -23,7 +23,9 @@ import seedu.address.model.person.Person;
  *    - If an operator (>, <, >=, <=) is present, it creates a comparison predicate.
  *    - If no operator is present, it defaults to an exact equality check.
  * 2. If the input cannot be parsed as a number (e.g., it contains text),
- *    it falls back to a case-insensitive keyword search. This is primarily
+ *    it checks if the input contains a number (e.g. it is a mixture of text and numbers such as 50k).
+ *    An exception is thrown in this case.
+ * 3. If not case 1 or 2, it falls back to a case-insensitive keyword search. This is primarily
  *    used to find persons with "unspecified" values for these fields.
  */
 public class FilterNumericalPrefixParser implements FilterPrefixParser {
