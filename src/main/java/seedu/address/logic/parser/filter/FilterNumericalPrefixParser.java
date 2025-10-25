@@ -31,11 +31,13 @@ import seedu.address.model.person.Person;
 public class FilterNumericalPrefixParser implements FilterPrefixParser {
 
     public static final String MESSAGE_INVALID_NUMERICAL_FORMAT =
-            "For numerical fields, provide a number with an optional comparison operator (>, <, >=, <=).\n"
-            + "If no operator is used, it will search for an exact match (e.g., 's/5000').\n"
-            + "To find contacts with an unspecified value, use the keyword 'unspecified'.\n"
-            + "dep/ only accepts whole numbers. s/ accepts up to two decimal places.\n"
-            + "Example: s/>=50000 or dep/<3 or s/unspecified";
+            "For numerical fields, provide a valid number without letters or symbols (e.g., use '50000', not '50k').\n"
+                + "You can use an optional comparison operator before the number (>, <, >=, <=). "
+                + "If no operator is used, it searches for an exact match.\n"
+                + "To find contacts with an unspecified value, "
+                + "use the keyword 'unspecified' (or a part of it, like 'uns').\n"
+                + "dep/ only accepts whole numbers. s/ accepts up to two decimal places.\n"
+                + "Example: s/>=50000 or dep/<3 or s/unspecified";
 
     /**
      * https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/regex/Pattern.html
