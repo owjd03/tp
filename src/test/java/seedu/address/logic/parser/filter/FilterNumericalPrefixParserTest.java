@@ -9,8 +9,6 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPENDENTS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
 import static seedu.address.testutil.TypicalPersons.ALICE;
-import static seedu.address.testutil.TypicalPersons.BENSON;
-import static seedu.address.testutil.TypicalPersons.CARL;
 
 import java.util.function.Function;
 
@@ -26,39 +24,51 @@ public class FilterNumericalPrefixParserTest {
             p -> p.getSalary().getNumericValue();
     private static final Function<Person, Double> GET_DEPENDENTS_DOUBLE =
             p -> (double) p.getDependents().getNumericValue();
+    private static final Function<Person, Boolean> IS_SALARY_UNSPECIFIED =
+            p -> p.getSalary().isUnspecified();
+    private static final Function<Person, Boolean> IS_DEPENDENTS_UNSPECIFIED =
+            p -> p.getDependents().isUnspecified();
 
     @Test
     public void constructor_nullPrefix_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new FilterNumericalPrefixParser(null, GET_SALARY_DOUBLE));
+        assertThrows(NullPointerException.class, () ->
+                new FilterNumericalPrefixParser(null, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED));
     }
 
     @Test
     public void constructor_nullFunction_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new FilterNumericalPrefixParser(PREFIX_SALARY, null));
+        assertThrows(NullPointerException.class, () ->
+                new FilterNumericalPrefixParser(PREFIX_SALARY, null, IS_SALARY_UNSPECIFIED));
+        assertThrows(NullPointerException.class, () ->
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, null));
     }
 
     @Test
     public void getPrefix_returnsCorrectPrefix() {
-        FilterNumericalPrefixParser parser = new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE);
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         assertEquals(PREFIX_SALARY, parser.getPrefix());
     }
 
     @Test
     public void parse_emptyArgs_throwsParseException() {
-        FilterNumericalPrefixParser parser = new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE);
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         assertThrows(ParseException.class, () -> parser.parse(""),
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, "Empty keyword for: " + PREFIX_SALARY));
     }
 
     @Test
     public void parse_nullArgs_throwsNullPointerException() {
-        FilterNumericalPrefixParser parser = new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE);
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         assertThrows(NullPointerException.class, () -> parser.parse(null));
     }
 
     @Test
     public void parse_validSalaryInput_success() throws ParseException {
-        FilterNumericalPrefixParser parser = new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE);
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
 
         // Equals
         parser.parse("50000");
@@ -95,11 +105,20 @@ public class FilterNumericalPrefixParserTest {
         // With space
         parser.parse(">= 50000");
         assertTrue(parser.test(new PersonBuilder().withSalary("50000").build()));
+
+        // Unspecified salary
+        parser.parse("unspecified");
+        assertTrue(parser.test(new PersonBuilder().withSalary("Unspecified").build()));
+
+        // Unspecified salary partial match
+        parser.parse("uns");
+        assertTrue(parser.test(new PersonBuilder().withSalary("Unspecified").build()));
     }
 
     @Test
     public void parse_validDependentsInput_success() throws ParseException {
-        FilterNumericalPrefixParser parser = new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE);
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
 
         // Equals
         parser.parse("2");
@@ -132,16 +151,23 @@ public class FilterNumericalPrefixParserTest {
         parser.parse("0");
         assertTrue(parser.test(new PersonBuilder().withDependents(0).build()));
         assertFalse(parser.test(new PersonBuilder().withDependents(1).build()));
+
+        // Unspecified dependents
+        parser.parse("unspecified");
+        assertTrue(parser.test(new PersonBuilder().withDependents(-1).build()));
+
+        // Unspecified dependents partial match
+        parser.parse("uns");
+        assertTrue(parser.test(new PersonBuilder().withDependents(-1).build()));
     }
 
     @Test
     public void parse_invalidNumericalFormat_throwsParseException() {
-        FilterNumericalPrefixParser parser = new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE);
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         String expectedMessage = FilterNumericalPrefixParser.MESSAGE_INVALID_NUMERICAL_FORMAT;
 
         // Invalid characters
-        assertThrows(ParseException.class, () -> parser.parse("abc"), expectedMessage);
-        assertThrows(ParseException.class, () -> parser.parse(">abc"), expectedMessage);
         assertThrows(ParseException.class, () -> parser.parse("50k"), expectedMessage);
 
         // Negative numbers
@@ -158,7 +184,8 @@ public class FilterNumericalPrefixParserTest {
 
     @Test
     public void parse_dependentsWithDecimal_throwsParseException() {
-        FilterNumericalPrefixParser parser = new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE);
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
         String expectedMessage = "Dependents value must be an integer and cannot be a decimal.";
 
         assertThrows(ParseException.class, () -> parser.parse("2.5"), expectedMessage);
@@ -166,102 +193,26 @@ public class FilterNumericalPrefixParserTest {
     }
 
     @Test
-    public void test_salaryFilter() throws ParseException {
-        FilterNumericalPrefixParser parser = new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE);
-
-        // Equals
-        parser.parse("5000");
-        assertTrue(parser.test(ALICE));
-        assertFalse(parser.test(BENSON));
-        assertFalse(parser.test(CARL));
-
-        // Greater than
-        parser.parse(">6000");
-        assertFalse(parser.test(ALICE));
-        assertFalse(parser.test(BENSON));
-        assertTrue(parser.test(CARL));
-
-        // Greater than or equals
-        parser.parse(">=6000");
-        assertFalse(parser.test(ALICE));
-        assertTrue(parser.test(BENSON));
-        assertTrue(parser.test(CARL));
-
-        // Less than
-        parser.parse("<7000");
-        assertTrue(parser.test(ALICE));
-        assertTrue(parser.test(BENSON));
-        assertFalse(parser.test(CARL));
-
-        // Less than or equals
-        parser.parse("<=6000");
-        assertTrue(parser.test(ALICE));
-        assertTrue(parser.test(BENSON));
-        assertFalse(parser.test(CARL));
-
-        // Test with decimal
-        parser.parse(">=6000.05");
-        assertFalse(parser.test(ALICE));
-        assertFalse(parser.test(BENSON));
-        assertTrue(parser.test(CARL));
-    }
-
-    @Test
-    public void test_dependentsFilter() throws ParseException {
-        FilterNumericalPrefixParser parser = new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE);
-
-        Person aliceWith1Dependent = new PersonBuilder(ALICE).withDependents(1).build();
-        Person bensonWith2Dependents = new PersonBuilder(BENSON).withDependents(2).build();
-        Person carlWith0Dependents = new PersonBuilder(CARL).withDependents(0).build();
-
-        // Equals
-        parser.parse("1");
-        assertTrue(parser.test(aliceWith1Dependent));
-        assertFalse(parser.test(bensonWith2Dependents));
-        assertFalse(parser.test(carlWith0Dependents));
-
-        // Greater than
-        parser.parse(">1");
-        assertFalse(parser.test(aliceWith1Dependent));
-        assertTrue(parser.test(bensonWith2Dependents));
-        assertFalse(parser.test(carlWith0Dependents));
-
-        // Greater than or equals
-        parser.parse(">=1");
-        assertTrue(parser.test(aliceWith1Dependent));
-        assertTrue(parser.test(bensonWith2Dependents));
-        assertFalse(parser.test(carlWith0Dependents));
-
-        // Less than
-        parser.parse("<1");
-        assertFalse(parser.test(aliceWith1Dependent));
-        assertFalse(parser.test(bensonWith2Dependents));
-        assertTrue(parser.test(carlWith0Dependents));
-
-        // Less than or equals
-        parser.parse("<=1");
-        assertTrue(parser.test(aliceWith1Dependent));
-        assertFalse(parser.test(bensonWith2Dependents));
-        assertTrue(parser.test(carlWith0Dependents));
-    }
-
-    @Test
     public void test_personFieldIsNull_returnsFalse() throws ParseException {
-        FilterNumericalPrefixParser parser = new FilterNumericalPrefixParser(PREFIX_SALARY, p -> null);
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, p -> null, IS_SALARY_UNSPECIFIED);
         parser.parse(">=1000");
         assertFalse(parser.test(ALICE));
     }
 
     @Test
     public void equals() throws ParseException {
-        FilterNumericalPrefixParser salaryParser1 = new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE);
+        FilterNumericalPrefixParser salaryParser1 =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         salaryParser1.parse(">=50000");
-        FilterNumericalPrefixParser salaryParser2 = new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE);
+        FilterNumericalPrefixParser salaryParser2 =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         salaryParser2.parse(">=50000");
-        FilterNumericalPrefixParser salaryParser3 = new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE);
+        FilterNumericalPrefixParser salaryParser3 =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         salaryParser3.parse("<50000");
-        FilterNumericalPrefixParser dependentsParser = new FilterNumericalPrefixParser(PREFIX_DEPENDENTS,
-                GET_DEPENDENTS_DOUBLE);
+        FilterNumericalPrefixParser dependentsParser =
+                new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
         dependentsParser.parse(">=2");
 
         // same object -> returns true
@@ -285,11 +236,14 @@ public class FilterNumericalPrefixParserTest {
 
     @Test
     public void hashCode_consistentWithEquals() throws ParseException {
-        FilterNumericalPrefixParser salaryParser1 = new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE);
+        FilterNumericalPrefixParser salaryParser1 =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         salaryParser1.parse(">=50000");
-        FilterNumericalPrefixParser salaryParser2 = new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE);
+        FilterNumericalPrefixParser salaryParser2 =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         salaryParser2.parse(">=50000");
-        FilterNumericalPrefixParser salaryParser3 = new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE);
+        FilterNumericalPrefixParser salaryParser3 =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         salaryParser3.parse("<50000");
 
         assertEquals(salaryParser1.hashCode(), salaryParser2.hashCode());
@@ -298,7 +252,8 @@ public class FilterNumericalPrefixParserTest {
 
     @Test
     public void toString_returnsCorrectStringRepresentation() throws ParseException {
-        FilterNumericalPrefixParser parser = new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE);
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         parser.parse(">=50000");
         String expected = "seedu.address.logic.parser.filter.FilterNumericalPrefixParser{prefix=s/, "
                 + "user input=>=50000}";

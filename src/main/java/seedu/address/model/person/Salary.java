@@ -73,6 +73,13 @@ public class Salary {
     }
 
     /**
+     * Returns true if the salary is unspecified.
+     */
+    public boolean isUnspecified() {
+        return this.value.equals(UNSPECIFIED_VALUE);
+    }
+
+    /**
      * Formats the salary with a '$' sign in front and commas separating thousands.
      * If the salary has decimal places, it will be formatted to two decimal places.
      * @return A formatted string representation of the salary.

@@ -12,6 +12,7 @@ import static seedu.address.logic.parser.filter.FilterNumericalPrefixParser.MESS
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,9 +22,19 @@ import seedu.address.logic.parser.filter.FilterDescriptivePrefixParser;
 import seedu.address.logic.parser.filter.FilterMultiplePrefixParser;
 import seedu.address.logic.parser.filter.FilterNumericalPrefixParser;
 import seedu.address.logic.parser.filter.FilterPrefixParser;
+import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonContainsKeywordsPredicate;
 
 public class FilterCommandParserTest {
+
+    private static final Function<Person, Double> GET_SALARY_DOUBLE =
+            p -> p.getSalary().getNumericValue();
+    private static final Function<Person, Double> GET_DEPENDENTS_DOUBLE =
+            p -> (double) p.getDependents().getNumericValue();
+    private static final Function<Person, Boolean> IS_SALARY_UNSPECIFIED =
+            p -> p.getSalary().isUnspecified();
+    private static final Function<Person, Boolean> IS_DEPENDENTS_UNSPECIFIED =
+            p -> p.getDependents().isUnspecified();
 
     private static final String MESSAGE_INVALID_FORMAT =
             String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE);
@@ -144,7 +155,7 @@ public class FilterCommandParserTest {
         // Single numerical keyword (equals)
         List<FilterPrefixParser> parsers = new ArrayList<>();
         FilterNumericalPrefixParser salaryParser =
-                new FilterNumericalPrefixParser(PREFIX_SALARY, p -> p.getSalary().getNumericValue());
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         salaryParser.parse("50000");
         parsers.add(salaryParser);
         FilterCommand expectedCommand = new FilterCommand(new PersonContainsKeywordsPredicate(parsers));
@@ -153,7 +164,7 @@ public class FilterCommandParserTest {
         // Numerical with operator
         parsers.clear();
         FilterNumericalPrefixParser depParser =
-                new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, p -> p.getDependents().getNumericValue());
+                new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
         depParser.parse(">=2");
         parsers.add(depParser);
         expectedCommand = new FilterCommand(new PersonContainsKeywordsPredicate(parsers));
@@ -162,8 +173,9 @@ public class FilterCommandParserTest {
 
     @Test
     public void parse_invalidNumericalArgs_throwsParseException() {
-        // Non-numeric value
-        assertParseFailure(parser, " " + PREFIX_SALARY + "abc", MESSAGE_INVALID_NUMERICAL_FORMAT);
+        // Invalid value
+        assertParseFailure(parser, " " + PREFIX_SALARY + "50e10", MESSAGE_INVALID_NUMERICAL_FORMAT);
+        assertParseFailure(parser, " " + PREFIX_SALARY + ".12", MESSAGE_INVALID_NUMERICAL_FORMAT);
 
         // Invalid operator
         assertParseFailure(parser, " " + PREFIX_SALARY + ">>500", MESSAGE_INVALID_NUMERICAL_FORMAT);
@@ -186,7 +198,7 @@ public class FilterCommandParserTest {
 
         // Numerical
         FilterNumericalPrefixParser salaryParser =
-                new FilterNumericalPrefixParser(PREFIX_SALARY, p -> p.getSalary().getNumericValue());
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         salaryParser.parse("<120000");
         parsers.add(salaryParser);
 
