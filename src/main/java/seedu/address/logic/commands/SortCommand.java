@@ -7,7 +7,12 @@ import java.util.Comparator;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.Model;
+import seedu.address.model.person.DateOfBirth;
+import seedu.address.model.person.Dependents;
+import seedu.address.model.person.MaritalStatus;
+import seedu.address.model.person.Occupation;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Salary;
 
 /**
  * Sorts all persons in the address book in alphabetical order.
@@ -46,6 +51,34 @@ public class SortCommand extends Command {
         String directionText = sortDirection.toString().toLowerCase();
         String message = MESSAGE_SUCCESS + sortField + " in " + directionText + " order";
         return new CommandResult(message);
+    }
+
+    /**
+     * Helper method to check if a Person's sorted field is "Unspecified".
+     *
+     * @param person The person to check.
+     * @param sortField The field being sorted.
+     * @return true if the person's value for that field is "Unspecified" or -1, false otherwise.
+     */
+    private static boolean isPersonUnspecified(Person person, SortField sortField) {
+        switch(sortField) {
+        case SALARY:
+            return person.getSalary().value.equals(Salary.UNSPECIFIED_VALUE);
+        case DATEOFBIRTH:
+            return person.getDateOfBirth().value.equals(DateOfBirth.UNSPECIFIED_VALUE);
+        case MARITALSTATUS:
+            return person.getMaritalStatus().value.equals(MaritalStatus.UNSPECIFIED_VALUE);
+        case OCCUPATION:
+            return person.getOccupation().value.equals(Occupation.UNSPECIFIED_VALUE);
+        case DEPENDENT:
+            return person.getDependents().value == Dependents.UNSPECIFIED_VALUE;
+        case NAME:
+        case PHONE:
+        case EMAIL:
+        case ADDRESS:
+        default:
+            return false;
+        }
     }
 
     /**
@@ -100,7 +133,34 @@ public class SortCommand extends Command {
             throw new AssertionError("Invalid sort field" + sortField);
         }
 
-        return sortDirection == SortDirection.DESCENDING ? baseComparator.reversed() : baseComparator;
+        Comparator<Person> directedComparator;
+        if (sortDirection == SortDirection.DESCENDING) {
+            directedComparator = baseComparator.reversed();
+        } else {
+            directedComparator = baseComparator;
+        }
+
+        // "Unspecified" values are always sorted to the bottom
+        // regardless of sort direction. This applies to optional fields: Salary, DateOfBirth,
+        // MaritalStatus, Occupation, and Dependents (which uses -1 as its unspecified value).
+        return (p1, p2) -> {
+            boolean p1Unspecified = isPersonUnspecified(p1, sortField);
+            boolean p2Unspecified = isPersonUnspecified(p2, sortField);
+
+            if (p1Unspecified && p2Unspecified) {
+                // Both are "Unspecified" or -1
+                return 0;
+            } else if (p1Unspecified) {
+                // p1 is "Unspecified" or -1, sort it last
+                return 1;
+            } else if (p2Unspecified) {
+                // p2 is "Unspecified" or -1, sort it last
+                return -1;
+            } else {
+                // Neither is "Unspecified" or -1
+                return directedComparator.compare(p1, p2);
+            }
+        };
     }
 
     @Override
