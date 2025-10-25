@@ -172,7 +172,7 @@ class JsonAdaptedPerson {
         }
         final Occupation modelOccupation = new Occupation(occupation);
 
-        if (dependents < 0) {
+        if (!Dependents.isValidDependents(dependents)) {
             throw new IllegalValueException(Dependents.MESSAGE_CONSTRAINTS);
         }
         final Dependents modelDependents = new Dependents(dependents);

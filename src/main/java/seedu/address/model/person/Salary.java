@@ -59,6 +59,9 @@ public class Salary {
      */
     public static boolean isValidSalary(String test) {
         String sanitizedSalary = test.replace(",", "");
+        if (sanitizedSalary.equals(UNSPECIFIED_VALUE)) {
+            return true;
+        }
         return sanitizedSalary.matches(VALIDATION_REGEX);
     }
 
