@@ -3,7 +3,7 @@ layout: page
 title: User Guide
 ---
 
-AddressBook Level 3 (AB3) is a **desktop app for managing contacts, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, AB3 can get your contact management tasks done faster than traditional GUI apps.
+ClientCore is a **comprehensive desktop application for financial advisors to manage their clients efficiently**. It is optimized for tech-savvy financial advisors who need to handle a large number of client profiles, enabling them to reduce administrative work and focus on delivering personalised financial advice.
 
 * Table of Contents
 {:toc}
@@ -77,7 +77,7 @@ Format: `help`
 
 Adds a person to the address book.
 
-Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS s/SALARY dob/DATE_OF_BIRTH ms/MARITAL_STATUS dep/NUMBER_OF_DEPENDENTS occ/OCCUPATION ip/INSURANCE_PACKAGE [t/TAG]…​`
+Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags (including 0)
@@ -85,7 +85,7 @@ A person can have any number of tags (including 0)
 
 Examples:
 * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 s/120000 dob/2001-01-01 ms/Married dep/2 occ/Engineer ip/Gold`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 dob/1992-12-12 ms/Single occ/Criminal dep/0 ip/Undecided t/criminal`
+* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 dep/0 ip/Undecided t/criminal`
 
 ### Listing all persons : `list`
 
@@ -150,27 +150,61 @@ Examples:
 ### Filtering persons: `filter`
 
 Filters the list of persons to show only those who match all specified criteria.
+The command supports two types of filtering: keyword matching for descriptive fields and numerical comparison for numerical fields (Salary and Number of dependents only).
 
 Format: `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`
 
 * At least one of the optional fields must be provided.
-* The filter is case-insensitive. e.g `josh` will match `Josh`
-* Keywords do not need to be complete words. The command matches any entry that **contains** the keyword. e.g. `n/jo` will match names like `John` or `Joseph`
-* Keywords can be single words or phrases (e.g. `a/changi village` is allowed).
 * Only persons who match **all** specified criteria will be shown.
-* Only multiple `t/` (tag) prefixes are allowed, and all specified tags must be present in the person's tags. Duplicate prefixes for other categories are strictly not allowed and will result in an error.
+* Only multiple `t/` (tag) prefixes are allowed. All other prefixes are strictly not allowed to be duplicated.
+
+##### Descriptive Fields (keyword matching)
+
+The following fields use case-insensitive keyword matching. The command will find any entry that **contains** the keyword you provided.
+* `n/NAME`
+* `a/ADDRESS`
+* `p/PHONE`
+* `e/EMAIL`
+* `dob/DATE_OF_BIRTH`
+* `ms/MARITAL_STATUS`
+* `occ/OCCUPATION`
+* `ip/INSURANCE_PACKAGE`
+* `t/TAG`
+
+**Rules for Descriptive Fields:**
+* The filter is case-insensitive. e.g `josh` will match `Josh`
+* Keywords do not need to be complete words. e.g. `n/jo` will match names like `John` or `Joseph`
+* Keywords can be single words or phrases (e.g. `a/changi village` is allowed).
+* For tags (t/), all specified tags must be present in the person's tags.
+
+##### Numerical Fields (numerical comparison)
+The following fields use numerical comparison.
+* `s/SALARY`
+* `dep/NUMBER_OF_DEPENDENTS`
+
+**Rules for Numerical Fields:**
+* You can use comparison operators: `>`, `>=`, `<`, `<=`.
+* If no operator is provided, the filter will search for an **exact numerical match** (`=`).
+* The `dep/` field only accepts whole numbers (integers).
+* The `s/` field can accept numbers with up to two decimal places.
+* The number provided must be non-negative (i.e. >= 0).
 
 Examples:
 * `filter n/josh` displays all persons whose name contains `josh`.
 * `filter n/josh a/kent ridge` displays all persons whose name contains `josh` **AND** whose address contains `kent ridge`.
-* `filter t/friend t/rich`will display all persons who have the tags containing `friend` **AND** `rich`.
+* `filter t/friend t/rich` displays all persons who have the tags containing `friend` **AND** `rich`.
+* `filter s/>=50000` displays all persons whose salary is greater than or equal to 50000.
+* `filter dep/<3` displays all persons who have less than 3 dependents (i.e. 0, 1, 2).
+* `filter s/3000.1 dep/2` displays all persons whose salary is exactly 3000.10 **AND** have exactly 2 dependents.
 
 Invalid Usages:
 * `filter` (no parameters)
 * `filter some random text` (preamble is not allowed)
 * `filter n/` (empty description for a prefix)
-* `filter n/ a/changi` (empty description for a prefix)
 * `filter n/josh n/david` (duplicate prefixes except for `t/` (tag) are not allowed)
+* `filter s/>=50k` (invalid number format)
+* `filter s/>-1` (number cannot be negative)
+* `filter dep/>2.5` (dependents must be an integer)
 
 ### Sorting persons: `sort`
 
@@ -329,7 +363,7 @@ Action | Format, Examples
 **Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS s/SALARY dob/DATE_OF_BIRTH ms/MARITAL_STATUS dep/NUMBER_OF_DEPENDENTS occ/OCCUPATION ip/INSURANCE_PACKAGE [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 s/5000 dob/1993-02-02 ms/Married dep/3 occ/Artist ip/Bronze t/friend t/colleague`
 **Clear** | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
-**Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
+**Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com s/>=5000`
 **Export** | `export`
 **Filter** | `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g., `filter n/James Lee e/jameslee`
 **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
