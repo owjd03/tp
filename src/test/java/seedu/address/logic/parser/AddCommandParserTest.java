@@ -357,4 +357,39 @@ public class AddCommandParserTest {
                 + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
     }
+
+    @Test
+    public void parse_unspecifiedFields_success() {
+        // Unspecified salary
+        Person expectedPersonUnspecifiedSalary = new PersonBuilder(BOB)
+                .withSalary(Salary.UNSPECIFIED_VALUE)
+                .withTags(VALID_TAG_FRIEND).build();
+
+        assertParseSuccess(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                        + " " + PREFIX_SALARY + Salary.UNSPECIFIED_VALUE + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB
+                        + DEPENDENTS_DESC_BOB + OCCUPATION_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_FRIEND,
+                new AddCommand(expectedPersonUnspecifiedSalary));
+
+        // Unspecified date of birth
+        Person expectedPersonUnspecifiedDob = new PersonBuilder(BOB)
+                .withDateOfBirth(DateOfBirth.UNSPECIFIED_VALUE)
+                .withTags(VALID_TAG_FRIEND).build();
+        assertParseSuccess(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                        + SALARY_DESC_BOB + " " + PREFIX_DATE_OF_BIRTH + DateOfBirth.UNSPECIFIED_VALUE
+                        + MARITAL_STATUS_DESC_BOB
+                        + DEPENDENTS_DESC_BOB + OCCUPATION_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_FRIEND,
+                new AddCommand(expectedPersonUnspecifiedDob));
+
+        // Both unspecified
+        Person expectedPersonBothUnspecified = new PersonBuilder(BOB)
+                .withSalary(Salary.UNSPECIFIED_VALUE)
+                .withDateOfBirth(DateOfBirth.UNSPECIFIED_VALUE)
+                .withTags(VALID_TAG_FRIEND).build();
+        assertParseSuccess(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                        + " " + PREFIX_SALARY + Salary.UNSPECIFIED_VALUE
+                        + " " + PREFIX_DATE_OF_BIRTH + DateOfBirth.UNSPECIFIED_VALUE
+                        + MARITAL_STATUS_DESC_BOB
+                        + DEPENDENTS_DESC_BOB + OCCUPATION_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB + TAG_DESC_FRIEND,
+                new AddCommand(expectedPersonBothUnspecified));
+    }
 }
