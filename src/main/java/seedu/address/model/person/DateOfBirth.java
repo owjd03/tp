@@ -50,6 +50,9 @@ public class DateOfBirth {
      * Returns true if a given string is a valid date of birth.
      */
     public static boolean isValidDateOfBirth(String test) {
+        if (test.equals(UNSPECIFIED_VALUE)) {
+            return true;
+        }
         try {
             LocalDate parsedDate = LocalDate.parse(test, FORMATTER);
             return !(parsedDate.isAfter(LocalDate.now()));
