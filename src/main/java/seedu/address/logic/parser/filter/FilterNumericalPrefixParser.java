@@ -39,7 +39,7 @@ public class FilterNumericalPrefixParser implements FilterPrefixParser {
      * https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/regex/Pattern.html
      * https://www.geeksforgeeks.org/dsa/write-regular-expressions/
      * ^ to indicate start of pattern, $ to indicate end of pattern
-     * Group 1: ([<>]=?|=) MEANS (< OR >) AND = (optional), Group 1 is optional.
+     * Group 1: ([<>]=?) MEANS (< OR >) AND = (optional), Group 1 is optional.
      * Accepted: >=, >, <, <=, NOTHING
      * \s* MEANS whitespace, extra \ to escape character in string
      * Group 2: (\d+(\.\d{1,2})?) MEANS any number of digits,
