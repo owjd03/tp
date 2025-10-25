@@ -102,7 +102,7 @@ public class CommandTestUtil {
     public static final String INVALID_DOB_DESC = " " + PREFIX_DATE_OF_BIRTH + "01-01-1990"; // wrong date format
     public static final String INVALID_MARITAL_STATUS_DESC = " " + PREFIX_MARITAL_STATUS + "Complicated"; // not in enum
     public static final String INVALID_OCCUPATION_DESC = " " + PREFIX_OCCUPATION; // empty string not allowed
-    public static final String INVALID_DEPENDENTS_DESC = " " + PREFIX_DEPENDENTS + "-1"; // no negative dependents
+    public static final String INVALID_DEPENDENTS_DESC = " " + PREFIX_DEPENDENTS + "-2"; // no value lower than -1
     public static final String INVALID_INSURANCE_PACKAGE_DESC = " " + PREFIX_INSURANCE_PACKAGE
             + "Platinum"; // not in enum
     public static final String INVALID_TAG_DESC = " " + PREFIX_TAG + "hubby*"; // '*' not allowed in tags

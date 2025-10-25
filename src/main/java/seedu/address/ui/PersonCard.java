@@ -68,7 +68,7 @@ public class PersonCard extends UiPart<Region> {
         salary.setText("Salary (s/): " + person.getSalary().toString());
         dateOfBirth.setText("Date of Birth (dob/): " + person.getDateOfBirth().value);
         maritalStatus.setText("Marital Status (ms/): " + person.getMaritalStatus().value);
-        dependents.setText("Dependents (dep/): " + person.getDependents().value);
+        dependents.setText("Dependents (dep/): " + person.getDependents().toString());
         occupation.setText("Occupation (occ/): " + person.getOccupation().value);
         insurancePackage.setText("Insurance Package (ip/): " + person.getInsurancePackage().getPackageName());
         person.getTags().stream()

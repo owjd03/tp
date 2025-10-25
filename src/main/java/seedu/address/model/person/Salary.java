@@ -24,6 +24,8 @@ public class Salary {
      */
     public static final String VALIDATION_REGEX = "\\d+(\\.\\d{1,2})?";
 
+    public static final String UNSPECIFIED_VALUE = "Unspecified";
+
     public final String value;
 
     /**
@@ -34,9 +36,22 @@ public class Salary {
      */
     public Salary(String salary) {
         requireNonNull(salary);
-        String sanitizedSalary = salary.replace(",", "");
-        checkArgument(isValidSalary(sanitizedSalary), MESSAGE_CONSTRAINTS);
-        value = sanitizedSalary;
+
+        if (salary.equals(UNSPECIFIED_VALUE)) {
+            this.value = UNSPECIFIED_VALUE;
+        } else {
+            String sanitizedSalary = salary.replace(",", "");
+            checkArgument(isValidSalary(sanitizedSalary), MESSAGE_CONSTRAINTS);
+            value = sanitizedSalary;
+        }
+    }
+
+    /**
+     * Static factory method for creating the default "Unspecified" Salary
+     * @return A Salary object with value "Unspecified".
+     */
+    public static Salary createUnspecified() {
+        return new Salary(UNSPECIFIED_VALUE);
     }
 
     /**
@@ -61,6 +76,10 @@ public class Salary {
      */
     @Override
     public String toString() {
+        if (this.value.equals(UNSPECIFIED_VALUE)) {
+            return UNSPECIFIED_VALUE;
+        }
+
         try {
             double amount = Double.parseDouble(this.value);
             DecimalFormat formatter = new DecimalFormat("$#,##0.00");

@@ -247,10 +247,14 @@ public class AddCommandParserTest {
     @Test
     public void parse_optionalFieldsMissing_success() {
         // zero tags
-        Person expectedPerson = new PersonBuilder(AMY).withTags().build();
+        Person expectedPerson = new PersonBuilder(AMY).withSalary(Salary.UNSPECIFIED_VALUE)
+                .withDateOfBirth(DateOfBirth.UNSPECIFIED_VALUE)
+                .withMaritalStatus(MaritalStatus.UNSPECIFIED_VALUE)
+                .withOccupation(Occupation.UNSPECIFIED_VALUE)
+                .withDependents(Dependents.UNSPECIFIED_VALUE)
+                .withTags().build();
         assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
-                        + SALARY_DESC_AMY + DOB_DESC_AMY + MARITAL_STATUS_DESC_AMY + OCCUPATION_DESC_AMY
-                        + DEPENDENTS_DESC_AMY + INSURANCE_PACKAGE_DESC_AMY,
+                        + INSURANCE_PACKAGE_DESC_AMY,
                 new AddCommand(expectedPerson));
     }
 
@@ -277,31 +281,6 @@ public class AddCommandParserTest {
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + VALID_ADDRESS_BOB
                     + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
                     + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
-
-        // missing salary prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                    + VALID_SALARY_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
-
-        // missing date of birth prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                    + SALARY_DESC_BOB + VALID_DOB_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
-
-        // missing marital status prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                    + SALARY_DESC_BOB + DOB_DESC_BOB + VALID_MARITAL_STATUS_BOB + OCCUPATION_DESC_BOB
-                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
-
-        // missing occupation prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                    + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + VALID_OCCUPATION_BOB
-                    + DEPENDENTS_DESC_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
-
-        // missing dependents prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                    + SALARY_DESC_BOB + DOB_DESC_BOB + MARITAL_STATUS_DESC_BOB + OCCUPATION_DESC_BOB
-                    + VALID_DEPENDENTS_BOB + INSURANCE_PACKAGE_DESC_BOB, expectedMessage);
 
         // all prefixes missing
         assertParseFailure(parser, VALID_NAME_BOB + VALID_PHONE_BOB + VALID_EMAIL_BOB + VALID_ADDRESS_BOB
