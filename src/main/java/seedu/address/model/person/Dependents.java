@@ -40,7 +40,14 @@ public class Dependents {
      * Returns the numerical value of the dependents as a double.
      */
     public double getNumericValue() {
-        return (double) this.value;
+        return this.value;
+    }
+
+    /**
+     * Returns true if the dependents are unspecified.
+     */
+    public boolean isUnspecified() {
+        return this.value == UNSPECIFIED_VALUE;
     }
 
     public int toInt() {
