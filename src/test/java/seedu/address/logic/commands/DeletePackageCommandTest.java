@@ -55,12 +55,12 @@ public class DeletePackageCommandTest {
 
     @Test
     public void execute_standardPackage_throwsCommandException() {
-        DeletePackageCommand deleteGoldCommand = new DeletePackageCommand("Gold");
+        DeletePackageCommand deleteUndecidedCommand = new DeletePackageCommand("Undecided");
         ModelStub modelStub = new ModelStub(); // Base ModelStub is sufficient as check is before model interaction
 
         assertThrows(CommandException.class,
                 DeletePackageCommand.MESSAGE_CANNOT_DELETE_STANDARD_PACKAGE, () ->
-                        deleteGoldCommand.execute(modelStub));
+                        deleteUndecidedCommand.execute(modelStub));
     }
 
     @Test
