@@ -33,8 +33,8 @@ public interface ReadOnlyInsuranceCatalog {
 
     /**
      * Returns the default "Undecided" package from the catalog.
-     * Since the "Undecided" package is a default package,
-     * this exception should not be thrown.
+     * This exception should only be thrown if "Undecided" is removed from the
+     * insuranceCatalog.json file directly.
      *
      * @return The "Undecided" package.
      * @throws java.util.NoSuchElementException if the "Undecided" package is not in the catalog.
