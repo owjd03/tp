@@ -21,6 +21,7 @@ import seedu.address.model.UserPrefs;
 import seedu.address.model.util.SampleDataUtil;
 
 public class StorageManagerTest {
+    private static final ReadOnlyInsuranceCatalog VALID_CATALOG = SampleDataUtil.getSampleInsuranceCatalog();
 
     @TempDir
     public Path testFolder;
@@ -72,7 +73,7 @@ public class StorageManagerTest {
          */
         AddressBook original = getTypicalAddressBook();
         storageManager.saveAddressBook(original);
-        ReadOnlyAddressBook retrieved = storageManager.readAddressBook().get();
+        ReadOnlyAddressBook retrieved = storageManager.readAddressBook(VALID_CATALOG).get();
         assertEquals(original, new AddressBook(retrieved));
     }
 
