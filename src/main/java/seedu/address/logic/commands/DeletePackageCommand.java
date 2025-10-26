@@ -30,10 +30,9 @@ public class DeletePackageCommand extends Command {
     public static final String MESSAGE_PACKAGE_IN_USE =
             "This insurance package is assigned to one or more clients and cannot be deleted.";
     public static final String MESSAGE_CANNOT_DELETE_STANDARD_PACKAGE =
-            "Standard insurance packages (Gold, Silver, Bronze, Undecided) cannot be deleted.";
+            "Standard insurance package (Undecided) cannot be deleted.";
 
-    private static final Set<String> STANDARD_PACKAGES =
-            new HashSet<>(Arrays.asList("Gold", "Silver", "Bronze", "Undecided"));
+    private static final String DEFAULT_PACKAGE = "Undecided";
 
     private final String packageName;
 
@@ -56,7 +55,7 @@ public class DeletePackageCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        if (STANDARD_PACKAGES.stream().anyMatch(s -> s.equalsIgnoreCase(packageName))) {
+        if (packageName.equalsIgnoreCase(DEFAULT_PACKAGE)) {
             throw new CommandException(MESSAGE_CANNOT_DELETE_STANDARD_PACKAGE);
         }
 
