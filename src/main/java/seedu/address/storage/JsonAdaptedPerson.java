@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
-import seedu.address.model.InsuranceCatalog;
+import seedu.address.model.ReadOnlyInsuranceCatalog;
 import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.DateOfBirth;
@@ -96,55 +96,95 @@ class JsonAdaptedPerson {
      *
      * @throws IllegalValueException if there were any data constraints violated in the adapted person.
      */
-    public Person toModelType() throws IllegalValueException {
-        final List<Tag> personTags = new ArrayList<>();
-        for (JsonAdaptedTag tag : tags) {
-            personTags.add(tag.toModelType());
-        }
+    public Person toModelType(ReadOnlyInsuranceCatalog catalog) throws IllegalValueException {
+        final Name modelName = validateAndGetName();
+        final Phone modelPhone = validateAndGetPhone();
+        final Email modelEmail = validateAndGetEmail();
+        final Address modelAddress = validateAndGetAddress();
+        final Salary modelSalary = validateAndGetSalary();
+        final DateOfBirth modelDateOfBirth = validateAndGetDateOfBirth();
+        final MaritalStatus modelMaritalStatus = validateAndGetMaritalStatus();
+        final Occupation modelOccupation = validateAndGetOccupation();
+        final Dependents modelDependents = validateAndGetDependents();
+        final InsurancePackage modelInsurancePackage = validateAndGetInsurancePackage(catalog);
 
+        final List<Tag> personTags = validateAndGetTags();
+        final Set<Tag> modelTags = new HashSet<>(personTags);
+
+        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelSalary, modelDateOfBirth,
+                modelMaritalStatus, modelOccupation, modelDependents, modelInsurancePackage, modelTags);
+    }
+
+    /**
+     * Validates and parses the {@code name} field.
+     */
+    private Name validateAndGetName() throws IllegalValueException {
         if (name == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Name.class.getSimpleName()));
         }
         if (!Name.isValidName(name)) {
             throw new IllegalValueException(Name.MESSAGE_CONSTRAINTS);
         }
-        final Name modelName = new Name(name);
+        return new Name(name);
+    }
 
+    /**
+     * Validates and parses the {@code phone} field.
+     */
+    private Phone validateAndGetPhone() throws IllegalValueException {
         if (phone == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Phone.class.getSimpleName()));
         }
         if (!Phone.isValidPhone(phone)) {
             throw new IllegalValueException(Phone.MESSAGE_CONSTRAINTS);
         }
-        final Phone modelPhone = new Phone(phone);
+        return new Phone(phone);
+    }
 
+    /**
+     * Validates and parses the {@code email} field.
+     */
+    private Email validateAndGetEmail() throws IllegalValueException {
         if (email == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Email.class.getSimpleName()));
         }
         if (!Email.isValidEmail(email)) {
             throw new IllegalValueException(Email.MESSAGE_CONSTRAINTS);
         }
-        final Email modelEmail = new Email(email);
+        return new Email(email);
+    }
 
+    /**
+     * Validates and parses the {@code address} field.
+     */
+    private Address validateAndGetAddress() throws IllegalValueException {
         if (address == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Address.class.getSimpleName()));
         }
         if (!Address.isValidAddress(address)) {
             throw new IllegalValueException(Address.MESSAGE_CONSTRAINTS);
         }
-        final Address modelAddress = new Address(address);
+        return new Address(address);
+    }
 
+    /**
+     * Validates, sanitizes, and parses the {@code salary} field.
+     */
+    private Salary validateAndGetSalary() throws IllegalValueException {
         if (salary == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Salary.class.getSimpleName()));
         }
-
         String sanitizedSalary = salary.replace("$", "").replace(",", "");
-
         if (!Salary.isValidSalary(sanitizedSalary)) {
             throw new IllegalValueException(Salary.MESSAGE_CONSTRAINTS);
         }
-        final Salary modelSalary = new Salary(sanitizedSalary);
+        return new Salary(sanitizedSalary);
+    }
 
+    /**
+     * Validates and parses the {@code dateOfBirth} field.
+     */
+    private DateOfBirth validateAndGetDateOfBirth() throws IllegalValueException {
         if (dateOfBirth == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
                     DateOfBirth.class.getSimpleName()));
@@ -152,8 +192,13 @@ class JsonAdaptedPerson {
         if (!DateOfBirth.isValidDateOfBirth(dateOfBirth)) {
             throw new IllegalValueException(DateOfBirth.MESSAGE_CONSTRAINTS);
         }
-        final DateOfBirth modelDateOfBirth = new DateOfBirth(dateOfBirth);
+        return new DateOfBirth(dateOfBirth);
+    }
 
+    /**
+     * Validates and parses the {@code maritalStatus} field.
+     */
+    private MaritalStatus validateAndGetMaritalStatus() throws IllegalValueException {
         if (maritalStatus == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
                     MaritalStatus.class.getSimpleName()));
@@ -161,8 +206,13 @@ class JsonAdaptedPerson {
         if (!MaritalStatusEnum.isValidMaritalStatus(maritalStatus)) {
             throw new IllegalValueException(MaritalStatus.MESSAGE_CONSTRAINTS);
         }
-        final MaritalStatus modelMaritalStatus = new MaritalStatus(maritalStatus);
+        return new MaritalStatus(maritalStatus);
+    }
 
+    /**
+     * Validates and parses the {@code occupation} field.
+     */
+    private Occupation validateAndGetOccupation() throws IllegalValueException {
         if (occupation == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
                     Occupation.class.getSimpleName()));
@@ -170,27 +220,39 @@ class JsonAdaptedPerson {
         if (!Occupation.isValidOccupation(occupation)) {
             throw new IllegalValueException(Occupation.MESSAGE_CONSTRAINTS);
         }
-        final Occupation modelOccupation = new Occupation(occupation);
+        return new Occupation(occupation);
+    }
 
+    /**
+     * Validates and parses the {@code dependents} field.
+     */
+    private Dependents validateAndGetDependents() throws IllegalValueException {
         if (!Dependents.isValidDependents(dependents)) {
             throw new IllegalValueException(Dependents.MESSAGE_CONSTRAINTS);
         }
-        final Dependents modelDependents = new Dependents(dependents);
-
-        if (insurancePackage == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
-                    InsurancePackage.class.getSimpleName()));
-        }
-        if (!InsuranceCatalog.isValidInsurancePackage(insurancePackage)) {
-            throw new IllegalValueException(InsurancePackage.MESSAGE_CONSTRAINTS);
-        }
-        final String modelDescription = InsuranceCatalog.getPackageDescription(insurancePackage);
-        final InsurancePackage modelInsurancePackage = new InsurancePackage(insurancePackage, modelDescription);
-
-        final Set<Tag> modelTags = new HashSet<>(personTags);
-
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelSalary, modelDateOfBirth,
-                modelMaritalStatus, modelOccupation, modelDependents, modelInsurancePackage, modelTags);
+        return new Dependents(dependents);
     }
 
+    /**
+     * Validates and parses the {@code insurancePackage} field using the catalog.
+     */
+    private InsurancePackage validateAndGetInsurancePackage(ReadOnlyInsuranceCatalog catalog) {
+        if (insurancePackage == null || insurancePackage.isEmpty()) {
+            return catalog.getUndecidedPackage();
+        } else {
+            return catalog.getPackage(insurancePackage)
+                    .orElseGet(catalog::getUndecidedPackage);
+        }
+    }
+
+    /**
+     * Validates and parses the {@code tags} field.
+     */
+    private List<Tag> validateAndGetTags() throws IllegalValueException {
+        final List<Tag> personTags = new ArrayList<>();
+        for (JsonAdaptedTag tag : tags) {
+            personTags.add(tag.toModelType());
+        }
+        return personTags;
+    }
 }
