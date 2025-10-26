@@ -193,11 +193,89 @@ public class FilterNumericalPrefixParserTest {
     }
 
     @Test
+    public void parse_whitespaceArgs_parsesAsContainsLogic() throws ParseException {
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
+
+        parser.parse("   ");
+
+        assertFalse(parser.test(new PersonBuilder().withSalary("Unspecified").build()));
+        assertFalse(parser.test(new PersonBuilder().withSalary("50000").build()));
+
+        String expected = "seedu.address.logic.parser.filter.FilterNumericalPrefixParser{prefix=s/, "
+                + "user input=   }";
+        assertEquals(expected, parser.toString());
+    }
+
+    @Test
+    public void parse_pureTextKeyword_parsesAsContainsLogic() throws ParseException {
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
+
+        parser.parse("abc");
+
+        assertFalse(parser.test(new PersonBuilder().withSalary("Unspecified").build()));
+        assertFalse(parser.test(new PersonBuilder().withSalary("50000").build()));
+    }
+
+    @Test
+    public void parse_invalidMixedInput_throwsParseException() {
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
+        String expectedMessage = FilterNumericalPrefixParser.MESSAGE_INVALID_NUMERICAL_FORMAT;
+
+        // Text mixed with numbers
+        assertThrows(ParseException.class, () -> parser.parse("abc 123"), expectedMessage);
+
+        // Number followed by operator
+        assertThrows(ParseException.class, () -> parser.parse("50000 >"), expectedMessage);
+
+        // Multiple decimal points
+        assertThrows(ParseException.class, () -> parser.parse("50.00.00"), expectedMessage);
+
+        // Invalid operator
+        assertThrows(ParseException.class, () -> parser.parse(">>50000"), expectedMessage);
+    }
+
+    @Test
+    public void parse_validRegexWithExtraWhitespace_success() throws ParseException {
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
+
+        parser.parse(">=   50000");
+
+        assertTrue(parser.test(new PersonBuilder().withSalary("50000").build()));
+        assertTrue(parser.test(new PersonBuilder().withSalary("60000").build()));
+        assertFalse(parser.test(new PersonBuilder().withSalary("40000").build()));
+    }
+
+    @Test
     public void test_personFieldIsNull_returnsFalse() throws ParseException {
         FilterNumericalPrefixParser parser =
                 new FilterNumericalPrefixParser(PREFIX_SALARY, p -> null, IS_SALARY_UNSPECIFIED);
         parser.parse(">=1000");
         assertFalse(parser.test(ALICE));
+    }
+
+    @Test
+    public void test_unspecifiedSearch_matchesUnspecifiedField() throws ParseException {
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
+        parser.parse("spec");
+
+        assertTrue(parser.test(new PersonBuilder().withDependents(-1).build())); // -1 is considered unspecified
+        assertFalse(parser.test(new PersonBuilder().withDependents(2).build()));
+    }
+
+    @Test
+    public void test_numericalSearch_doesNotMatchUnspecifiedField() throws ParseException {
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
+        parser.parse(">=0");
+
+        assertFalse(parser.test(new PersonBuilder().withDependents(-1).build())); // -1 is considered unspecified
+        assertTrue(parser.test(new PersonBuilder().withDependents(0).build()));
+        assertTrue(parser.test(new PersonBuilder().withDependents(2).build()));
     }
 
     @Test
