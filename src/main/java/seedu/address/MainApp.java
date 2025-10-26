@@ -76,7 +76,7 @@ public class MainApp extends Application {
     /**
      * Returns a {@code ModelManager} with the data from {@code storage}'s address book and {@code userPrefs}.
      */
-    private Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
+    Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
         logger.info("Using data file : " + storage.getAddressBookFilePath());
 
         ReadOnlyInsuranceCatalog initialInsuranceCatalog = initInsuranceCatalog(storage);
@@ -92,7 +92,7 @@ public class MainApp extends Application {
      * Loads the InsuranceCatalog from storage.
      * If the file is missing,a sample catalog is created and saved to storage.
      */
-    private ReadOnlyInsuranceCatalog initInsuranceCatalog(Storage storage) {
+    ReadOnlyInsuranceCatalog initInsuranceCatalog(Storage storage) {
         try {
             Optional<ReadOnlyInsuranceCatalog> insuranceCatalogOptional = storage.readInsuranceCatalog();
 
@@ -117,7 +117,7 @@ public class MainApp extends Application {
      * Creates a sample InsuranceCatalog and attempts to save it to storage.
      * Returns the sample catalog whether the save succeeds or not.
      */
-    private ReadOnlyInsuranceCatalog createAndSaveSampleInsuranceCatalog(Storage storage) {
+    ReadOnlyInsuranceCatalog createAndSaveSampleInsuranceCatalog(Storage storage) {
         ReadOnlyInsuranceCatalog sampleCatalog = SampleDataUtil.getSampleInsuranceCatalog();
         try {
             storage.saveInsuranceCatalog(sampleCatalog);
@@ -132,7 +132,7 @@ public class MainApp extends Application {
      * Loads the AddressBook from storage, using the provided catalog for validation.
      * If the file is missing, a sample AddressBook is used.
      */
-    private ReadOnlyAddressBook initAddressBook(Storage storage, ReadOnlyInsuranceCatalog initialInsuranceCatalog) {
+    ReadOnlyAddressBook initAddressBook(Storage storage, ReadOnlyInsuranceCatalog initialInsuranceCatalog) {
         try {
             Optional<ReadOnlyAddressBook> addressBookOptional = storage.readAddressBook(initialInsuranceCatalog);
 
