@@ -93,6 +93,19 @@ public class TypicalPersons {
             .withInsurancePackage("Silver",
                     "Our most popular plan, offering a balanced blend of coverage and value.").build();
 
+    // Manually added with "unspecified" or -1 values
+    public static final Person HARRY = new PersonBuilder().withName("Harry Potter")
+            .withPhone("91234567").withEmail("harry@example.com").withAddress("Privet Drive")
+            .withSalary("Unspecified").withDateOfBirth("1980-07-31").withMaritalStatus("Single")
+            .withOccupation("Wizard").withDependents(0)
+            .withInsurancePackage("Gold", "Premium magical coverage").build();
+
+    public static final Person MARRY = new PersonBuilder().withName("Marry lee")
+            .withPhone("91234568").withEmail("marry@example.com").withAddress("Orchard Road")
+            .withSalary("4000").withDateOfBirth("Unspecified").withMaritalStatus("Married")
+            .withOccupation("Unspecified").withDependents(-1)
+            .withInsurancePackage("Silver", "Standard coverage").build();
+
     // Manually added - Person's details found in {@code CommandTestUtil}
     public static final Person AMY = new PersonBuilder().withName(VALID_NAME_AMY).withPhone(VALID_PHONE_AMY)
             .withEmail(VALID_EMAIL_AMY).withAddress(VALID_ADDRESS_AMY).withSalary(VALID_SALARY_AMY)

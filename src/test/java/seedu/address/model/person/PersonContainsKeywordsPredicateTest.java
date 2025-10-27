@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +24,15 @@ import seedu.address.logic.parser.filter.FilterPrefixParser;
 import seedu.address.testutil.PersonBuilder;
 
 public class PersonContainsKeywordsPredicateTest {
+
+    private static final Function<Person, Double> GET_SALARY_DOUBLE =
+            p -> p.getSalary().getNumericValue();
+    private static final Function<Person, Double> GET_DEPENDENTS_DOUBLE =
+            p -> (double) p.getDependents().getNumericValue();
+    private static final Function<Person, Boolean> IS_SALARY_UNSPECIFIED =
+            p -> p.getSalary().isUnspecified();
+    private static final Function<Person, Boolean> IS_DEPENDENTS_UNSPECIFIED =
+            p -> p.getDependents().isUnspecified();
 
     @Test
     public void equals() throws ParseException {
@@ -116,7 +126,7 @@ public class PersonContainsKeywordsPredicateTest {
     @Test
     public void test_numericalSalaryEquals_returnsTrue() throws ParseException {
         FilterNumericalPrefixParser parser =
-                new FilterNumericalPrefixParser(PREFIX_SALARY, p -> p.getSalary().getNumericValue());
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         parser.parse("50000");
         PersonContainsKeywordsPredicate predicate =
                 new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
@@ -126,7 +136,7 @@ public class PersonContainsKeywordsPredicateTest {
     @Test
     public void test_numericalSalaryGreaterThan_returnsTrue() throws ParseException {
         FilterNumericalPrefixParser parser =
-                new FilterNumericalPrefixParser(PREFIX_SALARY, p -> p.getSalary().getNumericValue());
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         parser.parse(">49999");
         PersonContainsKeywordsPredicate predicate =
                 new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
@@ -136,7 +146,7 @@ public class PersonContainsKeywordsPredicateTest {
     @Test
     public void test_numericalSalaryGreaterThan_returnsFalse() throws ParseException {
         FilterNumericalPrefixParser parser =
-                new FilterNumericalPrefixParser(PREFIX_SALARY, p -> p.getSalary().getNumericValue());
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         parser.parse(">50000");
         PersonContainsKeywordsPredicate predicate =
                 new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
@@ -146,7 +156,7 @@ public class PersonContainsKeywordsPredicateTest {
     @Test
     public void test_numericalDependentsLessThanOrEqual_returnsTrue() throws ParseException {
         FilterNumericalPrefixParser parser =
-                new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, p -> p.getDependents().getNumericValue());
+                new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
         parser.parse("<=2");
         PersonContainsKeywordsPredicate predicate =
                 new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
@@ -157,7 +167,7 @@ public class PersonContainsKeywordsPredicateTest {
     @Test
     public void test_numericalDependentsLessThan_returnsFalse() throws ParseException {
         FilterNumericalPrefixParser parser =
-                new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, p -> p.getDependents().getNumericValue());
+                new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
         parser.parse("<2");
         PersonContainsKeywordsPredicate predicate =
                 new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
@@ -193,8 +203,6 @@ public class PersonContainsKeywordsPredicateTest {
         assertFalse(predicate.test(new PersonBuilder().withTags("friends", "family").build()));
     }
 
-    // --- Mixed Filter Tests ---
-
     @Test
     public void test_mixedFiltersAllMatch_returnsTrue() throws ParseException {
         // Name contains "Alice"
@@ -204,7 +212,7 @@ public class PersonContainsKeywordsPredicateTest {
 
         // Salary is >= 50000
         FilterNumericalPrefixParser salaryParser =
-                new FilterNumericalPrefixParser(PREFIX_SALARY, p -> p.getSalary().getNumericValue());
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         salaryParser.parse(">=50000");
 
         // Has tag "friends"
@@ -226,7 +234,7 @@ public class PersonContainsKeywordsPredicateTest {
 
         // Wrong salary
         FilterNumericalPrefixParser salaryParser =
-                new FilterNumericalPrefixParser(PREFIX_SALARY, p -> p.getSalary().getNumericValue());
+                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         salaryParser.parse(">=50000");
 
         FilterMultiplePrefixParser tagParser = new FilterMultiplePrefixParser(PREFIX_TAG);

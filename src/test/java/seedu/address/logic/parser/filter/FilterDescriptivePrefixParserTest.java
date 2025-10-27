@@ -1,5 +1,6 @@
 package seedu.address.logic.parser.filter;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -68,6 +69,17 @@ public class FilterDescriptivePrefixParserTest {
     }
 
     @Test
+    public void parse_whitespaceArgs_success() throws ParseException {
+        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        parser.parse("   ");
+
+        String expected = "seedu.address.logic.parser.filter.FilterDescriptivePrefixParser{prefix=n/, keyword=   }";
+
+        assertEquals(expected, parser.toString());
+        assertFalse(parser.test(ALICE));
+    }
+
+    @Test
     public void test_nameFilter() throws ParseException {
         FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
 
@@ -121,6 +133,12 @@ public class FilterDescriptivePrefixParserTest {
     }
 
     @Test
+    public void test_calledBeforeParse_throwsNullPointerException() {
+        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        assertThrows(NullPointerException.class, () -> parser.test(ALICE));
+    }
+
+    @Test
     public void equals() throws ParseException {
         FilterDescriptivePrefixParser parser1 = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
         parser1.parse("alice");
@@ -150,6 +168,23 @@ public class FilterDescriptivePrefixParserTest {
         // null -> returns false
         assertFalse(parser1.equals(null));
     }
+
+    @Test
+    public void equals_oneParsedOneUnparsed_returnsFalse() throws ParseException {
+        FilterDescriptivePrefixParser parsedParser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        parsedParser.parse("alice");
+        FilterDescriptivePrefixParser unparsedParser = new FilterDescriptivePrefixParser(PREFIX_NAME,
+                GET_NAME_STRING);
+        assertFalse(parsedParser.equals(unparsedParser));
+    }
+
+    @Test
+    public void hashCode_unparsedParser_success() {
+        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+
+        assertDoesNotThrow(() -> parser.hashCode());
+    }
+
 
     @Test
     public void hashCode_consistentWithEquals() throws ParseException {

@@ -119,11 +119,13 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     private void addNumericalParserIfPresent(ArgumentMultimap argMultimap,
                                              Prefix prefix,
                                              Function<Person, Double> getPersonField,
+                                             Function<Person, Boolean> isPersonFieldUnspecified,
                                              List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
         if (!argMultimap.getValue(prefix).isPresent()) {
             return;
         }
-        FilterNumericalPrefixParser parser = new FilterNumericalPrefixParser(prefix, getPersonField);
+        FilterNumericalPrefixParser parser =
+                new FilterNumericalPrefixParser(prefix, getPersonField, isPersonFieldUnspecified);
         parser.parse(argMultimap.getValue(prefix).get());
         filterPrefixParsers.add(parser);
     }
@@ -171,9 +173,15 @@ public class FilterCommandParser implements Parser<FilterCommand> {
      */
     private void addAllNumericalParsersIfPresent(ArgumentMultimap argMultiMap,
                                                  List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
-        addNumericalParserIfPresent(argMultiMap, PREFIX_SALARY, p ->
-                p.getSalary().getNumericValue(), filterPrefixParsers);
-        addNumericalParserIfPresent(argMultiMap, PREFIX_DEPENDENTS, p ->
-                p.getDependents().getNumericValue(), filterPrefixParsers);
+        addNumericalParserIfPresent(argMultiMap,
+                PREFIX_SALARY,
+                p -> p.getSalary().getNumericValue(),
+                p -> p.getSalary().isUnspecified(),
+                filterPrefixParsers);
+        addNumericalParserIfPresent(argMultiMap,
+                PREFIX_DEPENDENTS,
+                p -> p.getDependents().getNumericValue(),
+                p -> p.getDependents().isUnspecified(),
+                filterPrefixParsers);
     }
 }

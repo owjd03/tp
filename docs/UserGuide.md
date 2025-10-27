@@ -149,62 +149,49 @@ Examples:
 
 ### Filtering persons: `filter`
 
-Filters the list of persons to show only those who match all specified criteria.
-The command supports two types of filtering: keyword matching for descriptive fields and numerical comparison for numerical fields (Salary and Number of dependents only).
+Quickly finds contacts in your list who match specific criteria.
+You can search by keywords for text fields or use numerical comparisons for `Salary` and `Dependents`.
 
 Format: `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`
 
-* At least one of the optional fields must be provided.
-* Only persons who match **all** specified criteria will be shown.
-* Only multiple `t/` (tag) prefixes are allowed. All other prefixes are strictly not allowed to be duplicated.
+* Provide at least one prefix to start filtering.
+* The filter will only show people who match **all** the criteria you provide.
 
-##### Descriptive Fields (keyword matching)
+##### Filtering by Keyword (for most fields)
 
-The following fields use case-insensitive keyword matching. The command will find any entry that **contains** the keyword you provided.
-* `n/NAME`
-* `a/ADDRESS`
-* `p/PHONE`
-* `e/EMAIL`
-* `dob/DATE_OF_BIRTH`
-* `ms/MARITAL_STATUS`
-* `occ/OCCUPATION`
-* `ip/INSURANCE_PACKAGE`
-* `t/TAG`
+For fields like `Name`, `Address`, and `Occupation`, the filter performs a case-insensitive "**contains**" search.
+You only need to type a part of the word.
 
-**Rules for Descriptive Fields:**
-* The filter is case-insensitive. e.g `josh` will match `Josh`
-* Keywords do not need to be complete words. e.g. `n/jo` will match names like `John` or `Joseph`
-* Keywords can be single words or phrases (e.g. `a/changi village` is allowed).
-* For tags (t/), all specified tags must be present in the person's tags.
+* **Rule:** The filter is case-insensitive and matches partial words.
+  * `filter n/jo` will match `Josh` or `Joseph`.
+* **Multiple tags:** You can provide multiple `t/` prefixes. A contact must have all the specified tags to be shown.
+  * `filter t/fiend t/rich` finds contacts who are tagged as both a `friend` **AND** `rich`.
 
-##### Numerical Fields (numerical comparison)
-The following fields use numerical comparison.
-* `s/SALARY`
-* `dep/NUMBER_OF_DEPENDENTS`
+##### Filtering by Number (s/ for Salary and dep/ for Number of Dependents)
 
-**Rules for Numerical Fields:**
-* You can use comparison operators: `>`, `>=`, `<`, `<=`.
-* If no operator is provided, the filter will search for an **exact numerical match** (`=`).
-* The `dep/` field only accepts whole numbers (integers).
-* The `s/` field can accept numbers with up to two decimal places.
-* The number provided must be non-negative (i.e. >= 0).
+These fields have special rules for handling numbers and finding unspecified values.
 
-Examples:
-* `filter n/josh` displays all persons whose name contains `josh`.
-* `filter n/josh a/kent ridge` displays all persons whose name contains `josh` **AND** whose address contains `kent ridge`.
-* `filter t/friend t/rich` displays all persons who have the tags containing `friend` **AND** `rich`.
-* `filter s/>=50000` displays all persons whose salary is greater than or equal to 50000.
-* `filter dep/<3` displays all persons who have less than 3 dependents (i.e. 0, 1, 2).
-* `filter s/3000.1 dep/2` displays all persons whose salary is exactly 3000.10 **AND** have exactly 2 dependents.
+* **To find an exact number:** Just type the number.
+  * `filter s/5000` finds people with a salary of exactly 5000.
+  * `filter dep/2` finds people with exactly 2 dependents.
+* **To make a comparison:** Use the operators `>`, `>=`, `<`, `<=`.
+  * `filter s/>=60000` finds salaries greater than or equal to 60000.
+  * `filter dep/<3` finds people with less than 3 dependents (0, 1 or 2).
+* **To find unspecified values: ** Use the keyword **unspecified**.
+  * `filter s/unspecified` finds all people whose salary has not been specified. You can also use partial keywords like `s/uns`.
+
+Common Examples:
+* `filter n/josh a/kent ridge` displays all contacts whose name contains `josh` **AND** whose address contains `kent ridge`.
+* `filter s/3000.1 dep/2` displays all contacts whose salary is exactly 3000.10 **AND** have exactly 2 dependents.
+* `filter s/unspecified dep/>=1` displays all contacts with an unspecified salary **AND** have 1 or more dependents.
 
 Invalid Usages:
-* `filter` (no parameters)
-* `filter some random text` (preamble is not allowed)
-* `filter n/` (empty description for a prefix)
-* `filter n/josh n/david` (duplicate prefixes except for `t/` (tag) are not allowed)
-* `filter s/>=50k` (invalid number format)
-* `filter s/>-1` (number cannot be negative)
-* `filter dep/>2.5` (dependents must be an integer)
+* `filter` (at least one prefix must be provided)
+* `filter some random text` (parameters must start with a prefix like `n/` or `s/`)
+* `filter n/` (a keyword must be provided after the prefix)
+* `filter n/josh n/david` (duplicate prefixes are not allowed, except for `t/`)
+* `filter s/>=50k` (invalid number format, use `50000` instead)
+* `filter dep/>2.5` (dependents must be a whole number)
 
 ### Sorting persons: `sort`
 

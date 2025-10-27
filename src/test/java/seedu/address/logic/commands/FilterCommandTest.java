@@ -188,7 +188,9 @@ public class FilterCommandTest {
     public void execute_salaryEquals_singlePersonFound() throws ParseException {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
         FilterNumericalPrefixParser salaryParser =
-                new FilterNumericalPrefixParser(PREFIX_SALARY, p -> p.getSalary().getNumericValue());
+                new FilterNumericalPrefixParser(PREFIX_SALARY,
+                        p -> p.getSalary().getNumericValue(),
+                        p -> p.getSalary().isUnspecified());
         salaryParser.parse("7000");
 
         PersonContainsKeywordsPredicate predicate =
@@ -203,7 +205,9 @@ public class FilterCommandTest {
     public void execute_salaryGreaterThan_multiplePersonsFound() throws ParseException {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 2);
         FilterNumericalPrefixParser salaryParser =
-                new FilterNumericalPrefixParser(PREFIX_SALARY, p -> p.getSalary().getNumericValue());
+                new FilterNumericalPrefixParser(PREFIX_SALARY,
+                        p -> p.getSalary().getNumericValue(),
+                        p -> p.getSalary().isUnspecified());
         salaryParser.parse(">9999");
 
         PersonContainsKeywordsPredicate predicate =
@@ -218,7 +222,9 @@ public class FilterCommandTest {
     public void execute_dependentsLessThanOrEqual_multiplePersonsFound() throws ParseException {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 5);
         FilterNumericalPrefixParser depParser =
-                new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, p -> p.getDependents().getNumericValue());
+                new FilterNumericalPrefixParser(PREFIX_DEPENDENTS,
+                        p -> p.getDependents().getNumericValue(),
+                        p -> p.getDependents().isUnspecified());
         depParser.parse("<=1");
 
         PersonContainsKeywordsPredicate predicate =
@@ -234,7 +240,9 @@ public class FilterCommandTest {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
         List<FilterPrefixParser> parsers = new ArrayList<>();
         FilterNumericalPrefixParser depParser = new
-                FilterNumericalPrefixParser(PREFIX_DEPENDENTS, p -> p.getDependents().getNumericValue());
+                FilterNumericalPrefixParser(PREFIX_DEPENDENTS,
+                p -> p.getDependents().getNumericValue(),
+                p -> p.getDependents().isUnspecified());
         depParser.parse(">=3");
         parsers.add(depParser);
         FilterDescriptivePrefixParser nameParser =
