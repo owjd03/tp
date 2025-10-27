@@ -89,16 +89,37 @@ public class EditCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        Person personToEdit = getPersonToEdit(model);
+        Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
+
+        validateEditedPerson(model, personToEdit, editedPerson);
+
+        updateModel(model, personToEdit, editedPerson);
+
+        return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
+    }
+
+    /**
+     * Retrieves the person to edit from the model based on the index.
+     * @throws CommandException if the index is invalid.
+     */
+    private Person getPersonToEdit(Model model) throws CommandException {
         List<Person> lastShownList = model.getFilteredPersonList();
 
         if (index.getZeroBased() >= lastShownList.size()) {
             throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
-        Person personToEdit = lastShownList.get(index.getZeroBased());
-        Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
+        return lastShownList.get(index.getZeroBased());
+    }
 
-
+    /**
+     * Validates the edited Person by checking for duplicates.
+     * Also checks if the insurance package is valid.
+     * @throws CommandException if the person fails validation (e.g., duplicate or invalid insurance).
+     */
+    private void validateEditedPerson(Model model, Person personToEdit, Person editedPerson) throws CommandException {
+        // Check for valid insurance package
         String desiredPackageName = editedPerson.getInsurancePackage().getPackageName();
         if (!InsuranceCatalog.isValidInsurancePackage(desiredPackageName)) {
             String validNamesString = InsuranceCatalog.getValidInsurancePackageNames();
@@ -107,13 +128,18 @@ public class EditCommand extends Command {
                     + "Available packages are: " + validNamesString);
         }
 
+        // Check for duplicate Persons
         if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
+    }
 
+    /**
+     * Commits the changes to the model.
+     */
+    private void updateModel(Model model, Person personToEdit, Person editedPerson) {
         model.setPerson(personToEdit, editedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-        return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
     }
 
     /**
