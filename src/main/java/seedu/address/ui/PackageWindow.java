@@ -2,7 +2,6 @@ package seedu.address.ui;
 
 import java.util.logging.Logger;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
@@ -12,7 +11,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.insurance.InsurancePackage;
-import seedu.address.model.person.Person;
 
 /**
  * Controller for a package page
@@ -21,7 +19,7 @@ public class PackageWindow extends UiPart<Stage> {
 
     private static final Logger logger = LogsCenter.getLogger(PackageWindow.class);
     private static final String FXML = "PackageWindow.fxml";
-    private static final KeyCombination EXIT_KEY= new KeyCodeCombination(KeyCode.E);
+    private static final KeyCombination EXIT_KEY = new KeyCodeCombination(KeyCode.E);
     private static final String EXIT_CODE = "Exit Window - [E]";
 
     private PackageListPanel packageListPanel;
@@ -57,10 +55,8 @@ public class PackageWindow extends UiPart<Stage> {
      */
     private void setAccelerator() {
         getRoot().getScene().getAccelerators().put(
-                EXIT_KEY,
-                () -> hide()
+                EXIT_KEY, () -> hide()
         );
-
     }
 
     /**

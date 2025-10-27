@@ -6,11 +6,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import seedu.address.commons.core.LogsCenter;
@@ -25,7 +23,7 @@ public class ViewWindow extends UiPart<Stage> {
 
     private static final Logger logger = LogsCenter.getLogger(ViewWindow.class);
 
-    private static final KeyCombination EXIT_KEY= new KeyCodeCombination(KeyCode.E);
+    private static final KeyCombination EXIT_KEY = new KeyCodeCombination(KeyCode.E);
 
     private static final String EXIT_CODE = "Exit Window - [E]";
 
@@ -74,10 +72,8 @@ public class ViewWindow extends UiPart<Stage> {
      */
     private void setAccelerator() {
         getRoot().getScene().getAccelerators().put(
-                EXIT_KEY,
-                () -> hide()
+                EXIT_KEY, () -> hide()
         );
-
     }
 
     /**
