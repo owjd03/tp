@@ -24,6 +24,8 @@ public class Salary {
      */
     public static final String VALIDATION_REGEX = "\\d+(\\.\\d{1,2})?";
 
+    public static final String UNSPECIFIED_VALUE = "Unspecified";
+
     public final String value;
 
     /**
@@ -34,9 +36,22 @@ public class Salary {
      */
     public Salary(String salary) {
         requireNonNull(salary);
-        String sanitizedSalary = salary.replace(",", "");
-        checkArgument(isValidSalary(sanitizedSalary), MESSAGE_CONSTRAINTS);
-        value = sanitizedSalary;
+
+        if (salary.equals(UNSPECIFIED_VALUE)) {
+            this.value = UNSPECIFIED_VALUE;
+        } else {
+            String sanitizedSalary = salary.replace(",", "");
+            checkArgument(isValidSalary(sanitizedSalary), MESSAGE_CONSTRAINTS);
+            value = sanitizedSalary;
+        }
+    }
+
+    /**
+     * Static factory method for creating the default "Unspecified" Salary
+     * @return A Salary object with value "Unspecified".
+     */
+    public static Salary createUnspecified() {
+        return new Salary(UNSPECIFIED_VALUE);
     }
 
     /**
@@ -48,12 +63,23 @@ public class Salary {
     }
 
     /**
+     * Returns the numerical value of the salary as a double.
+     */
+    public double getNumericValue() {
+        return Double.parseDouble(this.value);
+    }
+
+    /**
      * Formats the salary with a '$' sign in front and commas separating thousands.
      * If the salary has decimal places, it will be formatted to two decimal places.
      * @return A formatted string representation of the salary.
      */
     @Override
     public String toString() {
+        if (this.value.equals(UNSPECIFIED_VALUE)) {
+            return UNSPECIFIED_VALUE;
+        }
+
         try {
             double amount = Double.parseDouble(this.value);
             DecimalFormat formatter = new DecimalFormat("$#,##0.00");

@@ -57,11 +57,11 @@ public class EditCommand extends Command {
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_SALARY + "SALARY] "
-            + "[" + PREFIX_DATE_OF_BIRTH + "AGE] "
+            + "[" + PREFIX_DATE_OF_BIRTH + "DATE_OF_BIRTH] "
             + "[" + PREFIX_MARITAL_STATUS + "MARITAL_STATUS] "
             + "[" + PREFIX_DEPENDENTS + "NUMBER_OF_DEPENDENTS] "
             + "[" + PREFIX_OCCUPATION + "OCCUPATION] "
-            + "[" + PREFIX_INSURANCE_PACKAGE + "INSURANCE PACKAGE] "
+            + "[" + PREFIX_INSURANCE_PACKAGE + "INSURANCE_PACKAGE] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PHONE + "91234567 "
@@ -99,7 +99,7 @@ public class EditCommand extends Command {
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
 
 
-        String desiredPackageName = personToEdit.getInsurancePackage().getPackageName();
+        String desiredPackageName = editedPerson.getInsurancePackage().getPackageName();
         if (!InsuranceCatalog.isValidInsurancePackage(desiredPackageName)) {
             String validNamesString = InsuranceCatalog.getValidInsurancePackageNames();
             throw new CommandException("The insurance package '"

@@ -1,0 +1,15 @@
+{
+  "insurancePackages": [ {
+    "packageName": "Gold",
+    "packageDescription": "This is the premium deluxe insurance package. Buy this and worry no more!"
+  }, {
+    "packageName": "Silver",
+    "packageDescription": "This is the premium package. Buy this and worry less about life!"
+  }, {
+    "packageName": "Bronze",
+    "packageDescription": "This is the basic insurance package. Buy this and continue worrying about life!"
+  }, {
+    "packageName": "Undecided",
+    "packageDescription": "No package selected. Keep an eye open at all times, even when sleeping!"
+  } ]
+}

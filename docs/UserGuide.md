@@ -3,7 +3,7 @@ layout: page
 title: User Guide
 ---
 
-AddressBook Level 3 (AB3) is a **desktop app for managing contacts, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, AB3 can get your contact management tasks done faster than traditional GUI apps.
+ClientCore is a **comprehensive desktop application for financial advisors to manage their clients efficiently**. It is optimized for tech-savvy financial advisors who need to handle a large number of client profiles, enabling them to reduce administrative work and focus on delivering personalised financial advice.
 
 * Table of Contents
 {:toc}
@@ -77,7 +77,7 @@ Format: `help`
 
 Adds a person to the address book.
 
-Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS s/SALARY dob/DATE_OF_BIRTH ms/MARITAL_STATUS dep/NUMBER_OF_DEPENDENTS occ/OCCUPATION ip/INSURANCE_PACKAGE [t/TAG]…​`
+Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags (including 0)
@@ -85,7 +85,7 @@ A person can have any number of tags (including 0)
 
 Examples:
 * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 s/120000 dob/2001-01-01 ms/Married dep/2 occ/Engineer ip/Gold`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 dob/1992-12-12 ms/Single occ/Criminal dep/0 ip/Undecided t/criminal`
+* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 dep/0 ip/Undecided t/criminal`
 
 ### Listing all persons : `list`
 
@@ -150,43 +150,83 @@ Examples:
 ### Filtering persons: `filter`
 
 Filters the list of persons to show only those who match all specified criteria.
+The command supports two types of filtering: keyword matching for descriptive fields and numerical comparison for numerical fields (Salary and Number of dependents only).
 
-Format: `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`
+Format: `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`
 
 * At least one of the optional fields must be provided.
-* The filter is case-insensitive. e.g `josh` will match `Josh`
-* Keywords do not need to be complete words. The command matches any entry that **contains** the keyword. e.g. `n/jo` will match names like `John` or `Joseph`
-* Keywords can be single words or phrases (e.g. `a/changi village` is allowed).
 * Only persons who match **all** specified criteria will be shown.
-* If you specify the same prefix multiple times, only the last one will be used for filtering.
+* Only multiple `t/` (tag) prefixes are allowed. All other prefixes are strictly not allowed to be duplicated.
+
+##### Descriptive Fields (keyword matching)
+
+The following fields use case-insensitive keyword matching. The command will find any entry that **contains** the keyword you provided.
+* `n/NAME`
+* `a/ADDRESS`
+* `p/PHONE`
+* `e/EMAIL`
+* `dob/DATE_OF_BIRTH`
+* `ms/MARITAL_STATUS`
+* `occ/OCCUPATION`
+* `ip/INSURANCE_PACKAGE`
+* `t/TAG`
+
+**Rules for Descriptive Fields:**
+* The filter is case-insensitive. e.g `josh` will match `Josh`
+* Keywords do not need to be complete words. e.g. `n/jo` will match names like `John` or `Joseph`
+* Keywords can be single words or phrases (e.g. `a/changi village` is allowed).
+* For tags (t/), all specified tags must be present in the person's tags.
+
+##### Numerical Fields (numerical comparison)
+The following fields use numerical comparison.
+* `s/SALARY`
+* `dep/NUMBER_OF_DEPENDENTS`
+
+**Rules for Numerical Fields:**
+* You can use comparison operators: `>`, `>=`, `<`, `<=`.
+* If no operator is provided, the filter will search for an **exact numerical match** (`=`).
+* The `dep/` field only accepts whole numbers (integers).
+* The `s/` field can accept numbers with up to two decimal places.
+* The number provided must be non-negative (i.e. >= 0).
 
 Examples:
 * `filter n/josh` displays all persons whose name contains `josh`.
 * `filter n/josh a/kent ridge` displays all persons whose name contains `josh` **AND** whose address contains `kent ridge`.
-* `filter n/josh n/david` is equivalent to `filter n/david`. It will display all persons whose name contains `david`.
+* `filter t/friend t/rich` displays all persons who have the tags containing `friend` **AND** `rich`.
+* `filter s/>=50000` displays all persons whose salary is greater than or equal to 50000.
+* `filter dep/<3` displays all persons who have less than 3 dependents (i.e. 0, 1, 2).
+* `filter s/3000.1 dep/2` displays all persons whose salary is exactly 3000.10 **AND** have exactly 2 dependents.
 
 Invalid Usages:
 * `filter` (no parameters)
 * `filter some random text` (preamble is not allowed)
 * `filter n/` (empty description for a prefix)
-* `filter n/ a/changi` (empty description for a prefix)
+* `filter n/josh n/david` (duplicate prefixes except for `t/` (tag) are not allowed)
+* `filter s/>=50k` (invalid number format)
+* `filter s/>-1` (number cannot be negative)
+* `filter dep/>2.5` (dependents must be an integer)
 
 ### Sorting persons: `sort`
 
-Sorts the list of persons by the specified field in ascending order.
+Sorts the list of persons by the specified field in specified order.
 
-Format: `sort FIELD`
+Format: `sort FIELD DIRECTION`
 
-* The `FIELD` must be one of the following: `name`, `phone`, `email`, `address`, `salary`, `dateofbirth`, `maritalstatus`, `occupation`, `dependents`
+* The `FIELD` must be one of the following: `name`, `phone`, `email`, `address`, `salary`, `dateofbirth`, `maritalstatus`, `occupation` or `dependent`
+* The `DIRECTION` must be one of the following: `ascending` or `descending`. If not specified, defaults to `ascending`
 * The sort is case-insensitive for text fields (e.g., `name`, `email`, `address`, `maritalstatus`, `occupation`)
-* Numerical fields (`salary`, `dependents`) are sorted numerically
+* Numerical fields (`salary`, `dependent`) are sorted numerically
 * Date fields (`dateofbirth`) are sorted chronologically
 * The entire list will be sorted and displayed in the main window
-* Extra parameters after the field name will be ignored
+* Invalid direction parameters are ignored and will default to ascending
+* Extra parameters after the direction will be ignored
 
 Examples:
-* `sort name` sorts all persons alphabetically by name
-* `sort salary` sorts all persons by salary from lowest to highest
+* `sort name` sorts all persons alphabetically by name (ascending by default)
+* `sort name ascending` sorts all persons alphabetically by name from A to Z
+* `sort name descending` sorts all persons alphabetically by name from Z to A
+* `sort salary` sorts all persons by salary from lowest to highest (ascending by default)
+* `sort dependent descending` sort all persons by dependent from highest to lowest
 * `sort dateofbirth` sorts all persons by date of birth from oldest to youngest
 
 ### Exporting all persons: `export`
@@ -213,21 +253,63 @@ Examples:
 * `list` followed by `delete 2` deletes the 2nd person in the address book.
 * `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
 
+### Adding an insurance package: `addp`
+
+Adds an new custom insurance package in the address book.
+
+Format: `addp [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
+
+* Creates a new insurance package with the specified `PACKAGE_NAME` and `PACKAGE_DESCRIPTION`
+* The `i/` (package name) and `d/` (package description) fields are **both mandatory**.
+* Package names are automatically formatted with proper capitalization (e.g., "premium package" becomes "Premium Package").
+* Package names cannot be empty after removing whitespace
+* You can set an empty description by typing `d/` followed by a space (e.g., `d/ `).
+* Duplicate package names are not allowed (case-insensitive check).
+
+Examples:
+* `addp i/Premium Package d/Our top-tier insurance with comprehensive coverage and benefits.` Adds a "Premium Package" with the specified description.
+* `addp i/basic plan d/Essential coverage at an affordable price point.` Adds a "Basic Plan" (auto-formatted) with the description.
+* `addp i/Student Package d/` Adds a "Student Package" with an empty description.
+
 ### Editing an insurance package: `editp`
 
 Edits an existing insurance package in the address book.
 
-Format: `editp INDEX [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
+Format: `editp [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
 
 * Finds the insurance package specified by `PACKAGE_NAME`. The search is case-insensitive.
 * Updates the description of the found package to the `NEW_DESCRIPTION`.
-* The `n/` (package name) and `d/` (new description) fields are **both mandatory**.
+* The `i/` (package name) and `d/` (new description) fields are **both mandatory**.
 * The package name itself cannot be changed.
 * You can set an empty description by typing `d/` followed by a space (e.g., `d/ `).
 
 Examples:
-* `editp n/Gold d/New description.` Edits the description of "Gold" package to be `New description.`
-* `editp n/Basic Plan d/ ` Edits the description of "Basic Plan" to be empty.
+* `editp i/Gold d/New description.` Edits the description of "Gold" package to be `New description.`
+* `editp i/Basic Plan d/ ` Edits the description of "Basic Plan" to be empty.
+
+### Deleting an insurance package: `deletep`
+
+Deletes an existing insurance package in the address book. The insurance package to be deleted
+cannot be one of the 4 default ones (Gold, Silver, Bronze, Undecided) and must not have a client 
+currently using it. 
+
+Format: `deletep [i/PACKAGE_NAME]`
+
+* Finds the insurance package specified by `PACKAGE_NAME`. The search is case-insensitive.
+* If the found package is one of the 4 default packages, an error message will be displayed and deletion will not occur.  
+* If the found package has at least one client currently using, an error message will be displayed and deletion will not occur.
+
+Examples:
+* `deletep i/PackageToBeDeleted` Deletes the insurance package named "PackageToBeDeleted".
+* `deletep i/Gold` Displays an error message as default packages cannot be deleted. 
+
+### Listing existing insurance packages: `listp`
+
+Shows all existing insurance package in the address book.
+
+![list package message](images/listPackage.png)
+
+Format: `listp`
 
 ### Clearing all entries : `clear`
 
@@ -281,11 +363,15 @@ Action | Format, Examples
 **Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS s/SALARY dob/DATE_OF_BIRTH ms/MARITAL_STATUS dep/NUMBER_OF_DEPENDENTS occ/OCCUPATION ip/INSURANCE_PACKAGE [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 s/5000 dob/1993-02-02 ms/Married dep/3 occ/Artist ip/Bronze t/friend t/colleague`
 **Clear** | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
-**Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
+**Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com s/>=5000`
 **Export** | `export`
-**Filter** | `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g., `filter n/James Lee e/jameslee`
+**Filter** | `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g., `filter n/James Lee e/jameslee`
 **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **View** | `view NAME-KEYWORD` `view INDEX` <br> e.g. `view Alex` `view 1`
 **List** | `list`
 **Help** | `help`
 **Sort** | `sort FIELD`<br> e.g., `sort name`, `sort salary`
+**List Package** | `listp`
+**Add Package** | `addp [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
+**Edit Package** | `editp [i/PACKAGE_NAME] [d/EDITED_PACKAGE_DESCRIPTION]`
+**Delete Package** | `deletep [i/PACKAGE_NAME] `

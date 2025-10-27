@@ -81,8 +81,7 @@ public class EditCommandParser implements Parser<EditCommand> {
         }
         if (argMultimap.getValue(PREFIX_DEPENDENTS).isPresent()) {
             editPersonDescriptor.setDependents(
-                    ParserUtil.parseDependents(
-                            Integer.parseInt(argMultimap.getValue(CliSyntax.PREFIX_DEPENDENTS).get())));
+                    ParserUtil.parseDependents(argMultimap.getValue(CliSyntax.PREFIX_DEPENDENTS).get()));
         }
         if (argMultimap.getValue(PREFIX_OCCUPATION).isPresent()) {
             editPersonDescriptor.setOccupation(

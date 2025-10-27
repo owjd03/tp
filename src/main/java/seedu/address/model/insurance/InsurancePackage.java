@@ -8,6 +8,9 @@ import java.util.Objects;
 
 /**
  * Represents an insurance package that a Person can be assigned to.
+ * Package names cannot be empty, and they are automatically formatted to capitalize each word
+ * with the remaining characters lowercased.<br>
+ * Example: {@code BaSic heAlth inSurance} is formatted to {@code Basic Health Insurance}.<br>
  * Guarantees: immutable;
  */
 public class InsurancePackage {
@@ -20,13 +23,13 @@ public class InsurancePackage {
     /**
      * Constructs a {@code InsurancePackage}.
      *
-     * @param name             A valid insurance package, represented by its name.
-     * @param description      Description of the insurance package.
+     * @param name             A valid insurance package, represented by its name, cannot be empty.
+     * @param description      Description of the insurance package, optional.
      */
     public InsurancePackage(String name, String description) {
         requireAllNonNull(name, description);
         packageName = formatPackageName(name);
-        packageDescription = description;
+        packageDescription = description.trim();
     }
 
     /**
@@ -92,11 +95,16 @@ public class InsurancePackage {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.packageName.toLowerCase(), this.packageDescription);
+        // Since insurance packages are considered to be equal based on their package name only,
+        // the hashcode should depend on the package name only too
+        return Objects.hash(this.packageName.toLowerCase());
     }
 
     @Override
     public String toString() {
-        return packageName.toString();
+        if (this.packageDescription.isEmpty()) {
+            return String.format("%s: No description provided", this.packageName);
+        }
+        return String.format("%s: %s", this.packageName, this.packageDescription);
     }
 }
