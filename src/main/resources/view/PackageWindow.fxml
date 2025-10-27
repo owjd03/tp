@@ -8,7 +8,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.stage.Stage?>
 
-<fx:root resizable="false" title="Packages" type="javafx.stage.Stage" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root title="Packages" type="javafx.stage.Stage" xmlns="http://javafx.com/javafx/25"
+         xmlns:fx="http://javafx.com/fxml/1" minWidth="550" minHeight="400">
     <icons>
         <Image url="@/images/help_icon.png" />
     </icons>
@@ -18,11 +19,15 @@
                 <URL value="@DarkTheme.css" />
                 <URL value="@Extensions.css" />
             </stylesheets>
-            <VBox fx:id="packageList" prefHeight="400" prefWidth="550" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
-                <padding>
-                    <Insets bottom="10" left="10" right="10" top="10" />
-                </padding>
-                <StackPane fx:id="packageListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
+            <VBox>
+                <VBox fx:id="packageList" prefWidth="550" prefHeight="400" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
+                    <padding>
+                        <Insets bottom="10" left="10" right="10" top="10" />
+                    </padding>
+                    <StackPane fx:id="packageListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
+                </VBox>
+
+                <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER" />
             </VBox>
         </Scene>
     </scene>
