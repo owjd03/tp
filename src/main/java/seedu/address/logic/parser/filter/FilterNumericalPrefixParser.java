@@ -158,11 +158,11 @@ public class FilterNumericalPrefixParser implements FilterPrefixParser {
             return "unspecified".contains(this.keyword);
         }
 
-        String personValue = this.getPersonField.apply(person).toString();
+        Double personValue = this.getPersonField.apply(person);
         if (personValue == null) {
             return false;
         }
-        return personValue.contains(this.keyword);
+        return personValue.toString().contains(this.keyword);
     }
 
     private boolean testComparisonLogic(Person person) {
