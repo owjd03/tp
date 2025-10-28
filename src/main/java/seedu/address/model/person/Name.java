@@ -27,8 +27,40 @@ public class Name {
      */
     public Name(String name) {
         requireNonNull(name);
+        String trimmedName = name.trim();
+
         checkArgument(isValidName(name), MESSAGE_CONSTRAINTS);
-        fullName = name;
+
+        this.fullName = standardizeName(trimmedName);
+    }
+
+    /**
+     * Standardizes the name by capitalizing the first letter of each word
+     * and converting the rest of the letters to lowercase.
+     *
+     * @param name The name to be standardized.
+     * @return The standardized name.
+     */
+    private static String standardizeName(String name) {
+        if (name.isEmpty()) {
+            return "";
+        }
+
+        // Split each word by one or more spaces
+        String[] words = name.split("\\s+");
+        StringBuilder standardizedName = new StringBuilder();
+
+        for (String word : words) {
+            if (word.isEmpty()) {
+                continue;
+            }
+
+            standardizedName.append(Character.toUpperCase(word.charAt(0)));
+            standardizedName.append(word.substring(1).toLowerCase());
+            standardizedName.append(" ");
+        }
+
+        return standardizedName.toString().trim();
     }
 
     /**
