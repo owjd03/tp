@@ -34,7 +34,7 @@ public enum MaritalStatusEnum {
      */
     public static boolean isValidMaritalStatus(String test) {
         for (MaritalStatusEnum maritalStatus : MaritalStatusEnum.values()) {
-            if (maritalStatus.displayValue.equals(test)) {
+            if (maritalStatus.displayValue.equalsIgnoreCase(test)) {
                 return true;
             }
         }

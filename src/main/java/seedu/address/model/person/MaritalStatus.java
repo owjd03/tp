@@ -11,7 +11,7 @@ public class MaritalStatus {
 
     public static final String MESSAGE_CONSTRAINTS =
             "Marital status must be one of the predefined constants: "
-                    + "Single, Married, Divorced, Widowed";
+                    + "Single, Married, Divorced, Widowed, Unspecified (case-insensitive).";
 
     public static final String UNSPECIFIED_VALUE = "Unspecified";
 

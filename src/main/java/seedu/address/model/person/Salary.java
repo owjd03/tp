@@ -12,9 +12,10 @@ import java.text.DecimalFormat;
 public class Salary {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Salaries can take any non-negative values, "
+            "Salary must be non-negative, "
                     + "should not be blank, "
-                    + "and should have up to 2 decimal places";
+                    + "should have up to 2 decimal places, "
+                    + "or be declared as 'Unspecified' (case-insensitive).";
 
     /*
      * For a salary to be valid, it must be non-negative.
@@ -36,13 +37,14 @@ public class Salary {
      */
     public Salary(String salary) {
         requireNonNull(salary);
+        String sanitizedSalary = salary.replace(",", "");
 
-        if (salary.equals(UNSPECIFIED_VALUE)) {
+        checkArgument(isValidSalary(sanitizedSalary), MESSAGE_CONSTRAINTS);
+
+        if (sanitizedSalary.equalsIgnoreCase(UNSPECIFIED_VALUE)) {
             this.value = UNSPECIFIED_VALUE;
         } else {
-            String sanitizedSalary = salary.replace(",", "");
-            checkArgument(isValidSalary(sanitizedSalary), MESSAGE_CONSTRAINTS);
-            value = sanitizedSalary;
+            this.value = sanitizedSalary;
         }
     }
 
@@ -59,7 +61,7 @@ public class Salary {
      */
     public static boolean isValidSalary(String test) {
         String sanitizedSalary = test.replace(",", "");
-        if (sanitizedSalary.equals(UNSPECIFIED_VALUE)) {
+        if (sanitizedSalary.equalsIgnoreCase(UNSPECIFIED_VALUE)) {
             return true;
         }
         return sanitizedSalary.matches(VALIDATION_REGEX);

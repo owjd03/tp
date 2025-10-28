@@ -17,10 +17,15 @@ import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.ReadOnlyInsuranceCatalog;
 import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.DateOfBirth;
+import seedu.address.model.person.Dependents;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.MaritalStatus;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Occupation;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Salary;
 import seedu.address.model.util.SampleDataUtil;
 
 public class JsonAdaptedPersonTest {
@@ -155,8 +160,7 @@ public class JsonAdaptedPersonTest {
         JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
                 INVALID_SALARY, VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
                 VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = "Salaries can take any non-negative values, should not be blank, "
-                + "and should have up to 2 decimal places";
+        String expectedMessage = Salary.MESSAGE_CONSTRAINTS;
         assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
     }
 
@@ -175,7 +179,7 @@ public class JsonAdaptedPersonTest {
                 new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_SALARY,
                         INVALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
                         VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = "Date of birth must be a valid date in the format yyyy-MM-dd and not in the future";
+        String expectedMessage = DateOfBirth.MESSAGE_CONSTRAINTS;
         assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
     }
 
@@ -194,8 +198,7 @@ public class JsonAdaptedPersonTest {
                 new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_SALARY,
                         VALID_DATE_OF_BIRTH, INVALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
                         VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = "Marital status must be one of the predefined constants: Single, Married, Divorced,"
-                + " Widowed";
+        String expectedMessage = MaritalStatus.MESSAGE_CONSTRAINTS;
         assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
     }
 
@@ -213,7 +216,7 @@ public class JsonAdaptedPersonTest {
         JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
                 VALID_SALARY, VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, INVALID_OCCUPATION, VALID_DEPENDENTS,
                 VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = "Occupation cannot be left empty";
+        String expectedMessage = Occupation.MESSAGE_CONSTRAINTS;
         assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
     }
 
@@ -223,7 +226,7 @@ public class JsonAdaptedPersonTest {
                 new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_SALARY,
                         VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION,
                         INVALID_DEPENDENTS, VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = "Number of dependents must be a non-negative integer";
+        String expectedMessage = Dependents.MESSAGE_CONSTRAINTS;
         assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
     }
 

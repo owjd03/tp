@@ -9,6 +9,7 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.DateOfBirth;
@@ -141,10 +142,14 @@ public class ParserUtil {
     public static MaritalStatus parseMaritalStatus(String maritalStatus) throws ParseException {
         requireNonNull(maritalStatus);
         String trimmedMaritalStatus = maritalStatus.trim();
-        if (!MaritalStatusEnum.isValidMaritalStatus(trimmedMaritalStatus)) {
+
+        String normalizedStatus = Character.toUpperCase(trimmedMaritalStatus.charAt(0))
+                + trimmedMaritalStatus.substring(1).toLowerCase();
+
+        if (!MaritalStatusEnum.isValidMaritalStatus(normalizedStatus)) {
             throw new ParseException(MaritalStatus.MESSAGE_CONSTRAINTS);
         }
-        return new MaritalStatus(trimmedMaritalStatus);
+        return new MaritalStatus(normalizedStatus);
     }
 
     /**
@@ -169,9 +174,15 @@ public class ParserUtil {
     public static Dependents parseDependents(String dependents) throws ParseException {
         requireNonNull(dependents);
         int num;
+        String trimmedDependents = dependents.trim();
+
+        String unspecifiedString = Dependents.createUnspecified().toString();
+        if (trimmedDependents.equalsIgnoreCase(unspecifiedString)) {
+            return Dependents.createUnspecified();
+        }
 
         try {
-            num = Integer.parseInt(dependents.trim());
+            num = Integer.parseInt(trimmedDependents);
         } catch (NumberFormatException e) {
             // Catches "d/abc"
             throw new ParseException(Dependents.MESSAGE_CONSTRAINTS);
@@ -198,11 +209,17 @@ public class ParserUtil {
      */
     public static InsurancePackage parseInsurancePackage(String insurancePackage) throws ParseException {
         requireNonNull(insurancePackage);
-        String trimmedInsurancePackage = insurancePackage.trim();
-        if (trimmedInsurancePackage.isEmpty()) {
-            throw new ParseException(InsurancePackage.MESSAGE_CONSTRAINTS);
+        String trimmedPackageName = insurancePackage.trim();
+
+        if (!InsuranceCatalog.isValidInsurancePackage(trimmedPackageName)) {
+            String validNamesString = InsuranceCatalog.getValidInsurancePackageNames();
+            throw new ParseException("The insurance package '"
+                    + trimmedPackageName + "' does not exist.\n"
+                    + "Available packages are: " + validNamesString);
         }
-        return new InsurancePackage(trimmedInsurancePackage, "");
+
+        String packageDescription = InsuranceCatalog.getPackageDescription(trimmedPackageName);
+        return new InsurancePackage(trimmedPackageName, packageDescription);
     }
 
     /**
