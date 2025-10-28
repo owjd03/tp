@@ -97,17 +97,16 @@ Format: `list`
 
 Edits an existing person in the address book.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`
+Format: `edit INDEX n/NAME p/PHONE e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`
 
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
-* At least one of the optional fields must be provided.
-* Existing values will be updated to the input values.
+* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** e.g. 1, 2, 3, …​
+* At least one field to edit must be provided.
+* Existing values in each provided field will be updated to the input values.
 * When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.
-* You can remove all the person’s tags by typing `t/` without
-    specifying any tags after it.
+* You can remove all the person’s tags by typing `t/` without specifying any tags after it.
 
 Examples:
-*  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
+*  `edit 1 p/91234567 e/johndoe@newemail.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@newemail.com` respectively.
 *  `edit 3 a/John street, block 321, #01-01 s/150000` Edits the address and salary of the 3rd person to be `John street, block 321, #01-01` and `150000` respectively.
 *  `edit 4 ip/Silver dep/0` Edits the insurance package and number of dependents of the 4th person to be `Silver` and `0` respectively.
 *  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
@@ -277,18 +276,17 @@ Examples:
 ### Deleting an insurance package: `deletep`
 
 Deletes an existing insurance package in the address book. The insurance package to be deleted
-cannot be one of the 4 default ones (Gold, Silver, Bronze, Undecided) and must not have a client 
-currently using it. 
+cannot be the default package (Undecided) and must not have a client currently using it. 
 
 Format: `deletep [i/PACKAGE_NAME]`
 
 * Finds the insurance package specified by `PACKAGE_NAME`. The search is case-insensitive.
-* If the found package is one of the 4 default packages, an error message will be displayed and deletion will not occur.  
+* If the found package is the default package, an error message will be displayed and deletion will not occur.  
 * If the found package has at least one client currently using, an error message will be displayed and deletion will not occur.
 
 Examples:
 * `deletep i/PackageToBeDeleted` Deletes the insurance package named "PackageToBeDeleted".
-* `deletep i/Gold` Displays an error message as default packages cannot be deleted. 
+* `deletep i/Undecided` Displays an error message as the default package cannot be deleted. 
 
 ### Listing existing insurance packages: `listp`
 

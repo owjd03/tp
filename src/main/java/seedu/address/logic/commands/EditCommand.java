@@ -50,22 +50,23 @@ public class EditCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the person identified "
             + "by the index number used in the displayed person list. "
-            + "Existing values will be overwritten by the input values.\n"
+            + "Existing values in each field will be overwritten by the input values.\n"
             + "Parameters: INDEX (must be a positive integer) "
-            + "[" + PREFIX_NAME + "NAME] "
-            + "[" + PREFIX_PHONE + "PHONE] "
-            + "[" + PREFIX_EMAIL + "EMAIL] "
-            + "[" + PREFIX_ADDRESS + "ADDRESS] "
+            + PREFIX_NAME + "NAME "
+            + PREFIX_PHONE + "PHONE "
+            + PREFIX_EMAIL + "EMAIL "
+            + PREFIX_ADDRESS + "ADDRESS "
+            + PREFIX_INSURANCE_PACKAGE + "INSURANCE_PACKAGE \n"
+            + "                         "
             + "[" + PREFIX_SALARY + "SALARY] "
             + "[" + PREFIX_DATE_OF_BIRTH + "DATE_OF_BIRTH] "
             + "[" + PREFIX_MARITAL_STATUS + "MARITAL_STATUS] "
             + "[" + PREFIX_DEPENDENTS + "NUMBER_OF_DEPENDENTS] "
             + "[" + PREFIX_OCCUPATION + "OCCUPATION] "
-            + "[" + PREFIX_INSURANCE_PACKAGE + "INSURANCE_PACKAGE] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PHONE + "91234567 "
-            + PREFIX_EMAIL + "johndoe@example.com";
+            + PREFIX_EMAIL + "johndoe@newemail.com";
 
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";

@@ -21,9 +21,9 @@ public class EditPackageCommand extends Command {
             + "by the package name used in the displayed insurance package list. "
             + "Existing values will be overwritten by the input values.\n"
             + "Parameters: "
-            + "[" + PREFIX_INSURANCE_NAME + "PACKAGE_NAME "
-            + "[" + PREFIX_DESCRIPTION + "PACKAGE_DESC\n"
-            + "Example: " + COMMAND_WORD + PREFIX_INSURANCE_NAME + "Package to edit "
+            + "[" + PREFIX_INSURANCE_NAME + "PACKAGE_NAME] "
+            + "[" + PREFIX_DESCRIPTION + "PACKAGE_DESC]\n"
+            + "Example: " + COMMAND_WORD + " " + PREFIX_INSURANCE_NAME + "Package to edit "
             + PREFIX_DESCRIPTION + "This is an edited description";
 
     public static final String MESSAGE_SUCCESS = "Edited insurance package: %1$s";
