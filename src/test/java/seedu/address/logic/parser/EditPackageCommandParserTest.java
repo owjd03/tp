@@ -4,7 +4,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_INSURANCE_PACKAGE_DESCRIPTION_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_INSURANCE_PACKAGE_NAME_BOB;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
@@ -23,7 +23,7 @@ public class EditPackageCommandParserTest {
     private static final String DESC_DESC_NEW = " " + PREFIX_DESCRIPTION + VALID_INSURANCE_PACKAGE_DESCRIPTION_BOB;
     private static final String MESSAGE_INVALID_FORMAT =
             String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditPackageCommand.MESSAGE_USAGE);
-    private static final String NAME_DESC_GOLD = " " + PREFIX_INSURANCE_NAME + VALID_INSURANCE_PACKAGE_NAME_BOB;
+    private static final String NAME_DESC_GOLD = " " + PREFIX_INSURANCE_PACKAGE + VALID_INSURANCE_PACKAGE_NAME_BOB;
 
     private EditPackageCommandParser parser = new EditPackageCommandParser();
 
@@ -71,7 +71,7 @@ public class EditPackageCommandParserTest {
     public void parse_duplicatePrefixes_failure() {
         // multiple insurance names
         assertParseFailure(parser, NAME_DESC_GOLD + NAME_DESC_GOLD + DESC_DESC_NEW,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_NAME));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_PACKAGE));
 
         // multiple descriptions
         assertParseFailure(parser, NAME_DESC_GOLD + DESC_DESC_NEW + DESC_DESC_NEW,
@@ -79,7 +79,7 @@ public class EditPackageCommandParserTest {
 
         // multiple fields repeated
         assertParseFailure(parser, NAME_DESC_GOLD + DESC_DESC_NEW + NAME_DESC_GOLD + DESC_DESC_NEW,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_NAME, PREFIX_DESCRIPTION));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_PACKAGE, PREFIX_DESCRIPTION));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class EditPackageCommandParserTest {
 
         // empty name
         // This parser should succeed, but the command will fail on execution
-        assertParseSuccess(parser, " " + PREFIX_INSURANCE_NAME + " " + DESC_DESC_NEW,
+        assertParseSuccess(parser, " " + PREFIX_INSURANCE_PACKAGE + " " + DESC_DESC_NEW,
                 new EditPackageCommand("", VALID_INSURANCE_PACKAGE_DESCRIPTION_BOB));
     }
 }

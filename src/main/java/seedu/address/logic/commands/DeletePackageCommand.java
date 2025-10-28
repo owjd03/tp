@@ -1,7 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 
 import java.util.Optional;
 
@@ -19,8 +19,8 @@ public class DeletePackageCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Deletes the insurance package identified by the name used in the displayed insurance package list.\n"
-            + "Parameters: " + PREFIX_INSURANCE_NAME + "PACKAGE_NAME\n"
-            + "Example: " + COMMAND_WORD + " " + PREFIX_INSURANCE_NAME + "Gold";
+            + "Parameters: " + PREFIX_INSURANCE_PACKAGE + "PACKAGE_NAME\n"
+            + "Example: " + COMMAND_WORD + " " + PREFIX_INSURANCE_PACKAGE + "Gold";
 
     public static final String MESSAGE_DELETE_PACKAGE_SUCCESS = "Deleted Package: %1$s";
     public static final String MESSAGE_PACKAGE_NOT_FOUND = "This insurance package does not exist in the address book.";

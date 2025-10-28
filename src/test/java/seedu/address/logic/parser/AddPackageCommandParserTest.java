@@ -13,7 +13,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_INSURANCE_PACKA
 import static seedu.address.logic.commands.CommandTestUtil.VALID_INSURANCE_PACKAGE_NAME_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_INSURANCE_PACKAGE_NAME_BOB;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
@@ -48,7 +48,7 @@ public class AddPackageCommandParserTest {
 
         // multiple insurance names
         assertParseFailure(parser, INSURANCE_NAME_DESC_GOLD + validExpectedInsurancePackageString,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_NAME));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_PACKAGE));
 
         // multiple descriptions
         assertParseFailure(parser, DESCRIPTION_DESC_GOLD + validExpectedInsurancePackageString,
@@ -58,13 +58,13 @@ public class AddPackageCommandParserTest {
         assertParseFailure(parser,
                 validExpectedInsurancePackageString + INSURANCE_NAME_DESC_GOLD + DESCRIPTION_DESC_GOLD
                         + validExpectedInsurancePackageString,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_NAME, PREFIX_DESCRIPTION));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_PACKAGE, PREFIX_DESCRIPTION));
 
         // invalid value followed by valid value
 
         // invalid insurance name
         assertParseFailure(parser, INVALID_INSURANCE_NAME_DESC + validExpectedInsurancePackageString,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_NAME));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_PACKAGE));
 
         // invalid description
         assertParseFailure(parser, INVALID_DESCRIPTION_DESC + validExpectedInsurancePackageString,
@@ -74,7 +74,7 @@ public class AddPackageCommandParserTest {
 
         // invalid insurance name
         assertParseFailure(parser, validExpectedInsurancePackageString + INVALID_INSURANCE_NAME_DESC,
-                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_NAME));
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_INSURANCE_PACKAGE));
 
         // invalid description
         assertParseFailure(parser, validExpectedInsurancePackageString + INVALID_DESCRIPTION_DESC,

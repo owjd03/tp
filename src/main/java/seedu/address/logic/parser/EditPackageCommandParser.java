@@ -2,7 +2,7 @@ package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 
 import java.util.stream.Stream;
 
@@ -21,16 +21,16 @@ public class EditPackageCommandParser implements Parser<EditPackageCommand> {
      */
     public EditPackageCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_INSURANCE_NAME, PREFIX_DESCRIPTION);
+                ArgumentTokenizer.tokenize(args, PREFIX_INSURANCE_PACKAGE, PREFIX_DESCRIPTION);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_INSURANCE_NAME, PREFIX_DESCRIPTION)
+        if (!arePrefixesPresent(argMultimap, PREFIX_INSURANCE_PACKAGE, PREFIX_DESCRIPTION)
                 || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditPackageCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_INSURANCE_NAME, PREFIX_DESCRIPTION);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_INSURANCE_PACKAGE, PREFIX_DESCRIPTION);
 
-        String packageName = argMultimap.getValue(PREFIX_INSURANCE_NAME).get().trim();
+        String packageName = argMultimap.getValue(PREFIX_INSURANCE_PACKAGE).get().trim();
         String packageDescription = argMultimap.getValue(PREFIX_DESCRIPTION).get().trim();
 
         return new EditPackageCommand(packageName, packageDescription);

@@ -1,7 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 
 import java.util.stream.Stream;
 
@@ -21,15 +21,15 @@ public class DeletePackageCommandParser implements Parser<DeletePackageCommand> 
      */
     public DeletePackageCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_INSURANCE_NAME);
+                ArgumentTokenizer.tokenize(args, PREFIX_INSURANCE_PACKAGE);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_INSURANCE_NAME)
+        if (!arePrefixesPresent(argMultimap, PREFIX_INSURANCE_PACKAGE)
                 || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeletePackageCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_INSURANCE_NAME);
-        String packageName = argMultimap.getValue(PREFIX_INSURANCE_NAME)
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_INSURANCE_PACKAGE);
+        String packageName = argMultimap.getValue(PREFIX_INSURANCE_PACKAGE)
                 .orElseThrow(() -> new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                         DeletePackageCommand.MESSAGE_USAGE)))
                 .trim();
