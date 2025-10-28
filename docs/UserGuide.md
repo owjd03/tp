@@ -162,7 +162,8 @@ For most fields, the filter performs a case-insensitive "**contains**" search. T
 * **Tags:** You can provide multiple `t/` prefixes. `filter t/friend t/rich` finds contacts who are tagged as **both** a `friend` **AND** `rich`.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
-The filter is case-insensitive and matches partial words.
+The filter is case-insensitive and matches partial words.<br>
+A valid query for impossible data (e.g., `filter dob/abc`) will return 0 results, not show an error.
 </div>
 
 **Filtering by Number (s/Salary and dep/Dependents)**
