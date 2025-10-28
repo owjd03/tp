@@ -12,8 +12,9 @@ import java.time.format.DateTimeFormatter;
  */
 public class DateOfBirth {
 
-    public static final String MESSAGE_CONSTRAINTS = "Date of birth must be a valid date in the format yyyy-MM-dd "
-            + "and not in the future";
+    public static final String MESSAGE_CONSTRAINTS = "Date of birth must be a valid date in the format yyyy-MM-dd, "
+            + "be a past or present date, "
+            + "or be declared as 'Unspecified' (case-insensitive).";
 
     public static final String UNSPECIFIED_VALUE = "Unspecified";
 
@@ -28,11 +29,11 @@ public class DateOfBirth {
      */
     public DateOfBirth(String dateOfBirth) {
         requireNonNull(dateOfBirth);
+        checkArgument(isValidDateOfBirth(dateOfBirth), MESSAGE_CONSTRAINTS);
 
-        if (dateOfBirth.equals(UNSPECIFIED_VALUE)) {
+        if (dateOfBirth.equalsIgnoreCase(UNSPECIFIED_VALUE)) {
             this.value = UNSPECIFIED_VALUE;
         } else {
-            checkArgument(isValidDateOfBirth(dateOfBirth), MESSAGE_CONSTRAINTS);
             value = dateOfBirth;
         }
     }
@@ -50,7 +51,7 @@ public class DateOfBirth {
      * Returns true if a given string is a valid date of birth.
      */
     public static boolean isValidDateOfBirth(String test) {
-        if (test.equals(UNSPECIFIED_VALUE)) {
+        if (test.equalsIgnoreCase(UNSPECIFIED_VALUE)) {
             return true;
         }
         try {

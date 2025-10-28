@@ -141,10 +141,14 @@ public class ParserUtil {
     public static MaritalStatus parseMaritalStatus(String maritalStatus) throws ParseException {
         requireNonNull(maritalStatus);
         String trimmedMaritalStatus = maritalStatus.trim();
-        if (!MaritalStatusEnum.isValidMaritalStatus(trimmedMaritalStatus)) {
+
+        String normalizedStatus = Character.toUpperCase(trimmedMaritalStatus.charAt(0))
+                + trimmedMaritalStatus.substring(1).toLowerCase();
+
+        if (!MaritalStatusEnum.isValidMaritalStatus(normalizedStatus)) {
             throw new ParseException(MaritalStatus.MESSAGE_CONSTRAINTS);
         }
-        return new MaritalStatus(trimmedMaritalStatus);
+        return new MaritalStatus(normalizedStatus);
     }
 
     /**
@@ -169,9 +173,15 @@ public class ParserUtil {
     public static Dependents parseDependents(String dependents) throws ParseException {
         requireNonNull(dependents);
         int num;
+        String trimmedDependents = dependents.trim();
+
+        String unspecifiedString = Dependents.createUnspecified().toString();
+        if (trimmedDependents.equalsIgnoreCase(unspecifiedString)) {
+            return Dependents.createUnspecified();
+        }
 
         try {
-            num = Integer.parseInt(dependents.trim());
+            num = Integer.parseInt(trimmedDependents);
         } catch (NumberFormatException e) {
             // Catches "d/abc"
             throw new ParseException(Dependents.MESSAGE_CONSTRAINTS);
