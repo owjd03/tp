@@ -26,7 +26,7 @@ public class ViewCommand extends Command {
             + "Example #1: " + COMMAND_WORD + " alex\n"
             + "Example #2: " + COMMAND_WORD + " 1";
 
-    public static final String MESSAGE_VIEW_SUCCESS = "Here's the full detail of ";
+    public static final String MESSAGE_VIEW_SUCCESS = "Here's the full detail";
     public static final String MESSAGE_NOVIEW_NAME = "There's no one with that name in the displayed list!";
     public static final String MESSAGE_DUPLICATE_NAME = "Found at least two people with the keyword!\n"
             + "Please write the full name or use INDEX instead.";
@@ -58,7 +58,7 @@ public class ViewCommand extends Command {
      * @param name Name of the person being viewed
      */
     public String getMessageViewSuccess(Name name) {
-        String messageSuccess = MESSAGE_VIEW_SUCCESS + name.fullName + "!";
+        String messageSuccess = MESSAGE_VIEW_SUCCESS + " of " + name.fullName + "!";
         return messageSuccess;
     }
 
