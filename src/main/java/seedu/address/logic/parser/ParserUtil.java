@@ -9,6 +9,7 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.DateOfBirth;
@@ -208,11 +209,17 @@ public class ParserUtil {
      */
     public static InsurancePackage parseInsurancePackage(String insurancePackage) throws ParseException {
         requireNonNull(insurancePackage);
-        String trimmedInsurancePackage = insurancePackage.trim();
-        if (trimmedInsurancePackage.isEmpty()) {
-            throw new ParseException(InsurancePackage.MESSAGE_CONSTRAINTS);
+        String trimmedPackageName = insurancePackage.trim();
+
+        if (!InsuranceCatalog.isValidInsurancePackage(trimmedPackageName)) {
+            String validNamesString = InsuranceCatalog.getValidInsurancePackageNames();
+            throw new ParseException("The insurance package '"
+                    + trimmedPackageName + "' does not exist.\n"
+                    + "Available packages are: " + validNamesString);
         }
-        return new InsurancePackage(trimmedInsurancePackage, "");
+
+        String packageDescription = InsuranceCatalog.getPackageDescription(trimmedPackageName);
+        return new InsurancePackage(trimmedPackageName, packageDescription);
     }
 
     /**
