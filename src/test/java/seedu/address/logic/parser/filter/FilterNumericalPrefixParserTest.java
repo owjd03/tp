@@ -166,6 +166,8 @@ public class FilterNumericalPrefixParserTest {
         FilterNumericalPrefixParser parser =
                 new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         String integerErrorMessage = FilterNumericalPrefixParser.MESSAGE_DEPENDENTS_MUST_BE_INTEGER;
+        String missingValueMessage =
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterNumericalPrefixParser.MESSAGE_MISSING_VALUE_AFTER_OPERATOR);
 
         // Negative numbers
         assertThrows(ParseException.class, () -> parser.parse("=-100"), integerErrorMessage);
@@ -177,6 +179,10 @@ public class FilterNumericalPrefixParserTest {
         // Trailing/ leading dot
         assertThrows(ParseException.class, () -> parser.parse("<100."), integerErrorMessage);
         assertThrows(ParseException.class, () -> parser.parse("=.10"), integerErrorMessage);
+
+        // Missing value after operator
+        assertThrows(ParseException.class, () ->
+                parser.parse("< "), String.format(missingValueMessage, PREFIX_SALARY, "<"));
     }
 
     @Test
@@ -251,6 +257,9 @@ public class FilterNumericalPrefixParserTest {
         FilterNumericalPrefixParser parser =
                 new FilterNumericalPrefixParser(PREFIX_SALARY, p -> null, IS_SALARY_UNSPECIFIED);
         parser.parse(">=1000");
+        assertFalse(parser.test(ALICE));
+
+        parser.parse("1000");
         assertFalse(parser.test(ALICE));
     }
 
