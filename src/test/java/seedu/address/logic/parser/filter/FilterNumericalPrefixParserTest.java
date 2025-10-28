@@ -166,8 +166,8 @@ public class FilterNumericalPrefixParserTest {
         FilterNumericalPrefixParser parser =
                 new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
         String integerErrorMessage = FilterNumericalPrefixParser.MESSAGE_DEPENDENTS_MUST_BE_INTEGER;
-        String missingValueMessage =
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterNumericalPrefixParser.MESSAGE_MISSING_VALUE_AFTER_OPERATOR);
+        String missingValueMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                FilterNumericalPrefixParser.MESSAGE_MISSING_VALUE_AFTER_OPERATOR);
 
         // Negative numbers
         assertThrows(ParseException.class, () -> parser.parse("=-100"), integerErrorMessage);
