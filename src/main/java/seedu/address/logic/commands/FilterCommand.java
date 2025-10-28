@@ -27,7 +27,7 @@ public class FilterCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Filters all persons whose attributes match ALL "
             + "of the specified keywords (case-insensitive) for each respective attribute.\n"
             + "Empty keywords are not allowed."
-            + "The filter will only display persons that match every keyword provided.\n"
+            + " The filter will only display persons that match every keyword provided.\n"
             + "Parameters: "
             + "[" + PREFIX_NAME + "NAME] "
             + "[" + PREFIX_PHONE + "PHONE] "

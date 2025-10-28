@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPENDENTS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -17,42 +18,31 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
 
 /**
- * Parses numerical prefixes (e.g., salary, dependents) for the filter command.
+ * Parses prefixes that involve numerical comparison (e.g., salary, dependents) or contains-search.
  * This parser implements a hybrid logic:
- * 1. It first attempts to parse the input as a number.
- *    - If an operator (>, <, >=, <=) is present, it creates a comparison predicate.
- *    - If no operator is present, it defaults to an exact equality check.
- * 2. If the input cannot be parsed as a number (e.g., it contains text),
- *    it checks if the input contains a number (e.g. it is a mixture of text and numbers such as 50k).
- *    An exception is thrown in this case.
- * 3. If not case 1 or 2, it falls back to a case-insensitive keyword search. This is primarily
- *    used to find persons with "unspecified" values for these fields.
+ * 1. It checks for an optional operator (>, <, >=, <=, =).
+ * 2. If an operator is present, it parses the rest of the string as a number and
+ * creates a comparison predicate.
+ * 3. If no operator is present, it defaults to a case-insensitive "contains" search.
+ * This "contains" search works on the string representation of the number, or
+ * on the "unspecified" keyword.
  */
 public class FilterNumericalPrefixParser implements FilterPrefixParser {
 
-    public static final String MESSAGE_INVALID_NUMERICAL_FORMAT =
-            "For numerical fields, provide a valid number without letters or symbols (e.g., use '50000', not '50k').\n"
-                + "You can use an optional comparison operator before the number (>, <, >=, <=). "
-                + "If no operator is used, it searches for an exact match.\n"
-                + "To find contacts with an unspecified value, "
-                + "use the keyword 'unspecified' (or a part of it, like 'uns').\n"
-                + "dep/ only accepts whole numbers. s/ accepts up to two decimal places.\n"
-                + "Example: s/>=50000 or dep/<3 or s/unspecified";
+    public static final String MESSAGE_MISSING_VALUE_AFTER_OPERATOR =
+            "Missing number after operator '%s' for prefix %s.";
+    public static final String MESSAGE_INVALID_NUMBER_FOR_OPERATOR =
+            "Invalid number for comparison: '%s'. A valid number is required after an operator.";
+    public static final String MESSAGE_DEPENDENTS_MUST_BE_INTEGER =
+            "Dependents value must be a whole number (e.g., '2') and cannot be a decimal (e.g., '2.5').";
+    public static final String MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY =
+            "Invalid number format for salary: '%s'.\n"
+                    + "Must have a leading digit and up to two decimal places (e.g., '5000' or '5000.50').";
 
-    /**
-     * https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/regex/Pattern.html
-     * https://www.geeksforgeeks.org/dsa/write-regular-expressions/
-     * ^ to indicate start of pattern, $ to indicate end of pattern
-     * Group 1: ([<>]=?) MEANS (< OR >) AND = (optional), Group 1 is optional.
-     * Accepted: >=, >, <, <=, NOTHING
-     * \s* MEANS whitespace, extra \ to escape character in string
-     * Group 2: (\d+(\.\d{1,2})?) MEANS any number of digits,
-     *      followed by '.' and up to 2 digits, rejects 0 digits. This '.' character and beyond are optional
-     * Accepted 00000.12, 123.0, 123.12, 123
-     */
-    private static final String VALIDATION_REGEX = "^([<>]=?)?\\s*(\\d+(\\.\\d{1,2})?)$";
-    private static final String CONTAINS_DIGIT_REGEX = "^.*\\d+.*$";
+    private static final String VALIDATION_REGEX = "^(([<>]=?)|=)?\\s*(.*)$";
     private static final Pattern PATTERN = Pattern.compile(VALIDATION_REGEX);
+
+    private static final String VALID_NUMBER_REGEX = "^\\d+(\\.\\d{1,2})?$";
 
     private final Prefix prefix;
     private final Function<Person, Double> getPersonField;
@@ -74,12 +64,11 @@ public class FilterNumericalPrefixParser implements FilterPrefixParser {
         this.prefix = prefix;
         this.getPersonField = getPersonField;
         this.isPersonFieldUnspecified = isPersonFieldUnspecified;
-        this.isContainsLogic = true;
     }
 
     @Override
     public Prefix getPrefix() {
-        return prefix;
+        return this.prefix;
     }
 
     @Override
@@ -90,40 +79,104 @@ public class FilterNumericalPrefixParser implements FilterPrefixParser {
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, "Empty keyword for: " + this.prefix)
             );
         }
+
         this.keyword = args.toLowerCase();
+        Matcher matcher = PATTERN.matcher(this.keyword);
 
-        Matcher matcher = PATTERN.matcher(args);
-        if (matcher.matches()) {
+        if (!matcher.matches()) {
+            throw new ParseException("Unexpected parser error");
+        }
+
+        String operator = matcher.group(1);
+        String value = matcher.group(3).trim();
+
+        if (value.isEmpty() && operator != null) {
+            String errorMessage = String.format(MESSAGE_MISSING_VALUE_AFTER_OPERATOR, operator, this.prefix);
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, errorMessage));
+        }
+
+        if (operator != null) {
             this.isContainsLogic = false;
-            parseComparisonLogic(matcher);
-            return;
+            parseComparisonLogic(operator, value);
+        } else {
+            this.isContainsLogic = true;
+        }
+    }
+
+    private void parseComparisonLogic(String operator, String value) throws ParseException {
+        double valueToCompare;
+        try {
+            valueToCompare = Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            String errorMessage = String.format(MESSAGE_INVALID_NUMBER_FOR_OPERATOR, value);
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, errorMessage));
         }
 
-        // The user might input s/50k and think it is perfectly valid.
-        // So an error should be thrown as long as the input contains a digit.
-        boolean containsDigit = args.matches(CONTAINS_DIGIT_REGEX);
-        if (containsDigit) {
-            throw new ParseException(MESSAGE_INVALID_NUMERICAL_FORMAT);
+        // Ensure that value for dependents prefix is not a decimal number
+        if (this.prefix.equals(PREFIX_DEPENDENTS) && !value.matches("^\\d+$")) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, MESSAGE_DEPENDENTS_MUST_BE_INTEGER));
         }
-        this.isContainsLogic = true;
+
+        // Ensure that the value for salary prefix has a leading digit and up to two decimal places
+        if (this.prefix.equals(PREFIX_SALARY) && !value.matches(VALID_NUMBER_REGEX)) {
+            String errorMessage = String.format(MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY, value);
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, errorMessage));
+        }
+
+        switch (operator) {
+        case ">":
+            this.predicate = personValue -> personValue > valueToCompare;
+            break;
+        case ">=":
+            this.predicate = personValue -> personValue >= valueToCompare;
+            break;
+        case "<":
+            this.predicate = personValue -> personValue < valueToCompare;
+            break;
+        case "<=":
+            this.predicate = personValue -> personValue <= valueToCompare;
+            break;
+        case "=":
+        default:
+            this.predicate = personValue -> personValue == valueToCompare;
+        }
     }
 
     @Override
     public boolean test(Person person) {
         if (this.isContainsLogic) {
-            return this.isPersonFieldUnspecified.apply(person)
-                    && "unspecified".contains(this.keyword.toLowerCase());
+            return testContainsLogic(person);
         }
+        return testComparisonLogic(person);
+    }
+
+    private boolean testContainsLogic(Person person) {
+        // Perons's field is unspecified
+        if (this.isPersonFieldUnspecified.apply(person)) {
+            return "unspecified".contains(this.keyword);
+        }
+
+        String personValue = this.getPersonField.apply(person).toString();
+        if (personValue == null) {
+            return false;
+        }
+        return personValue.contains(this.keyword);
+    }
+
+    private boolean testComparisonLogic(Person person) {
+        // User is not filtering for "unspecified", so Person whose field is "unspecified" returns false
+        if (this.isPersonFieldUnspecified.apply(person)) {
+            return false;
+        }
+
         Double personValue = this.getPersonField.apply(person);
         if (personValue == null) {
             return false;
         }
 
-        /*
-        There is a need to ensure that the peron's field is unspecified here again
-        as the Dependents field stores a value of -1 if unspecified.
-         */
-        return !this.isPersonFieldUnspecified.apply(person) && this.predicate.test(personValue);
+        return this.predicate.test(personValue);
     }
 
     @Override
@@ -156,33 +209,5 @@ public class FilterNumericalPrefixParser implements FilterPrefixParser {
     @Override
     public int hashCode() {
         return Objects.hash(this.prefix, this.keyword);
-    }
-
-    private void parseComparisonLogic(Matcher matcher) throws ParseException {
-        String operator = matcher.group(1) == null ? "" : matcher.group(1);
-        String value = matcher.group(2);
-
-        // Ensure that value for dependents prefix is not a decimal number
-        if (this.prefix.equals(PREFIX_DEPENDENTS) && value.contains(".")) {
-            throw new ParseException("Dependents value must be an integer and cannot be a decimal.");
-        }
-        double valueToCompare = Double.parseDouble(value);
-
-        switch (operator) {
-        case ">":
-            this.predicate = personValue -> personValue > valueToCompare;
-            break;
-        case ">=":
-            this.predicate = personValue -> personValue >= valueToCompare;
-            break;
-        case "<":
-            this.predicate = personValue -> personValue < valueToCompare;
-            break;
-        case "<=":
-            this.predicate = personValue -> personValue <= valueToCompare;
-            break;
-        default:
-            this.predicate = personValue -> personValue == valueToCompare;
-        }
     }
 }
