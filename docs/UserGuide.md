@@ -28,7 +28,7 @@ ClientCore is a **comprehensive desktop application for financial advisors to ma
 
    * `list` : Lists all contacts.
 
-   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
+   * `add n/John Doe p/98765432 e/johnd@example.com a/123 John St ip/Gold` : Adds a contact named `John Doe` to the Address Book.
 
    * `delete 3` : Deletes the 3rd contact shown in the current list.
 
@@ -76,6 +76,9 @@ Format: `help`
 ### Adding a person: `add`
 
 Adds a person to the address book.
+Each user must have a name, phone number, email, address and insurance package. As stated above, all other fields are optional.
+Names are auto-formatted with proper capitalization (e.g. "john doe" and "jOhn DoE" will both be formatted to "John Doe").
+For any field that is not specified in the command, it will be set to "Unspecified" by default.
 
 Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`
 
@@ -84,7 +87,7 @@ A person can have any number of tags (including 0)
 </div>
 
 Examples:
-* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 s/120000 dob/2001-01-01 ms/Married dep/2 occ/Engineer ip/Gold`
+* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 s/120000 dob/2001-01-01 ms/Married ip/Gold dep/2 occ/Engineer`
 * `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 dep/0 ip/Undecided t/criminal`
 
 ### Listing all persons : `list`
@@ -102,14 +105,16 @@ Format: `edit INDEX n/NAME p/PHONE e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SAL
 * Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** e.g. 1, 2, 3, …​
 * At least one field to edit must be provided.
 * Existing values in each provided field will be updated to the input values.
-* When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.
+* Optional fields (i.e. Salary, Date of Birth, Marital Status, Number of Dependents, Occupation) can be set to "Unspecified" (case-insensitive).
+* When editing tags, the existing tags of the person will be removed i.e. adding of tags is not cumulative.
 * You can remove all the person’s tags by typing `t/` without specifying any tags after it.
 
 Examples:
 *  `edit 1 p/91234567 e/johndoe@newemail.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@newemail.com` respectively.
-*  `edit 3 a/John street, block 321, #01-01 s/150000` Edits the address and salary of the 3rd person to be `John street, block 321, #01-01` and `150000` respectively.
+*  `edit 3 a/John street, block 321, #01-01 s/150000` Edits the address and salary of the 3rd person to be `John street, block 321, #01-01` and `$150,000` respectively.
 *  `edit 4 ip/Silver dep/0` Edits the insurance package and number of dependents of the 4th person to be `Silver` and `0` respectively.
 *  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
+*  `edit 5 s/unspecified dob/UNSPECified` Edits the salary and date of birth of the 5th person to be `Unspecified`.
 
 ### Locating persons by name: `find`
 
@@ -241,7 +246,7 @@ Examples:
 
 ### Adding an insurance package: `addp`
 
-Adds an new custom insurance package in the address book.
+Adds a new custom insurance package in the address book.
 
 Format: `addp [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
 
@@ -259,7 +264,7 @@ Examples:
 
 ### Editing an insurance package: `editp`
 
-Edits an existing insurance package in the address book.
+Edits an existing insurance package's description in the address book.
 
 Format: `editp [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
 
