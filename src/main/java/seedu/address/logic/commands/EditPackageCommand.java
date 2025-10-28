@@ -2,7 +2,7 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
@@ -21,9 +21,9 @@ public class EditPackageCommand extends Command {
             + "by the package name used in the displayed insurance package list. "
             + "Existing values will be overwritten by the input values.\n"
             + "Parameters: "
-            + "[" + PREFIX_INSURANCE_NAME + "PACKAGE_NAME] "
+            + "[" + PREFIX_INSURANCE_PACKAGE + "PACKAGE_NAME] "
             + "[" + PREFIX_DESCRIPTION + "PACKAGE_DESC]\n"
-            + "Example: " + COMMAND_WORD + " " + PREFIX_INSURANCE_NAME + "Package to edit "
+            + "Example: " + COMMAND_WORD + " " + PREFIX_INSURANCE_PACKAGE + "Package to edit "
             + PREFIX_DESCRIPTION + "This is an edited description";
 
     public static final String MESSAGE_SUCCESS = "Edited insurance package: %1$s";

@@ -7,7 +7,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE_OF_BIRTH;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPENDENTS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MARITAL_STATUS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
@@ -83,9 +82,9 @@ public class CommandTestUtil {
             + VALID_INSURANCE_PACKAGE_NAME_AMY;
     public static final String INSURANCE_PACKAGE_DESC_BOB = " " + PREFIX_INSURANCE_PACKAGE
             + VALID_INSURANCE_PACKAGE_NAME_BOB;
-    public static final String INSURANCE_NAME_DESC_GOLD = " " + PREFIX_INSURANCE_NAME
+    public static final String INSURANCE_NAME_DESC_GOLD = " " + PREFIX_INSURANCE_PACKAGE
             + VALID_INSURANCE_PACKAGE_NAME_AMY;
-    public static final String INSURANCE_NAME_DESC_SILVER = " " + PREFIX_INSURANCE_NAME
+    public static final String INSURANCE_NAME_DESC_SILVER = " " + PREFIX_INSURANCE_PACKAGE
             + VALID_INSURANCE_PACKAGE_NAME_BOB;
     public static final String DESCRIPTION_DESC_GOLD = " " + PREFIX_DESCRIPTION
             + VALID_INSURANCE_PACKAGE_DESCRIPTION_AMY;
@@ -106,7 +105,7 @@ public class CommandTestUtil {
     public static final String INVALID_INSURANCE_PACKAGE_DESC = " " + PREFIX_INSURANCE_PACKAGE
             + "Platinum"; // not in enum
     public static final String INVALID_TAG_DESC = " " + PREFIX_TAG + "hubby*"; // '*' not allowed in tags
-    public static final String INVALID_INSURANCE_NAME_DESC = " " + PREFIX_INSURANCE_NAME + ""; // empty string
+    public static final String INVALID_INSURANCE_NAME_DESC = " " + PREFIX_INSURANCE_PACKAGE + ""; // empty string
     public static final String INVALID_DESCRIPTION_DESC = " " + PREFIX_DESCRIPTION; // missing description
 
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
