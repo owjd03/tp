@@ -23,7 +23,8 @@ public class SortCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Sorts all persons by the specific field.\n"
             + "Parameters: FIELD [DIRECTION]"
-            + "FIELD: name, phone, email, address, salary, dateofbirth, maritalstatus, occupation, dependent\n"
+            + "FIELD: name, phone, email, address, salary, dateofbirth, "
+            + "maritalstatus, occupation, dependents, insurancepackage\n"
             + "DIRECTION: ascending, descending\n"
             + "Example: " + COMMAND_WORD + " name descending";
     public static final String MESSAGE_SUCCESS = "Sorted all persons by ";
@@ -48,6 +49,7 @@ public class SortCommand extends Command {
         Comparator<Person> comparator = createComparator(sortField, sortDirection);
         model.sortPersonList(comparator);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+
         String directionText = sortDirection.toString().toLowerCase();
         String message = MESSAGE_SUCCESS + sortField + " in " + directionText + " order";
         return new CommandResult(message);
@@ -70,12 +72,13 @@ public class SortCommand extends Command {
             return person.getMaritalStatus().value.equals(MaritalStatus.UNSPECIFIED_VALUE);
         case OCCUPATION:
             return person.getOccupation().value.equals(Occupation.UNSPECIFIED_VALUE);
-        case DEPENDENT:
+        case DEPENDENTS:
             return person.getDependents().value == Dependents.UNSPECIFIED_VALUE;
         case NAME:
         case PHONE:
         case EMAIL:
         case ADDRESS:
+        case INSURANCEPACKAGE:
         default:
             return false;
         }
@@ -86,7 +89,7 @@ public class SortCommand extends Command {
      * and returns the comparator
      *
      * @param sortField the field is sorted by NAME, PHONE, EMAIL, ADDRESS, SALARY,
-     *                  DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENT
+     *                  DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENT, INSURANCEPACKAGE
      * @param sortDirection the direction is sorted by ASCENDING OR DESCENDING
      * @return comparator that compares two persons based on the provided field and direction
      * @throws AssertionError if an invalid field is provided
@@ -126,8 +129,13 @@ public class SortCommand extends Command {
             baseComparator = (person1, person2) ->
                     person1.getOccupation().value.compareToIgnoreCase(person2.getOccupation().value);
             break;
-        case DEPENDENT:
+        case DEPENDENTS:
             baseComparator = Comparator.comparingInt(person -> person.getDependents().value);
+            break;
+        case INSURANCEPACKAGE:
+            baseComparator = (person1, person2) ->
+                    person1.getInsurancePackage().getPackageName().compareToIgnoreCase(
+                            person2.getInsurancePackage().getPackageName());
             break;
         default:
             throw new AssertionError("Invalid sort field" + sortField);
@@ -182,7 +190,7 @@ public class SortCommand extends Command {
      * Represents the available fields to sort by
      **/
     public enum SortField {
-        NAME, PHONE, EMAIL, ADDRESS, SALARY, DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENT
+        NAME, PHONE, EMAIL, ADDRESS, SALARY, DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENTS, INSURANCEPACKAGE;
     }
 
     /**
