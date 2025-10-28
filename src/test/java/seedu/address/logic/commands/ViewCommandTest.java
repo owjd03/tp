@@ -7,7 +7,6 @@ import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.ViewCommand.MESSAGE_DUPLICATE_NAME;
 import static seedu.address.logic.commands.ViewCommand.MESSAGE_NOVIEW_NAME;
-import static seedu.address.logic.commands.ViewCommand.MESSAGE_VIEW_SUCCESS;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_PERSON;
@@ -66,7 +65,8 @@ public class ViewCommandTest {
     @Test
     public void execute_validIndexInput_successPersonToView() {
         Person expectedPerson = expectedModel.getFilteredPersonList().get(0);
-        CommandResult result = new CommandResult(MESSAGE_VIEW_SUCCESS, false,
+        String expectedMessage = "Here's the full detail of " + expectedPerson.getName().fullName + "!";
+        CommandResult result = new CommandResult(expectedMessage, false,
                 new ViewData(true, expectedPerson), false, false);
         ViewCommand command = new ViewCommand(INDEX_FIRST_PERSON);
         assertCommandSuccess(command, model, result, expectedModel);
@@ -85,7 +85,8 @@ public class ViewCommandTest {
     @Test
     public void execute_validKeywords_successPersonToView() {
         Person expectedPerson = expectedModel.getFilteredPersonList().get(0);
-        CommandResult result = new CommandResult(MESSAGE_VIEW_SUCCESS, false,
+        String expectedMessage = "Here's the full detail of " + expectedPerson.getName().fullName + "!";
+        CommandResult result = new CommandResult(expectedMessage, false,
                 new ViewData(true, expectedPerson), false, false);
         ViewCommand command = new ViewCommand("Alice");
         assertCommandSuccess(command, model, result, expectedModel);
