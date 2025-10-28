@@ -170,7 +170,7 @@ A valid query for impossible data (e.g., `filter dob/abc`) will return 0 results
 
 These fields have two modes:
 
-1. **Contains Search (Default):** If no operator (`>`, `>=`, `<`, `<=`, `=`) is used, this performs a text "contains" search.
+1. **Contains Search (Default):** If no operator (`>`, `>=`, `<`, `<=`, `=`) is used, it defaults to the same case-insensitive "contains" search used for keywords.
     * `filter s/50` matches salaries containing "50" (like `1500` or `5000`).
     * `filter s/unspecified` (or `filter s/uns`) finds contacts with an unspecified salary.
 2. **Comparison Search (Using Operators):** Use operators (`>`, `>=`, `<`, `<=`, `=`) for a strict numerical comparison.
