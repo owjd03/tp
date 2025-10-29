@@ -87,6 +87,9 @@ public class FilterCommandTest {
 
         // different predicate -> returns false
         assertFalse(filterFirstCommand.equals(filterSecondCommand));
+
+        // different args
+        assertFalse(filterFirstCommand.equals(new FilterCommand(firstPredicate, "n/second")));
     }
 
     @Test
