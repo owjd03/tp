@@ -9,7 +9,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Occupation {
 
-    public static final String MESSAGE_CONSTRAINTS = "Occupation must be non-empty"
+    public static final String MESSAGE_CONSTRAINTS = "Occupation must be non-empty "
             + "or be declared as 'Unspecified' (case-insensitive).";
 
     /*

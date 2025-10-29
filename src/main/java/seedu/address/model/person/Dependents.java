@@ -8,7 +8,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Dependents {
 
-    public static final String MESSAGE_CONSTRAINTS = "Number of dependents must be a non-negative integer"
+    public static final String MESSAGE_CONSTRAINTS = "Number of dependents must be a non-negative integer "
             + "or be declared as 'Unspecified' (case-insensitive).";
 
     public static final int UNSPECIFIED_VALUE = -1;

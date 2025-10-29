@@ -1,5 +1,7 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DEPENDENTS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DOB_DESC_AMY;
@@ -46,7 +48,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
-import static seedu.address.logic.parser.ParserUtil.MESSAGE_INVALID_INDEX;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_PERSON;
@@ -109,8 +110,7 @@ public class EditCommandParserTest {
 
     @Test
     public void parse_missingIndex_failure() {
-        String expectedError = String.format("%s\n%s",
-                MESSAGE_INVALID_INDEX, EditCommand.MESSAGE_USAGE);
+        String expectedError = String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE);
 
         // no index specified
         assertParseFailure(parser, VALID_NAME_AMY, expectedError);
@@ -120,21 +120,29 @@ public class EditCommandParserTest {
     }
 
     @Test
-    public void parse_invalidPreamble_failure() {
+    public void parse_invalidIndexValue_failure() {
         String expectedError = String.format("%s\n%s",
-                MESSAGE_INVALID_INDEX, EditCommand.MESSAGE_USAGE);
+                MESSAGE_INVALID_PERSON_DISPLAYED_INDEX, EditCommand.MESSAGE_USAGE);
 
         // negative index
         assertParseFailure(parser, "-5" + NAME_DESC_AMY, expectedError);
 
         // zero index
         assertParseFailure(parser, "0" + NAME_DESC_AMY, expectedError);
+    }
+
+    @Test
+    public void parse_invalidIndexFormat_failure() {
+        String expectedError = String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE);
 
         // invalid arguments being parsed as preamble
         assertParseFailure(parser, "1 some random string", expectedError);
 
         // invalid prefix being parsed as preamble
         assertParseFailure(parser, "1 i/ string", expectedError);
+
+        // non-integer
+        assertParseFailure(parser, "abc" + NAME_DESC_AMY, expectedError);
     }
 
     @Test
