@@ -43,7 +43,8 @@ public class EditCommandParser implements Parser<EditCommand> {
         EditPersonDescriptor editPersonDescriptor = buildEditPersonDescriptor(argMultimap);
 
         if (!editPersonDescriptor.isAnyFieldEdited()) {
-            throw new ParseException(EditCommand.MESSAGE_NOT_EDITED);
+            throw new ParseException(String.format("%s\n%s", EditCommand.MESSAGE_NOT_EDITED,
+                    EditCommand.MESSAGE_USAGE));
         }
 
         return new EditCommand(index, editPersonDescriptor);
@@ -59,7 +60,7 @@ public class EditCommandParser implements Parser<EditCommand> {
         try {
             return ParserUtil.parseIndex(argMultimap.getPreamble());
         } catch (ParseException pe) {
-            throw new ParseException(String.format("%s\n\n%s", pe.getMessage(), EditCommand.MESSAGE_USAGE), pe);
+            throw new ParseException(String.format("%s\n%s", pe.getMessage(), EditCommand.MESSAGE_USAGE), pe);
         }
     }
 
