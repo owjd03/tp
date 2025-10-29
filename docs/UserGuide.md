@@ -138,7 +138,7 @@ Examples:
 
 Views persons whose names contains the given keyword or is in the given index.
 
-Format: `view [NAME-KEYWORD]` `view [INDEX]`
+Format: `view NAME-KEYWORD` `view INDEX`
 
 * The search is case-insensitive. e.g. `alex` will match `Alex`
 * The command will not work if it finds more than 1 name with given keyword.
@@ -207,12 +207,12 @@ Invalid Usages:
 
 Sorts the list of persons by the specified field in specified order.
 
-Format: `sort FIELD DIRECTION`
+Format: `sort FIELD [DIRECTION]`
 
-* The `FIELD` must be one of the following: `name`, `phone`, `email`, `address`, `salary`, `dateofbirth`, `maritalstatus`, `occupation` or `dependent`
+* The `FIELD` must be one of the following: `name`, `phone`, `email`, `address`, `salary`, `dateofbirth`, `maritalstatus`, `occupation`, `dependents` or `insurancepackage`
 * The `DIRECTION` must be one of the following: `ascending` or `descending`. If not specified, defaults to `ascending`
 * The sort is case-insensitive for text fields (e.g., `name`, `email`, `address`, `maritalstatus`, `occupation`)
-* Numerical fields (`salary`, `dependent`) are sorted numerically
+* Numerical fields (`salary`, `dependents`) are sorted numerically
 * Date fields (`dateofbirth`) are sorted chronologically
 * The entire list will be sorted and displayed in the main window
 * Invalid direction parameters are ignored and will default to ascending
@@ -223,7 +223,7 @@ Examples:
 * `sort name ascending` sorts all persons alphabetically by name from A to Z
 * `sort name descending` sorts all persons alphabetically by name from Z to A
 * `sort salary` sorts all persons by salary from lowest to highest (ascending by default)
-* `sort dependent descending` sort all persons by dependent from highest to lowest
+* `sort dependents descending` sort all persons by dependents from highest to lowest
 * `sort dateofbirth` sorts all persons by date of birth from oldest to youngest
 
 ### Exporting all persons: `export`
@@ -254,50 +254,50 @@ Examples:
 
 Adds a new custom insurance package in the address book.
 
-Format: `addp [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
+Format: `addp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION`
 
 * Creates a new insurance package with the specified `PACKAGE_NAME` and `PACKAGE_DESCRIPTION`
-* The `i/` (package name) and `d/` (package description) fields are **both mandatory**.
+* The `ip/` (package name) and `d/` (package description) fields are **both mandatory**.
 * Package names are automatically formatted with proper capitalization (e.g., "premium package" becomes "Premium Package").
 * Package names cannot be empty after removing whitespace
 * You can set an empty description by typing `d/` followed by a space (e.g., `d/ `).
 * Duplicate package names are not allowed (case-insensitive check).
 
 Examples:
-* `addp i/Premium Package d/Our top-tier insurance with comprehensive coverage and benefits.` Adds a "Premium Package" with the specified description.
-* `addp i/basic plan d/Essential coverage at an affordable price point.` Adds a "Basic Plan" (auto-formatted) with the description.
-* `addp i/Student Package d/` Adds a "Student Package" with an empty description.
+* `addp ip/Premium Package d/Our top-tier insurance with comprehensive coverage and benefits.` Adds a "Premium Package" with the specified description.
+* `addp ip/basic plan d/Essential coverage at an affordable price point.` Adds a "Basic Plan" (auto-formatted) with the description.
+* `addp ip/Student Package d/` Adds a "Student Package" with an empty description.
 
 ### Editing an insurance package: `editp`
 
 Edits an existing insurance package's description in the address book.
 
-Format: `editp [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
+Format: `editp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION`
 
 * Finds the insurance package specified by `PACKAGE_NAME`. The search is case-insensitive.
 * Updates the description of the found package to the `NEW_DESCRIPTION`.
-* The `i/` (package name) and `d/` (new description) fields are **both mandatory**.
+* The `ip/` (package name) and `d/` (new description) fields are **both mandatory**.
 * The package name itself cannot be changed.
 * You can set an empty description by typing `d/` followed by a space (e.g., `d/ `).
 
 Examples:
-* `editp i/Gold d/New description.` Edits the description of "Gold" package to be `New description.`
-* `editp i/Basic Plan d/ ` Edits the description of "Basic Plan" to be empty.
+* `editp ip/Gold d/New description.` Edits the description of "Gold" package to be `New description.`
+* `editp ip/Basic Plan d/ ` Edits the description of "Basic Plan" to be empty.
 
 ### Deleting an insurance package: `deletep`
 
 Deletes an existing insurance package in the address book. The insurance package to be deleted
 cannot be the default package (Undecided) and must not have a client currently using it. 
 
-Format: `deletep [i/PACKAGE_NAME]`
+Format: `deletep ip/PACKAGE_NAME`
 
 * Finds the insurance package specified by `PACKAGE_NAME`. The search is case-insensitive.
 * If the found package is the default package, an error message will be displayed and deletion will not occur.  
 * If the found package has at least one client currently using, an error message will be displayed and deletion will not occur.
 
 Examples:
-* `deletep i/PackageToBeDeleted` Deletes the insurance package named "PackageToBeDeleted".
-* `deletep i/Undecided` Displays an error message as the default package cannot be deleted. 
+* `deletep ip/PackageToBeDeleted` Deletes the insurance package named "PackageToBeDeleted".
+* `deletep ip/Undecided` Displays an error message as the default package cannot be deleted. 
 
 ### Listing existing insurance packages: `listp`
 
@@ -366,8 +366,8 @@ Action | Format, Examples
 **View** | `view NAME-KEYWORD` `view INDEX` <br> e.g. `view Alex` `view 1`
 **List** | `list`
 **Help** | `help`
-**Sort** | `sort FIELD`<br> e.g., `sort name`, `sort salary`
+**Sort** | `sort FIELD [DIRECTION]`<br> e.g., `sort name`, `sort salary`
 **List Package** | `listp`
-**Add Package** | `addp [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
-**Edit Package** | `editp [i/PACKAGE_NAME] [d/EDITED_PACKAGE_DESCRIPTION]`
-**Delete Package** | `deletep [i/PACKAGE_NAME] `
+**Add Package** | `addp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION`
+**Edit Package** | `editp ip/PACKAGE_NAME d/EDITED_PACKAGE_DESCRIPTION`
+**Delete Package** | `deletep ip/PACKAGE_NAME `
