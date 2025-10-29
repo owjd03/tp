@@ -66,6 +66,16 @@ public class ExportCommandTest {
     }
 
     @Test
+    public void execute_pathIsDirectory_throwsCommandException() {
+        // 1. Use the temporary folder itself as the path, which is a directory
+        ExportCommand exportCommand = new ExportCommand(testFolder);
+
+        // 2. Assert that the command fails with the expected error message
+        String expectedMessage = ExportCommand.MESSAGE_IS_DIRECTORY;
+        assertThrows(CommandException.class, () -> exportCommand.execute(model), expectedMessage);
+    }
+
+    @Test
     public void execute_ioException_throwsCommandException() throws IOException {
         // 1. Create a file where a directory is expected, to trigger an IOException
         Path directoryAsFile = testFolder.resolve("directoryAsFile");
