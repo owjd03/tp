@@ -108,7 +108,8 @@ public class AddressBookParserTest {
 
         PersonContainsKeywordsPredicate expectedPredicate = new PersonContainsKeywordsPredicate(expectedKeywords);
 
-        assertEquals(new FilterCommand(expectedPredicate, args.trim()), command);
+        String expectedArgs = CliSyntax.PREFIX_NAME + "foo " + CliSyntax.PREFIX_ADDRESS + "bar";
+        assertEquals(new FilterCommand(expectedPredicate, expectedArgs), command);
     }
 
     @Test

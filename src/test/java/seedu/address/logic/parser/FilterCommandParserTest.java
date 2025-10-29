@@ -68,7 +68,7 @@ public class FilterCommandParserTest {
 
         // Multiple prefixes, both with empty keywords
         assertParseFailure(parser, " " + PREFIX_NAME + " " + PREFIX_ADDRESS + " ",
-                String.format(MESSAGE_MISSING_KEYWORDS, "prefixes", PREFIX_ADDRESS + ", " + PREFIX_NAME));
+                String.format(MESSAGE_MISSING_KEYWORDS, "prefixes", PREFIX_NAME + ", " + PREFIX_ADDRESS));
 
         // Tag prefix with empty keyword
         assertParseFailure(parser, " " + PREFIX_TAG + " ",

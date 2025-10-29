@@ -57,16 +57,16 @@ public class FilterCommandParser implements Parser<FilterCommand> {
      * Prefixes that can only appear once in filter. Only PREFIX_TAG is not in this array.
      */
     private static final Prefix[] SINGLE_PREFIXES = {
-        PREFIX_ADDRESS, PREFIX_DATE_OF_BIRTH, PREFIX_DEPENDENTS, PREFIX_EMAIL, PREFIX_INSURANCE_PACKAGE,
-        PREFIX_MARITAL_STATUS, PREFIX_NAME, PREFIX_OCCUPATION, PREFIX_PHONE, PREFIX_SALARY
+        PREFIX_NAME, PREFIX_PHONE, PREFIX_ADDRESS, PREFIX_EMAIL, PREFIX_SALARY, PREFIX_DATE_OF_BIRTH,
+        PREFIX_MARITAL_STATUS, PREFIX_DEPENDENTS, PREFIX_OCCUPATION, PREFIX_INSURANCE_PACKAGE,
     };
 
     /**
      * All prefixes that can be filtered.
      */
     private static final Prefix[] ALL_PREFIXES = {
-        PREFIX_ADDRESS, PREFIX_DATE_OF_BIRTH, PREFIX_DEPENDENTS, PREFIX_EMAIL, PREFIX_INSURANCE_PACKAGE,
-        PREFIX_MARITAL_STATUS, PREFIX_NAME, PREFIX_OCCUPATION, PREFIX_PHONE, PREFIX_SALARY, PREFIX_TAG
+        PREFIX_NAME, PREFIX_PHONE, PREFIX_ADDRESS, PREFIX_EMAIL, PREFIX_SALARY, PREFIX_DATE_OF_BIRTH,
+        PREFIX_MARITAL_STATUS, PREFIX_DEPENDENTS, PREFIX_OCCUPATION, PREFIX_INSURANCE_PACKAGE, PREFIX_TAG
     };
 
     private static final String PARSE_EXCEPTION_MESSAGE =
@@ -101,7 +101,8 @@ public class FilterCommandParser implements Parser<FilterCommand> {
         addAllComparisonPrefixParsersIfPresent(argMultiMap, filterPrefixParsers);
         addTagParserIfPresent(argMultiMap, PREFIX_TAG, filterPrefixParsers);
 
-        return new FilterCommand(new PersonContainsKeywordsPredicate(filterPrefixParsers), args.trim());
+        String argsPrettyString = getArgsPrettyString(argMultiMap, ALL_PREFIXES);
+        return new FilterCommand(new PersonContainsKeywordsPredicate(filterPrefixParsers), argsPrettyString);
     }
 
     /**
@@ -125,6 +126,18 @@ public class FilterCommandParser implements Parser<FilterCommand> {
                     return argMultiMap.getValue(prefix).get().isEmpty();
                 })
                 .toList();
+    }
+
+    private String getArgsPrettyString(ArgumentMultimap argMultiMap, Prefix... prefixes) {
+        return Stream.of(prefixes)
+                .flatMap(prefix -> {
+                    if (prefix.equals(PREFIX_TAG)) {
+                        return argMultiMap.getAllValues(prefix)
+                                .stream()
+                                .map(value -> prefix.getPrefix() + value);
+                    }
+                    return argMultiMap.getValue(prefix).stream().map(value -> prefix.getPrefix() + value);
+                }).collect(Collectors.joining(" "));
     }
 
     /**
