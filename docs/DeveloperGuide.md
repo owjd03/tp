@@ -306,7 +306,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Use case: U1. Delete a client**
 
-**Precondition: FA is logged into the app**
+**Precondition:** FA is logged into the app
 
 **MSS**
 
@@ -332,7 +332,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Use case: U2. Find a client**
 
-**Precondition: FA is logged into the app**
+**Precondition:** FA is logged into the app
 
 **MSS**
 
@@ -354,11 +354,17 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 3a1. ClientCore shows an error message.
 
       Use case resumes at step 2.
+  
+* 3b. The given name does not match with anyone.
+
+    * 3b1. ClientCore shows a message stating no one is found.
+      
+      Use case ends.
 
 
 **Use case: U3. View a client's full detail**
 
-**Precondition: FA is logged into the app**
+**Precondition:** FA is logged into the app
 
 **MSS**
 
@@ -397,7 +403,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Use case: U4. Filter list of clients**
 
-**Precondition: FA is logged into the app**
+**Precondition:** FA is logged into the app
 
 **MSS**
 
@@ -425,6 +431,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 3b1. ClientCore shows an error message.
 
       Use case resumes at step 2.
+  
+* 3c. The given input does not match with anyone.
+
+    * 3c1. ClientCore shows a message stating no one is found.
+  
+      Use case ends.
 
 **Use case: U5. Tag a client into groups**
 
@@ -495,70 +507,61 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-**Use case: U7. Logging into an account**
+**Use case: U7. Adding a package**
 
-**Precondition:**
-
-1. FA has a personal email
-2. FA has installed the app locally
+**Precondition:** FA is logged into the app
 
 **MSS**
 
-1.  FA opens the app
-2.  ClientCore opens and shows the login screen
-3.  FA enters username and password
-4.  ClientCore logs FA in and loads the latest data in the account
+1. FA requests to add a new package with a name and description.
+2. ClientCore adds the new package and update the list of packages.
 
     Use case ends.
 
 **Extensions**
 
-* 3a. FA forgets username or password.
+* 1a. The name matches with an existing package.
 
-    * 3a1. ClientCore asks for an email to send a code.
+    * 1a1. ClientCore shows an error message.
+  
+      Use case resumes at step 1.
 
-    * 3a2. FA enters personal email.
+* 1b. FA does not want to include a description.
 
-    * 3a3. ClientCore sends a random code to the email and asks
-	   to enter the same code.
+    * 1b1. ClientCore accepts the package and leave the description blank.
 
-    * 3a4. FA enters the code.
-	 
-    	* 3a4a. FA enters the wrong code.
-
-	      * 3a4a1. ClientCore tells user code is wrong.
-
-	        Use case resumes at step 3a1.
-
-    * 3a5. ClientCore asks for a new username and password.
-
-    * 3a6. FA enters new username and password.
-
-    * 3a7. ClientCore logs the user in with latest data in previous account.
-      
       Use case ends.
 
-**Use case: U8. Exporting data**
+**Use case: U8. Deleting a package**
 
 **Precondition:**
 
-1. FA is logged into the app
-2. The list contains 1 or more client
+1. FA is logged into the app.
+2. The package list contains 1 or more package.
 
 **MSS**
 
-1.  FA requests to export the data
-2.  ClientCore write the data into a csv file and store it into data path
+1. FA requests to list packages.
+2. ClientCore shows the list of packages.
+3. FA requests to delete one of the packages.
+4. ClientCore deletes the package and remove it from the list of packages.
 
-    Use case ends.
+   Use case ends.
 
 **Extensions**
 
-* 2a. FA wants to rewrite exported data.
+* 3a. FA tries to delete a default package.
 
-    * 2a1. FA edits the data.
+    * 3a1. ClientCore cancels the action and state that default packages cannot be deleted.
+
+      Use case resumes at step 2.
+
+* 3b. The given name does not match with any packages.
+
+    * 3b1. ClientCore shows an error message.
   
-        Use case resumes at step 1.
+      Use case resumes at step 2.
+
 
 *{More to be added}*
 
@@ -613,7 +616,7 @@ parameters, return values, and any exceptions thrown. These comments should foll
 * **Command Line Interface (CLI)**: A text-based interface where the user types commands instead of 
 graphical elements.
 * **Private contact detail**: A contact detail that is not meant to be shared with others.
-* **Financial Advisor**: A professional user of the system whose job is to manage client 
+* **Financial Advisor (FA)**: A professional user of the system whose job is to manage client 
 relationships and recommend suitable financial products or services.
 * **Client**: An individual whose personal and financial details (e.g., age, salary, policies, risk profile) 
 are stored in the system. Clients are the primary focus of the Financial Advisor’s work and the main type of
