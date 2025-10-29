@@ -120,7 +120,7 @@ public class FilterNumericalPrefixParserTest {
         FilterNumericalPrefixParser parser =
                 new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
 
-        // Equals
+        // Contains
         parser.parse("2");
         assertTrue(parser.test(new PersonBuilder().withDependents(2).build()));
         assertFalse(parser.test(new PersonBuilder().withDependents(3).build()));
@@ -148,7 +148,7 @@ public class FilterNumericalPrefixParserTest {
         assertFalse(parser.test(new PersonBuilder().withDependents(3).build()));
 
         // Zero dependents
-        parser.parse("0");
+        parser.parse("=0");
         assertTrue(parser.test(new PersonBuilder().withDependents(0).build()));
         assertFalse(parser.test(new PersonBuilder().withDependents(1).build()));
 
@@ -165,21 +165,24 @@ public class FilterNumericalPrefixParserTest {
     public void parse_invalidNumericalFormat_throwsParseException() {
         FilterNumericalPrefixParser parser =
                 new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
-        String expectedMessage = FilterNumericalPrefixParser.MESSAGE_INVALID_NUMERICAL_FORMAT;
-
-        // Invalid characters
-        assertThrows(ParseException.class, () -> parser.parse("50k"), expectedMessage);
+        String integerErrorMessage = FilterNumericalPrefixParser.MESSAGE_DEPENDENTS_MUST_BE_INTEGER;
+        String missingValueMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                FilterNumericalPrefixParser.MESSAGE_MISSING_VALUE_AFTER_OPERATOR);
 
         // Negative numbers
-        assertThrows(ParseException.class, () -> parser.parse("-100"), expectedMessage);
-        assertThrows(ParseException.class, () -> parser.parse(">-100"), expectedMessage);
+        assertThrows(ParseException.class, () -> parser.parse("=-100"), integerErrorMessage);
+        assertThrows(ParseException.class, () -> parser.parse(">-100"), integerErrorMessage);
 
         // More than two decimal places
-        assertThrows(ParseException.class, () -> parser.parse("100.123"), expectedMessage);
+        assertThrows(ParseException.class, () -> parser.parse(">100.123"), integerErrorMessage);
 
         // Trailing/ leading dot
-        assertThrows(ParseException.class, () -> parser.parse("100."), expectedMessage);
-        assertThrows(ParseException.class, () -> parser.parse(".10"), expectedMessage);
+        assertThrows(ParseException.class, () -> parser.parse("<100."), integerErrorMessage);
+        assertThrows(ParseException.class, () -> parser.parse("=.10"), integerErrorMessage);
+
+        // Missing value after operator
+        assertThrows(ParseException.class, () ->
+                parser.parse("< "), String.format(missingValueMessage, PREFIX_SALARY, "<"));
     }
 
     @Test
@@ -188,7 +191,7 @@ public class FilterNumericalPrefixParserTest {
                 new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
         String expectedMessage = "Dependents value must be an integer and cannot be a decimal.";
 
-        assertThrows(ParseException.class, () -> parser.parse("2.5"), expectedMessage);
+        assertThrows(ParseException.class, () -> parser.parse("=2.5"), expectedMessage);
         assertThrows(ParseException.class, () -> parser.parse(">=1.0"), expectedMessage);
     }
 
@@ -222,19 +225,19 @@ public class FilterNumericalPrefixParserTest {
     public void parse_invalidMixedInput_throwsParseException() {
         FilterNumericalPrefixParser parser =
                 new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
-        String expectedMessage = FilterNumericalPrefixParser.MESSAGE_INVALID_NUMERICAL_FORMAT;
-
-        // Text mixed with numbers
-        assertThrows(ParseException.class, () -> parser.parse("abc 123"), expectedMessage);
-
-        // Number followed by operator
-        assertThrows(ParseException.class, () -> parser.parse("50000 >"), expectedMessage);
+        String invalidNumberSalaryMessage = FilterNumericalPrefixParser.MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY;
+        String invalidNumberMessage = FilterNumericalPrefixParser.MESSAGE_INVALID_NUMBER_FOR_OPERATOR;
 
         // Multiple decimal points
-        assertThrows(ParseException.class, () -> parser.parse("50.00.00"), expectedMessage);
+        assertThrows(ParseException.class, () -> parser.parse("=50.00.00"),
+                String.format(invalidNumberSalaryMessage, "50.00.00"));
 
+        // Text after operator
+        assertThrows(ParseException.class, () -> parser.parse(">= abc"),
+                String.format(invalidNumberSalaryMessage, "abc"));
         // Invalid operator
-        assertThrows(ParseException.class, () -> parser.parse(">>50000"), expectedMessage);
+        assertThrows(ParseException.class, () -> parser.parse(">>50000"),
+                String.format(invalidNumberMessage, ">50000"));
     }
 
     @Test
@@ -254,6 +257,9 @@ public class FilterNumericalPrefixParserTest {
         FilterNumericalPrefixParser parser =
                 new FilterNumericalPrefixParser(PREFIX_SALARY, p -> null, IS_SALARY_UNSPECIFIED);
         parser.parse(">=1000");
+        assertFalse(parser.test(ALICE));
+
+        parser.parse("1000");
         assertFalse(parser.test(ALICE));
     }
 

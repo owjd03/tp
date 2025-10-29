@@ -33,27 +33,29 @@ import seedu.address.model.person.PersonContainsKeywordsPredicate;
  */
 public class FilterCommandParser implements Parser<FilterCommand> {
 
+    private static final Function<Person, String> GET_ADDRESS = p -> p.getAddress().toString();
+    private static final Function<Person, String> GET_DOB = p -> p.getDateOfBirth().toString();
+    private static final Function<Person, String> GET_EMAIL = p -> p.getEmail().toString();
+    private static final Function<Person, String> GET_INSURANCE_PACKAGE =
+            p -> p.getInsurancePackage().getPackageName();
+    private static final Function<Person, String> GET_MARITAL_STATUS = p -> p.getMaritalStatus().toString();
+    private static final Function<Person, String> GET_NAME = p -> p.getName().toString();
+    private static final Function<Person, String> GET_OCCUPATION = p -> p.getOccupation().toString();
+    private static final Function<Person, String> GET_PHONE = p -> p.getPhone().toString();
+
+    private static final Function<Person, Double> GET_DEPENDENTS = p -> p.getDependents().getNumericValue();
+    private static final Function<Person, Boolean> IS_DEPENDENTS_UNSPECIFIED =
+            p -> p.getDependents().isUnspecified();
+
+    private static final Function<Person, Double> GET_SALARY = p -> p.getSalary().getNumericValue();
+    private static final Function<Person, Boolean> IS_SALARY_UNSPECIFIED = p -> p.getSalary().isUnspecified();
+
     /**
      * Prefixes that can only appear once. Only PREFIX_TAG is not in this array.
      */
     private static final Prefix[] SINGLE_PREFIXES = {
         PREFIX_ADDRESS, PREFIX_DATE_OF_BIRTH, PREFIX_DEPENDENTS, PREFIX_EMAIL, PREFIX_INSURANCE_PACKAGE,
         PREFIX_MARITAL_STATUS, PREFIX_NAME, PREFIX_OCCUPATION, PREFIX_PHONE, PREFIX_SALARY
-    };
-
-    /**
-     * Prefixes that allow comparison operators (>=, >, <=, <)
-     */
-    private static final Prefix[] NUMERICAL_PREFIXES = {
-        PREFIX_DEPENDENTS, PREFIX_SALARY
-    };
-
-    /**
-     * Prefixes that do not allow comparison operators
-     */
-    private static final Prefix[] DESCRIPTIVE_PREFIXES = {
-        PREFIX_ADDRESS, PREFIX_DATE_OF_BIRTH, PREFIX_EMAIL, PREFIX_INSURANCE_PACKAGE, PREFIX_MARITAL_STATUS,
-        PREFIX_NAME, PREFIX_OCCUPATION, PREFIX_PHONE
     };
 
     /**
@@ -154,18 +156,15 @@ public class FilterCommandParser implements Parser<FilterCommand> {
      */
     private void addAllDescriptiveParsersIfPresent(ArgumentMultimap argMultiMap,
                                                    List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_NAME, p -> p.getName().fullName, filterPrefixParsers);
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_ADDRESS, p -> p.getAddress().value, filterPrefixParsers);
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_PHONE, p -> p.getPhone().value, filterPrefixParsers);
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_EMAIL, p -> p.getEmail().value, filterPrefixParsers);
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_DATE_OF_BIRTH, p ->
-                p.getDateOfBirth().value, filterPrefixParsers);
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_OCCUPATION, p ->
-                p.getOccupation().value, filterPrefixParsers);
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_MARITAL_STATUS, p ->
-                p.getMaritalStatus().value, filterPrefixParsers);
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_INSURANCE_PACKAGE, p ->
-                p.getInsurancePackage().getPackageName(), filterPrefixParsers);
+        addDescriptiveParserIfPresent(argMultiMap, PREFIX_NAME, GET_NAME, filterPrefixParsers);
+        addDescriptiveParserIfPresent(argMultiMap, PREFIX_ADDRESS, GET_ADDRESS, filterPrefixParsers);
+        addDescriptiveParserIfPresent(argMultiMap, PREFIX_PHONE, GET_PHONE, filterPrefixParsers);
+        addDescriptiveParserIfPresent(argMultiMap, PREFIX_EMAIL, GET_EMAIL, filterPrefixParsers);
+        addDescriptiveParserIfPresent(argMultiMap, PREFIX_DATE_OF_BIRTH, GET_DOB, filterPrefixParsers);
+        addDescriptiveParserIfPresent(argMultiMap, PREFIX_OCCUPATION, GET_OCCUPATION, filterPrefixParsers);
+        addDescriptiveParserIfPresent(argMultiMap, PREFIX_MARITAL_STATUS, GET_MARITAL_STATUS, filterPrefixParsers);
+        addDescriptiveParserIfPresent(
+                argMultiMap, PREFIX_INSURANCE_PACKAGE, GET_INSURANCE_PACKAGE, filterPrefixParsers);
     }
 
     /**
@@ -173,15 +172,8 @@ public class FilterCommandParser implements Parser<FilterCommand> {
      */
     private void addAllNumericalParsersIfPresent(ArgumentMultimap argMultiMap,
                                                  List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
-        addNumericalParserIfPresent(argMultiMap,
-                PREFIX_SALARY,
-                p -> p.getSalary().getNumericValue(),
-                p -> p.getSalary().isUnspecified(),
-                filterPrefixParsers);
-        addNumericalParserIfPresent(argMultiMap,
-                PREFIX_DEPENDENTS,
-                p -> p.getDependents().getNumericValue(),
-                p -> p.getDependents().isUnspecified(),
-                filterPrefixParsers);
+        addNumericalParserIfPresent(argMultiMap, PREFIX_SALARY, GET_SALARY, IS_SALARY_UNSPECIFIED, filterPrefixParsers);
+        addNumericalParserIfPresent(
+                argMultiMap, PREFIX_DEPENDENTS, GET_DEPENDENTS, IS_DEPENDENTS_UNSPECIFIED, filterPrefixParsers);
     }
 }

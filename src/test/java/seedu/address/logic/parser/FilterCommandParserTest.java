@@ -8,7 +8,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
-import static seedu.address.logic.parser.filter.FilterNumericalPrefixParser.MESSAGE_INVALID_NUMERICAL_FORMAT;
+import static seedu.address.logic.parser.filter.FilterNumericalPrefixParser.MESSAGE_DEPENDENTS_MUST_BE_INTEGER;
+import static seedu.address.logic.parser.filter.FilterNumericalPrefixParser.MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY;
+import static seedu.address.logic.parser.filter.FilterNumericalPrefixParser.MESSAGE_INVALID_NUMBER_FOR_OPERATOR;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -174,16 +176,22 @@ public class FilterCommandParserTest {
     @Test
     public void parse_invalidNumericalArgs_throwsParseException() {
         // Invalid value
-        assertParseFailure(parser, " " + PREFIX_SALARY + "50e10", MESSAGE_INVALID_NUMERICAL_FORMAT);
-        assertParseFailure(parser, " " + PREFIX_SALARY + ".12", MESSAGE_INVALID_NUMERICAL_FORMAT);
+        assertParseFailure(parser, " " + PREFIX_SALARY + "=50e10",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        String.format(MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY, "50e10")));
+        assertParseFailure(parser, " " + PREFIX_SALARY + ">.12",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        String.format(MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY, ".12")));
 
         // Invalid operator
-        assertParseFailure(parser, " " + PREFIX_SALARY + ">>500", MESSAGE_INVALID_NUMERICAL_FORMAT);
+        assertParseFailure(parser, " " + PREFIX_SALARY + ">>500",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        String.format(MESSAGE_INVALID_NUMBER_FOR_OPERATOR, ">500")));
 
         // Decimal value for dependents
         assertParseFailure(parser,
-                " " + PREFIX_DEPENDENTS + "2.5",
-                "Dependents value must be an integer and cannot be a decimal.");
+                " " + PREFIX_DEPENDENTS + "=2.5",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, MESSAGE_DEPENDENTS_MUST_BE_INTEGER));
     }
 
     @Test
