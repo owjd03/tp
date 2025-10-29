@@ -17,14 +17,15 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.logic.parser.filter.FilterDescriptivePrefixParser;
-import seedu.address.logic.parser.filter.FilterMultiplePrefixParser;
-import seedu.address.logic.parser.filter.FilterNumericalPrefixParser;
+import seedu.address.logic.parser.filter.FilterComparisonPrefixParser;
+import seedu.address.logic.parser.filter.FilterContainsPrefixParser;
 import seedu.address.logic.parser.filter.FilterPrefixParser;
+import seedu.address.logic.parser.filter.FilterTagParser;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonContainsKeywordsPredicate;
 
@@ -32,6 +33,8 @@ import seedu.address.model.person.PersonContainsKeywordsPredicate;
  * Parses input arguments and creates a new FilterCommand object
  */
 public class FilterCommandParser implements Parser<FilterCommand> {
+
+    public static final String MESSAGE_MISSING_KEYWORDS = "Missing keyword for the following %s: %s";
 
     private static final Function<Person, String> GET_ADDRESS = p -> p.getAddress().toString();
     private static final Function<Person, String> GET_DOB = p -> p.getDateOfBirth().toString();
@@ -51,7 +54,7 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     private static final Function<Person, Boolean> IS_SALARY_UNSPECIFIED = p -> p.getSalary().isUnspecified();
 
     /**
-     * Prefixes that can only appear once. Only PREFIX_TAG is not in this array.
+     * Prefixes that can only appear once in filter. Only PREFIX_TAG is not in this array.
      */
     private static final Prefix[] SINGLE_PREFIXES = {
         PREFIX_ADDRESS, PREFIX_DATE_OF_BIRTH, PREFIX_DEPENDENTS, PREFIX_EMAIL, PREFIX_INSURANCE_PACKAGE,
@@ -83,12 +86,22 @@ public class FilterCommandParser implements Parser<FilterCommand> {
         }
         argMultiMap.verifyNoDuplicatePrefixesFor(SINGLE_PREFIXES);
 
-        List<FilterPrefixParser> filterPrefixParsers = new ArrayList<>();
-        addAllDescriptiveParsersIfPresent(argMultiMap, filterPrefixParsers);
-        addAllNumericalParsersIfPresent(argMultiMap, filterPrefixParsers);
-        addMultipleParserIfPresent(argMultiMap, PREFIX_TAG, filterPrefixParsers);
+        List<Prefix> emptyPrefixes = getEmptyPrefixes(argMultiMap, ALL_PREFIXES);
+        if (!emptyPrefixes.isEmpty()) {
+            String affectedPrefixes =
+                    emptyPrefixes.stream().map(Prefix::getPrefix).collect(Collectors.joining(", "));
+            String prefixWord = emptyPrefixes.size() == 1 ? "prefix" : "prefixes";
+            throw new ParseException(
+                    String.format(MESSAGE_MISSING_KEYWORDS, prefixWord, affectedPrefixes)
+            );
+        }
 
-        return new FilterCommand(new PersonContainsKeywordsPredicate(filterPrefixParsers));
+        List<FilterPrefixParser> filterPrefixParsers = new ArrayList<>();
+        addAllContainsPrefixParsersIfPresent(argMultiMap, filterPrefixParsers);
+        addAllComparisonPrefixParsersIfPresent(argMultiMap, filterPrefixParsers);
+        addTagParserIfPresent(argMultiMap, PREFIX_TAG, filterPrefixParsers);
+
+        return new FilterCommand(new PersonContainsKeywordsPredicate(filterPrefixParsers), args.trim());
     }
 
     /**
@@ -100,43 +113,62 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     }
 
     /**
-     * Adds a descriptive prefix parser to the list if the prefix is present in the argMultiMap.
+     * Returns a list of prefixes that have empty values (i.e. user did not provide a keyword for that prefix).
      */
-    private void addDescriptiveParserIfPresent(ArgumentMultimap argMultimap,
-                                               Prefix prefix,
-                                               Function<Person, String> getPersonField,
-                                               List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
+    private List<Prefix> getEmptyPrefixes(ArgumentMultimap argMultiMap, Prefix... prefixes) {
+        return Stream.of(prefixes)
+                .filter(prefix -> argMultiMap.getValue(prefix).isPresent())
+                .filter(prefix -> {
+                    if (prefix.equals(PREFIX_TAG)) {
+                        return argMultiMap.getAllValues(prefix).stream().anyMatch(String::isEmpty);
+                    }
+                    return argMultiMap.getValue(prefix).get().isEmpty();
+                })
+                .toList();
+    }
+
+    /**
+     * Adds a contains prefix parser to the list if the prefix is present in the argMultiMap.<br>
+     * These prefixes contain keywords that will be parsed using case-insensitive {@code contains} matching.
+     */
+    private void addContainsPrefixParserIfPresent(
+            ArgumentMultimap argMultimap,
+            Prefix prefix,
+            Function<Person, String> getPersonField,
+            List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
         if (!argMultimap.getValue(prefix).isPresent()) {
             return;
         }
-        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(prefix, getPersonField);
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(prefix, getPersonField);
         parser.parse(argMultimap.getValue(prefix).get());
         filterPrefixParsers.add(parser);
     }
 
     /**
-     * Adds a numerical prefix parser to the list if the prefix is present in the argMultiMap.
-     * Applies to prefixes Salary and Number of dependents.
+     * Adds a comparison prefix parser to the list if the prefix is present in the argMultiMap.
+     * Applies to prefixes Salary and Number of dependents.<br>
+     * These prefixes contain keywords that can be parsed using comparison operators, or using {@code contains}
+     * logic is no operators are provided
      */
-    private void addNumericalParserIfPresent(ArgumentMultimap argMultimap,
-                                             Prefix prefix,
-                                             Function<Person, Double> getPersonField,
-                                             Function<Person, Boolean> isPersonFieldUnspecified,
-                                             List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
+    private void addComparisonPrefixParserIfPresent(ArgumentMultimap argMultimap,
+                                                  Prefix prefix,
+                                                  Function<Person, Double> getPersonField,
+                                                  Function<Person, Boolean> isPersonFieldUnspecified,
+                                                  List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
         if (!argMultimap.getValue(prefix).isPresent()) {
             return;
         }
-        FilterNumericalPrefixParser parser =
-                new FilterNumericalPrefixParser(prefix, getPersonField, isPersonFieldUnspecified);
+        FilterComparisonPrefixParser parser =
+                new FilterComparisonPrefixParser(prefix, getPersonField, isPersonFieldUnspecified);
         parser.parse(argMultimap.getValue(prefix).get());
         filterPrefixParsers.add(parser);
     }
 
     /**
-     * Adds a multiple prefix parser to the list if the prefix is present in the argMultiMap.
-     * Applies to prefix Tags.
+     * Adds a Tag parser to the list if it is present in the argMultiMap.
+     * Applies to prefixes Tag only.
      */
-    private void addMultipleParserIfPresent(ArgumentMultimap argMultiMap,
+    private void addTagParserIfPresent(ArgumentMultimap argMultiMap,
                                             Prefix prefix,
                                             List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
         List<String> keywords = argMultiMap.getAllValues(prefix);
@@ -144,7 +176,7 @@ public class FilterCommandParser implements Parser<FilterCommand> {
             return;
         }
 
-        FilterMultiplePrefixParser parser = new FilterMultiplePrefixParser(prefix);
+        FilterTagParser parser = new FilterTagParser(prefix);
         for (String keyword : argMultiMap.getAllValues(prefix)) {
             parser.parse(keyword);
         }
@@ -152,28 +184,30 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     }
 
     /**
-     * Adds all descriptive prefix parsers whose prefix are present to the list  in the argMultiMap.
+     * Adds all contains prefix parsers whose prefix are present to the list.
      */
-    private void addAllDescriptiveParsersIfPresent(ArgumentMultimap argMultiMap,
-                                                   List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_NAME, GET_NAME, filterPrefixParsers);
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_ADDRESS, GET_ADDRESS, filterPrefixParsers);
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_PHONE, GET_PHONE, filterPrefixParsers);
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_EMAIL, GET_EMAIL, filterPrefixParsers);
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_DATE_OF_BIRTH, GET_DOB, filterPrefixParsers);
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_OCCUPATION, GET_OCCUPATION, filterPrefixParsers);
-        addDescriptiveParserIfPresent(argMultiMap, PREFIX_MARITAL_STATUS, GET_MARITAL_STATUS, filterPrefixParsers);
-        addDescriptiveParserIfPresent(
+    private void addAllContainsPrefixParsersIfPresent(
+            ArgumentMultimap argMultiMap, List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
+        addContainsPrefixParserIfPresent(argMultiMap, PREFIX_NAME, GET_NAME, filterPrefixParsers);
+        this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_ADDRESS, GET_ADDRESS, filterPrefixParsers);
+        this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_PHONE, GET_PHONE, filterPrefixParsers);
+        this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_EMAIL, GET_EMAIL, filterPrefixParsers);
+        this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_DATE_OF_BIRTH, GET_DOB, filterPrefixParsers);
+        this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_OCCUPATION, GET_OCCUPATION, filterPrefixParsers);
+        this.addContainsPrefixParserIfPresent(
+                argMultiMap, PREFIX_MARITAL_STATUS, GET_MARITAL_STATUS, filterPrefixParsers);
+        this.addContainsPrefixParserIfPresent(
                 argMultiMap, PREFIX_INSURANCE_PACKAGE, GET_INSURANCE_PACKAGE, filterPrefixParsers);
     }
 
     /**
-     * Adds all numerical prefix parsers whose prefix are present to the list  in the argMultiMap.
+     * Adds all comparison prefix parsers whose prefix are present to the list.
      */
-    private void addAllNumericalParsersIfPresent(ArgumentMultimap argMultiMap,
-                                                 List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
-        addNumericalParserIfPresent(argMultiMap, PREFIX_SALARY, GET_SALARY, IS_SALARY_UNSPECIFIED, filterPrefixParsers);
-        addNumericalParserIfPresent(
+    private void addAllComparisonPrefixParsersIfPresent(
+            ArgumentMultimap argMultiMap, List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
+        addComparisonPrefixParserIfPresent(argMultiMap,
+                PREFIX_SALARY, GET_SALARY, IS_SALARY_UNSPECIFIED, filterPrefixParsers);
+        addComparisonPrefixParserIfPresent(
                 argMultiMap, PREFIX_DEPENDENTS, GET_DEPENDENTS, IS_DEPENDENTS_UNSPECIFIED, filterPrefixParsers);
     }
 }

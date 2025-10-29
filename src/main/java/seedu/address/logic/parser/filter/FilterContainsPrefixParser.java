@@ -2,7 +2,6 @@ package seedu.address.logic.parser.filter;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -13,21 +12,21 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
 
 /**
- * Parses descriptive prefixes (e.g., name, address, phone) for the filter command.
+ * Parses prefixes (e.g., name, address, phone) using contains logic for the filter command.
  * These prefixes use case-insensitive {@code contains} matching.
  */
-public class FilterDescriptivePrefixParser implements FilterPrefixParser {
+public class FilterContainsPrefixParser implements FilterPrefixParser {
     private final Prefix prefix;
     private final Function<Person, String> getPersonField;
     private String keyword;
 
     /**
-     * Constructs a {@code FilterDescriptivePrefixParser}.
+     * Constructs a {@code FilterContainsPrefixParser}.
      *
      * @param prefix The descriptive prefix to handle.
      * @param getPersonField A function to get the relevant String field from a Person.
      */
-    public FilterDescriptivePrefixParser(Prefix prefix, Function<Person, String> getPersonField) {
+    public FilterContainsPrefixParser(Prefix prefix, Function<Person, String> getPersonField) {
         requireAllNonNull(prefix, getPersonField);
         this.prefix = prefix;
         this.getPersonField = getPersonField;
@@ -41,10 +40,6 @@ public class FilterDescriptivePrefixParser implements FilterPrefixParser {
     @Override
     public void parse(String args) throws ParseException {
         requireNonNull(args);
-        if (args.isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, "Empty keyword for: " + this.prefix));
-        }
         this.keyword = args.toLowerCase();
     }
 
@@ -72,11 +67,11 @@ public class FilterDescriptivePrefixParser implements FilterPrefixParser {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof FilterDescriptivePrefixParser)) {
+        if (!(other instanceof FilterContainsPrefixParser)) {
             return false;
         }
 
-        FilterDescriptivePrefixParser otherParser = (FilterDescriptivePrefixParser) other;
+        FilterContainsPrefixParser otherParser = (FilterContainsPrefixParser) other;
 
         // No need to compare getPersonField, prefix and keyword suffices to check
         return this.prefix.equals(otherParser.prefix)

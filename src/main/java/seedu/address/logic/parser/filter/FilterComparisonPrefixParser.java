@@ -2,7 +2,6 @@ package seedu.address.logic.parser.filter;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPENDENTS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
 
@@ -27,7 +26,7 @@ import seedu.address.model.person.Person;
  * This "contains" search works on the string representation of the number, or
  * on the "unspecified" keyword.
  */
-public class FilterNumericalPrefixParser implements FilterPrefixParser {
+public class FilterComparisonPrefixParser implements FilterPrefixParser {
 
     public static final String MESSAGE_MISSING_VALUE_AFTER_OPERATOR =
             "Missing number after operator '%s' for prefix %s.";
@@ -52,14 +51,14 @@ public class FilterNumericalPrefixParser implements FilterPrefixParser {
     private boolean isContainsLogic;
 
     /**
-     * Constructs a {@code FilterNumericalPrefixParser}.
+     * Constructs a {@code FilterComparisonPrefixParser}.
      *
      * @param prefix The numerical prefix to handle.
      * @param getPersonField A function to get the relevant Double attribute from a Person.
      */
-    public FilterNumericalPrefixParser(Prefix prefix,
-                                       Function<Person, Double> getPersonField,
-                                       Function<Person, Boolean> isPersonFieldUnspecified) {
+    public FilterComparisonPrefixParser(Prefix prefix,
+                                        Function<Person, Double> getPersonField,
+                                        Function<Person, Boolean> isPersonFieldUnspecified) {
         requireAllNonNull(prefix, getPersonField, isPersonFieldUnspecified);
         this.prefix = prefix;
         this.getPersonField = getPersonField;
@@ -74,16 +73,11 @@ public class FilterNumericalPrefixParser implements FilterPrefixParser {
     @Override
     public void parse(String args) throws ParseException {
         requireNonNull(args);
-        if (args.isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, "Empty keyword for: " + this.prefix)
-            );
-        }
-
         this.keyword = args.toLowerCase();
         Matcher matcher = PATTERN.matcher(this.keyword);
 
         if (!matcher.matches()) {
+            // This should never happen
             throw new ParseException("Unexpected parser error");
         }
 
@@ -92,7 +86,7 @@ public class FilterNumericalPrefixParser implements FilterPrefixParser {
 
         if (value.isEmpty() && operator != null) {
             String errorMessage = String.format(MESSAGE_MISSING_VALUE_AFTER_OPERATOR, operator, this.prefix);
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, errorMessage));
+            throw new ParseException(errorMessage);
         }
 
         if (operator != null) {
@@ -109,20 +103,19 @@ public class FilterNumericalPrefixParser implements FilterPrefixParser {
             valueToCompare = Double.parseDouble(value);
         } catch (NumberFormatException e) {
             String errorMessage = String.format(MESSAGE_INVALID_NUMBER_FOR_OPERATOR, value);
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, errorMessage));
+            throw new ParseException(errorMessage);
         }
 
         // Ensure that value for dependents prefix is not a decimal number
         if (this.prefix.equals(PREFIX_DEPENDENTS) && !value.matches("^\\d+$")) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, MESSAGE_DEPENDENTS_MUST_BE_INTEGER));
+                    String.format(MESSAGE_DEPENDENTS_MUST_BE_INTEGER));
         }
 
         // Ensure that the value for salary prefix has a leading digit and up to two decimal places
         if (this.prefix.equals(PREFIX_SALARY) && !value.matches(VALID_NUMBER_REGEX)) {
             String errorMessage = String.format(MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY, value);
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, errorMessage));
+            throw new ParseException(errorMessage);
         }
 
         switch (operator) {
@@ -153,7 +146,6 @@ public class FilterNumericalPrefixParser implements FilterPrefixParser {
     }
 
     private boolean testContainsLogic(Person person) {
-        // Perons's field is unspecified
         if (this.isPersonFieldUnspecified.apply(person)) {
             return "unspecified".contains(this.keyword);
         }
@@ -195,13 +187,12 @@ public class FilterNumericalPrefixParser implements FilterPrefixParser {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof FilterNumericalPrefixParser)) {
+        if (!(other instanceof FilterComparisonPrefixParser)) {
             return false;
         }
 
-        FilterNumericalPrefixParser otherParser = (FilterNumericalPrefixParser) other;
+        FilterComparisonPrefixParser otherParser = (FilterComparisonPrefixParser) other;
 
-        // Can't check if 2 predicates are equal
         return this.prefix.equals(otherParser.prefix)
                 && this.keyword.equals(otherParser.keyword);
     }

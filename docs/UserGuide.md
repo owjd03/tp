@@ -156,11 +156,11 @@ Examples:
 Finds contacts matching **all** the provided criteria. You must provide at least one prefix.
 
 Format: `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`
+<br>
 
-**Filtering by Keyword (Most Fields)**
+**Filtering by Keyword (Default)**
 
-For most fields, the filter performs a case-insensitive "**contains**" search. This applies to: `n/Name`, `a/ADDRESS`, 
-`p/PHONE`, `e/EMAIL`, `ms/MARITAL_STATUS`, `occ/OCCUPATION`, `ip/INSURANCE_PACKAGE`, `t/TAG`.
+By default, the filter performs a case-insensitive "**contains**" search for all fields.
 
 * `filter n/jo` will match `Josh` or `Joseph`.
 * `filter dob/-10-` will match any date of birth in October (e.g. `2000-10-20`).
@@ -170,6 +170,7 @@ For most fields, the filter performs a case-insensitive "**contains**" search. T
 The filter is case-insensitive and matches partial words.<br>
 A valid query for impossible data (e.g., `filter dob/abc`) will return 0 results, not show an error.
 </div>
+<br>
 
 **Filtering by Number (s/Salary and dep/Dependents)**
 
@@ -185,12 +186,14 @@ These fields have two modes:
      * You must provide a valid number after the operator.
      * `dep/` must be a whole number (e.g. `2`).
      * `s/` can have up to two decimal places (e.g. `5000.50`).
+<br>
 
-Common Examples:
+Examples:
 * `filter n/josh a/kent ridge` displays all contacts whose name contains `josh` **AND** whose address contains `kent ridge`.
 * `filter s/500 dep/1` displays all contacts whose salary contains `500` **AND** dependents count contains `1`.
-* `filter s/=5000.5 dep/>=2` displays all contacts with a salary exactly `5000.50` **AND** have `2` or more dependents.
-* `filter s/unspecified dep/<1` displays all contacts with an unspecified salary **AND** have `0` dependents.
+  ![result for 'filter s/500 dep/1'](images/filterSalary500Dep1.png)
+* `filter s/>3000 dep/<1` displays all contacts with a salary greater than `3000` **AND** have `0` dependents.
+* ![result for 'filter s/>3000 dep/<1'](images/filterSalaryGreaterThan3000DepLessThan1.png)
 
 Invalid Usages:
 * `filter` (at least one prefix must be provided)

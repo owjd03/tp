@@ -14,6 +14,7 @@ public class PersonContainsKeywordsPredicate implements Predicate<Person> {
 
     /**
      * Constructs a {@code PersonContainsKeywordsPredicate} with the specified keywords.
+     *
      * @param filterList A list of {@code FilterPrefixParser} objects, each encapsulating the
      *                   parsing and testing logic for a specific prefix
      */
