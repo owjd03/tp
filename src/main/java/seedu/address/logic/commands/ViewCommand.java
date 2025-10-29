@@ -10,6 +10,7 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.ViewData;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 
 /**
@@ -25,8 +26,8 @@ public class ViewCommand extends Command {
             + "Example #1: " + COMMAND_WORD + " alex\n"
             + "Example #2: " + COMMAND_WORD + " 1";
 
-    public static final String MESSAGE_VIEW_SUCCESS = "Here's the full detail!";
-    public static final String MESSAGE_NOVIEW_NAME = "There's no one with that name!";
+    public static final String MESSAGE_VIEW_SUCCESS = "Here's the full detail";
+    public static final String MESSAGE_NOVIEW_NAME = "There's no one with that name in the displayed list!";
     public static final String MESSAGE_DUPLICATE_NAME = "Found at least two people with the keyword!\n"
             + "Please write the full name or use INDEX instead.";
 
@@ -52,14 +53,22 @@ public class ViewCommand extends Command {
         this.predicate = predicate;
     }
 
+    /**
+     * Configure message with the person's name when viewing is successful
+     * @param name Name of the person being viewed
+     */
+    public String getMessageViewSuccess(Name name) {
+        String messageSuccess = MESSAGE_VIEW_SUCCESS + " of " + name.fullName + "!";
+        return messageSuccess;
+    }
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         if (index != null) {
-            return executeIndex(model);
+            return executeByIndex(model);
         } else if (!predicate.isBlank()) {
-            return executeName(model);
+            return executeByName(model);
         } else {
             throw new CommandException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewCommand.MESSAGE_USAGE));
         }
@@ -72,7 +81,7 @@ public class ViewCommand extends Command {
      * @return feedback message of the operation result for display
      * @throws CommandException If an error occurs during command execution.
      */
-    private CommandResult executeIndex(Model model) throws CommandException {
+    private CommandResult executeByIndex(Model model) throws CommandException {
         List<Person> lastShownList = model.getFilteredPersonList();
 
         if (index.getZeroBased() >= lastShownList.size()) {
@@ -84,7 +93,8 @@ public class ViewCommand extends Command {
 
         ViewData last = new ViewData(true, this.personToView);
 
-        return new CommandResult(MESSAGE_VIEW_SUCCESS, false, last, false, false);
+        return new CommandResult(getMessageViewSuccess(this.personToView.getName()), false, last,
+                false, false);
     }
 
     /**
@@ -94,7 +104,7 @@ public class ViewCommand extends Command {
      * @return feedback message of the operation result for display
      * @throws CommandException If an error occurs during command execution.
      */
-    private CommandResult executeName(Model model) throws CommandException {
+    private CommandResult executeByName(Model model) throws CommandException {
         List<Person> filteredList = model.getFilteredPersonList()
                 .stream()
                 .filter(p ->
@@ -112,7 +122,8 @@ public class ViewCommand extends Command {
 
             ViewData last = new ViewData(true, this.personToView);
 
-            return new CommandResult(MESSAGE_VIEW_SUCCESS, false, last, false, false);
+            return new CommandResult(getMessageViewSuccess(this.personToView.getName()), false, last,
+                    false, false);
         }
     }
 

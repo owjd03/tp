@@ -50,22 +50,23 @@ public class EditCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the person identified "
             + "by the index number used in the displayed person list. "
-            + "Existing values will be overwritten by the input values.\n"
+            + "Existing values in each field will be overwritten by the input values.\n"
             + "Parameters: INDEX (must be a positive integer) "
-            + "[" + PREFIX_NAME + "NAME] "
-            + "[" + PREFIX_PHONE + "PHONE] "
-            + "[" + PREFIX_EMAIL + "EMAIL] "
-            + "[" + PREFIX_ADDRESS + "ADDRESS] "
+            + PREFIX_NAME + "NAME "
+            + PREFIX_PHONE + "PHONE "
+            + PREFIX_EMAIL + "EMAIL "
+            + PREFIX_ADDRESS + "ADDRESS "
+            + PREFIX_INSURANCE_PACKAGE + "INSURANCE_PACKAGE \n"
+            + "                         "
             + "[" + PREFIX_SALARY + "SALARY] "
-            + "[" + PREFIX_DATE_OF_BIRTH + "AGE] "
+            + "[" + PREFIX_DATE_OF_BIRTH + "DATE_OF_BIRTH] "
             + "[" + PREFIX_MARITAL_STATUS + "MARITAL_STATUS] "
             + "[" + PREFIX_DEPENDENTS + "NUMBER_OF_DEPENDENTS] "
             + "[" + PREFIX_OCCUPATION + "OCCUPATION] "
-            + "[" + PREFIX_INSURANCE_PACKAGE + "INSURANCE PACKAGE] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PHONE + "91234567 "
-            + PREFIX_EMAIL + "johndoe@example.com";
+            + PREFIX_EMAIL + "johndoe@newemail.com";
 
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
@@ -89,16 +90,37 @@ public class EditCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        Person personToEdit = getPersonToEdit(model);
+        Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
+
+        validateEditedPerson(model, personToEdit, editedPerson);
+
+        updateModel(model, personToEdit, editedPerson);
+
+        return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
+    }
+
+    /**
+     * Retrieves the person to edit from the model based on the index.
+     * @throws CommandException if the index is invalid.
+     */
+    private Person getPersonToEdit(Model model) throws CommandException {
         List<Person> lastShownList = model.getFilteredPersonList();
 
         if (index.getZeroBased() >= lastShownList.size()) {
             throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
-        Person personToEdit = lastShownList.get(index.getZeroBased());
-        Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
+        return lastShownList.get(index.getZeroBased());
+    }
 
-
+    /**
+     * Validates the edited Person by checking for duplicates.
+     * Also checks if the insurance package is valid.
+     * @throws CommandException if the person fails validation (e.g., duplicate or invalid insurance).
+     */
+    private void validateEditedPerson(Model model, Person personToEdit, Person editedPerson) throws CommandException {
+        // Check for valid insurance package
         String desiredPackageName = editedPerson.getInsurancePackage().getPackageName();
         if (!InsuranceCatalog.isValidInsurancePackage(desiredPackageName)) {
             String validNamesString = InsuranceCatalog.getValidInsurancePackageNames();
@@ -107,13 +129,18 @@ public class EditCommand extends Command {
                     + "Available packages are: " + validNamesString);
         }
 
+        // Check for duplicate Persons
         if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
+    }
 
+    /**
+     * Commits the changes to the model.
+     */
+    private void updateModel(Model model, Person personToEdit, Person editedPerson) {
         model.setPerson(personToEdit, editedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-        return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
     }
 
     /**

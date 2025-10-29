@@ -37,68 +37,121 @@ public class EditCommandParser implements Parser<EditCommand> {
      */
     public EditCommand parse(String args) throws ParseException {
         requireNonNull(args);
-        ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS, PREFIX_SALARY,
-                        PREFIX_DATE_OF_BIRTH, PREFIX_MARITAL_STATUS, PREFIX_DEPENDENTS, PREFIX_OCCUPATION,
-                        PREFIX_INSURANCE_PACKAGE, PREFIX_TAG);
+        ArgumentMultimap argMultimap = tokenizeArguments(args);
+        Index index = parseIndex(argMultimap);
+        verifyNoDuplicatePrefixes(argMultimap);
 
-        Index index;
-
-        try {
-            index = ParserUtil.parseIndex(argMultimap.getPreamble());
-        } catch (ParseException pe) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE), pe);
-        }
-
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS, PREFIX_SALARY,
-                PREFIX_DATE_OF_BIRTH, PREFIX_MARITAL_STATUS, PREFIX_DEPENDENTS, PREFIX_OCCUPATION,
-                PREFIX_INSURANCE_PACKAGE);
-
-        EditPersonDescriptor editPersonDescriptor = new EditPersonDescriptor();
-
-        if (argMultimap.getValue(PREFIX_NAME).isPresent()) {
-            editPersonDescriptor.setName(ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get()));
-        }
-        if (argMultimap.getValue(PREFIX_PHONE).isPresent()) {
-            editPersonDescriptor.setPhone(ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get()));
-        }
-        if (argMultimap.getValue(PREFIX_EMAIL).isPresent()) {
-            editPersonDescriptor.setEmail(ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get()));
-        }
-        if (argMultimap.getValue(PREFIX_ADDRESS).isPresent()) {
-            editPersonDescriptor.setAddress(ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get()));
-        }
-        if (argMultimap.getValue(PREFIX_SALARY).isPresent()) {
-            editPersonDescriptor.setSalary(ParserUtil.parseSalary(argMultimap.getValue(PREFIX_SALARY).get()));
-        }
-        if (argMultimap.getValue(PREFIX_DATE_OF_BIRTH).isPresent()) {
-            editPersonDescriptor.setDateOfBirth(
-                    ParserUtil.parseDateOfBirth(argMultimap.getValue(PREFIX_DATE_OF_BIRTH).get()));
-        }
-        if (argMultimap.getValue(PREFIX_MARITAL_STATUS).isPresent()) {
-            editPersonDescriptor.setMaritalStatus(
-                    ParserUtil.parseMaritalStatus(argMultimap.getValue(PREFIX_MARITAL_STATUS).get()));
-        }
-        if (argMultimap.getValue(PREFIX_DEPENDENTS).isPresent()) {
-            editPersonDescriptor.setDependents(
-                    ParserUtil.parseDependents(
-                            Integer.parseInt(argMultimap.getValue(CliSyntax.PREFIX_DEPENDENTS).get())));
-        }
-        if (argMultimap.getValue(PREFIX_OCCUPATION).isPresent()) {
-            editPersonDescriptor.setOccupation(
-                    ParserUtil.parseOccupation(argMultimap.getValue(PREFIX_OCCUPATION).get()));
-        }
-        if (argMultimap.getValue(PREFIX_INSURANCE_PACKAGE).isPresent()) {
-            editPersonDescriptor.setInsurancePackage(
-                    ParserUtil.parseInsurancePackage(argMultimap.getValue(PREFIX_INSURANCE_PACKAGE).get()));
-        }
-        parseTagsForEdit(argMultimap.getAllValues(PREFIX_TAG)).ifPresent(editPersonDescriptor::setTags);
+        EditPersonDescriptor editPersonDescriptor = buildEditPersonDescriptor(argMultimap);
 
         if (!editPersonDescriptor.isAnyFieldEdited()) {
             throw new ParseException(EditCommand.MESSAGE_NOT_EDITED);
         }
 
         return new EditCommand(index, editPersonDescriptor);
+    }
+
+    private ArgumentMultimap tokenizeArguments(String args) {
+        return ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS,
+                PREFIX_SALARY, PREFIX_DATE_OF_BIRTH, PREFIX_MARITAL_STATUS, PREFIX_DEPENDENTS,
+                PREFIX_OCCUPATION, PREFIX_INSURANCE_PACKAGE, PREFIX_TAG);
+    }
+
+    private Index parseIndex(ArgumentMultimap argMultimap) throws ParseException {
+        try {
+            return ParserUtil.parseIndex(argMultimap.getPreamble());
+        } catch (ParseException pe) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE), pe);
+        }
+    }
+
+    private void verifyNoDuplicatePrefixes(ArgumentMultimap argMultimap) throws ParseException {
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS,
+                PREFIX_SALARY, PREFIX_DATE_OF_BIRTH, PREFIX_MARITAL_STATUS, PREFIX_DEPENDENTS,
+                PREFIX_OCCUPATION, PREFIX_INSURANCE_PACKAGE);
+    }
+
+    private EditPersonDescriptor buildEditPersonDescriptor(ArgumentMultimap argMultimap) throws ParseException {
+        EditPersonDescriptor descriptor = new EditPersonDescriptor();
+
+        parseNameIfPresent(argMultimap, descriptor);
+        parsePhoneIfPresent(argMultimap, descriptor);
+        parseEmailIfPresent(argMultimap, descriptor);
+        parseAddressIfPresent(argMultimap, descriptor);
+        parseSalaryIfPresent(argMultimap, descriptor);
+        parseDateOfBirthIfPresent(argMultimap, descriptor);
+        parseMaritalStatusIfPresent(argMultimap, descriptor);
+        parseDependentsIfPresent(argMultimap, descriptor);
+        parseOccupationIfPresent(argMultimap, descriptor);
+        parseInsurancePackageIfPresent(argMultimap, descriptor);
+        parseTagsIfPresent(argMultimap, descriptor);
+
+        return descriptor;
+    }
+
+    private void parseNameIfPresent(ArgumentMultimap map, EditPersonDescriptor desc) throws ParseException {
+        if (map.getValue(PREFIX_NAME).isPresent()) {
+            desc.setName(ParserUtil.parseName(map.getValue(PREFIX_NAME).get()));
+        }
+    }
+
+    private void parsePhoneIfPresent(ArgumentMultimap map, EditPersonDescriptor desc) throws ParseException {
+        if (map.getValue(PREFIX_PHONE).isPresent()) {
+            desc.setPhone(ParserUtil.parsePhone(map.getValue(PREFIX_PHONE).get()));
+        }
+    }
+
+    private void parseEmailIfPresent(ArgumentMultimap map, EditPersonDescriptor desc) throws ParseException {
+        if (map.getValue(PREFIX_EMAIL).isPresent()) {
+            desc.setEmail(ParserUtil.parseEmail(map.getValue(PREFIX_EMAIL).get()));
+        }
+    }
+
+    private void parseAddressIfPresent(ArgumentMultimap map, EditPersonDescriptor desc) throws ParseException {
+        if (map.getValue(PREFIX_ADDRESS).isPresent()) {
+            desc.setAddress(ParserUtil.parseAddress(map.getValue(PREFIX_ADDRESS).get()));
+        }
+    }
+
+    private void parseSalaryIfPresent(ArgumentMultimap map, EditPersonDescriptor desc) throws ParseException {
+        if (map.getValue(PREFIX_SALARY).isPresent()) {
+            desc.setSalary(ParserUtil.parseSalary(map.getValue(PREFIX_SALARY).get()));
+        }
+    }
+
+    private void parseDateOfBirthIfPresent(ArgumentMultimap map, EditPersonDescriptor desc) throws ParseException {
+        if (map.getValue(PREFIX_DATE_OF_BIRTH).isPresent()) {
+            desc.setDateOfBirth(ParserUtil.parseDateOfBirth(map.getValue(PREFIX_DATE_OF_BIRTH).get()));
+        }
+    }
+
+    private void parseMaritalStatusIfPresent(ArgumentMultimap map, EditPersonDescriptor desc) throws ParseException {
+        if (map.getValue(PREFIX_MARITAL_STATUS).isPresent()) {
+            desc.setMaritalStatus(ParserUtil.parseMaritalStatus(map.getValue(PREFIX_MARITAL_STATUS).get()));
+        }
+    }
+
+    private void parseDependentsIfPresent(ArgumentMultimap map, EditPersonDescriptor desc) throws ParseException {
+        if (map.getValue(PREFIX_DEPENDENTS).isPresent()) {
+            desc.setDependents(ParserUtil.parseDependents(map.getValue(PREFIX_DEPENDENTS).get()));
+        }
+    }
+
+    private void parseOccupationIfPresent(ArgumentMultimap map, EditPersonDescriptor desc) throws ParseException {
+        if (map.getValue(PREFIX_OCCUPATION).isPresent()) {
+            desc.setOccupation(ParserUtil.parseOccupation(map.getValue(PREFIX_OCCUPATION).get()));
+        }
+    }
+
+    private void parseInsurancePackageIfPresent(ArgumentMultimap map,
+            EditPersonDescriptor desc) throws ParseException {
+        if (map.getValue(PREFIX_INSURANCE_PACKAGE).isPresent()) {
+            desc.setInsurancePackage(ParserUtil.parseInsurancePackage(map.getValue(PREFIX_INSURANCE_PACKAGE).get()));
+        }
+    }
+
+    private void parseTagsIfPresent(ArgumentMultimap map, EditPersonDescriptor desc) throws ParseException {
+        Optional<Set<Tag>> tagsOptional = parseTagsForEdit(map.getAllValues(PREFIX_TAG));
+        tagsOptional.ifPresent(desc::setTags);
     }
 
     /**

@@ -17,6 +17,8 @@ public class Occupation {
      */
     public static final String VALIDATION_REGEX = "[^\\s].*";
 
+    public static final String UNSPECIFIED_VALUE = "Unspecified";
+
     public final String value;
 
     /**
@@ -26,8 +28,21 @@ public class Occupation {
      */
     public Occupation(String occupation) {
         requireNonNull(occupation);
-        checkArgument(isValidOccupation(occupation), MESSAGE_CONSTRAINTS);
-        value = occupation;
+
+        if (occupation.equals(UNSPECIFIED_VALUE)) {
+            this.value = UNSPECIFIED_VALUE;
+        } else {
+            checkArgument(isValidOccupation(occupation), MESSAGE_CONSTRAINTS);
+            value = occupation;
+        }
+    }
+
+    /**
+     * Static factory method for creating the default "Unspecified" Occupation
+     * @return An Occupation object with value "Unspecified".
+     */
+    public static Occupation createUnspecified() {
+        return new Occupation(UNSPECIFIED_VALUE);
     }
 
     /**

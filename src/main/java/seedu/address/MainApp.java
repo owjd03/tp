@@ -16,7 +16,6 @@ import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.Logic;
 import seedu.address.logic.LogicManager;
 import seedu.address.model.AddressBook;
-import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
@@ -75,49 +74,78 @@ public class MainApp extends Application {
     }
 
     /**
-     * Returns a {@code ModelManager} with the data from {@code storage}'s address book and {@code userPrefs}. <br>
-     * The data from the sample address book will be used instead if {@code storage}'s address book is not found,
-     * or an empty address book will be used instead if errors occur when reading {@code storage}'s address book.
+     * Returns a {@code ModelManager} with the data from {@code storage}'s address book and {@code userPrefs}.
      */
-    private Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
+    Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
         logger.info("Using data file : " + storage.getAddressBookFilePath());
 
-        Optional<ReadOnlyInsuranceCatalog> insuranceCatalogOptional;
-        ReadOnlyInsuranceCatalog initialInsuranceCatalog;
-        try {
-            insuranceCatalogOptional = storage.readInsuranceCatalog();
-            if (!insuranceCatalogOptional.isPresent()) {
-                logger.info("Creating a new insurance catalog file "
-                        + storage.getInsuranceCatalogFilePath()
-                        + " populated with a sample InsuranceCatalog.");
-            }
-            initialInsuranceCatalog = insuranceCatalogOptional.orElseGet(SampleDataUtil::getSampleInsuranceCatalog);
-        } catch (DataLoadingException e) {
-            logger.warning("Insurance catalog file at "
-                    + storage.getInsuranceCatalogFilePath()
-                    + " could not be loaded."
-                    + " Will be starting with an empty InsuranceCatalog.");
-            initialInsuranceCatalog = new InsuranceCatalog();
-        }
+        ReadOnlyInsuranceCatalog initialInsuranceCatalog = initInsuranceCatalog(storage);
 
-        Optional<ReadOnlyAddressBook> addressBookOptional;
-        ReadOnlyAddressBook initialData;
-        try {
-            addressBookOptional = storage.readAddressBook();
-            if (!addressBookOptional.isPresent()) {
-                logger.info("Creating a new data file " + storage.getAddressBookFilePath()
-                        + " populated with a sample AddressBook.");
-            }
-            initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
-        } catch (DataLoadingException e) {
-            logger.warning("Data file at " + storage.getAddressBookFilePath() + " could not be loaded."
-                    + " Will be starting with an empty AddressBook.");
-            initialData = new AddressBook();
-        }
+        ReadOnlyAddressBook initialData = initAddressBook(storage, initialInsuranceCatalog);
 
         logger.info("Using insurance catalog file: " + storage.getInsuranceCatalogFilePath());
 
         return new ModelManager(initialData, initialInsuranceCatalog, userPrefs);
+    }
+
+    /**
+     * Loads the InsuranceCatalog from storage.
+     * If the file is missing,a sample catalog is created and saved to storage.
+     */
+    ReadOnlyInsuranceCatalog initInsuranceCatalog(Storage storage) {
+        try {
+            Optional<ReadOnlyInsuranceCatalog> insuranceCatalogOptional = storage.readInsuranceCatalog();
+
+            if (insuranceCatalogOptional.isPresent()) {
+                // File exists and is valid, so just return it
+                return insuranceCatalogOptional.get();
+            } else {
+                logger.info("Creating a new insurance catalog file "
+                        + storage.getInsuranceCatalogFilePath()
+                        + " populated with a sample InsuranceCatalog.");
+            }
+        } catch (DataLoadingException e) {
+            logger.warning("Insurance catalog file at "
+                    + storage.getInsuranceCatalogFilePath()
+                    + " could not be loaded."
+                    + " Will reload the sample InsuranceCatalog.");
+        }
+        return createAndSaveSampleInsuranceCatalog(storage);
+    }
+
+    /**
+     * Creates a sample InsuranceCatalog and attempts to save it to storage.
+     * Returns the sample catalog whether the save succeeds or not.
+     */
+    ReadOnlyInsuranceCatalog createAndSaveSampleInsuranceCatalog(Storage storage) {
+        ReadOnlyInsuranceCatalog sampleCatalog = SampleDataUtil.getSampleInsuranceCatalog();
+        try {
+            storage.saveInsuranceCatalog(sampleCatalog);
+        } catch (IOException e) {
+            logger.warning("Failed to save sample insurance catalog to file."
+                    + " Will use in-memory sample catalog instead. " + StringUtil.getDetails(e));
+        }
+        return sampleCatalog;
+    }
+
+    /**
+     * Loads the AddressBook from storage, using the provided catalog for validation.
+     * If the file is missing, a sample AddressBook is used.
+     */
+    ReadOnlyAddressBook initAddressBook(Storage storage, ReadOnlyInsuranceCatalog initialInsuranceCatalog) {
+        try {
+            Optional<ReadOnlyAddressBook> addressBookOptional = storage.readAddressBook(initialInsuranceCatalog);
+
+            if (!addressBookOptional.isPresent()) {
+                logger.info("Creating a new data file " + storage.getAddressBookFilePath()
+                        + " populated with a sample AddressBook.");
+            }
+            return addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
+        } catch (DataLoadingException e) {
+            logger.warning("Data file at " + storage.getAddressBookFilePath() + " could not be loaded."
+                    + " Will be starting with an empty AddressBook.");
+            return new AddressBook();
+        }
     }
 
     private void initLogging(Config config) {
@@ -206,6 +234,7 @@ public class MainApp extends Application {
         logger.info("============================ [ Stopping AddressBook ] =============================");
         try {
             storage.saveUserPrefs(model.getUserPrefs());
+            storage.saveAddressBook(model.getAddressBook());
         } catch (IOException e) {
             logger.severe("Failed to save preferences " + StringUtil.getDetails(e));
         }

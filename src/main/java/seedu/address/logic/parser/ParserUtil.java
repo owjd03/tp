@@ -163,14 +163,31 @@ public class ParserUtil {
     }
 
     /**
-     * Parses an {@code int dependents} into a {@code Dependents}.
+     * Parses an {@code String dependents} into a {@code Dependents}.
      * @throws ParseException if the given {@code dependents} is invalid.
      */
-    public static Dependents parseDependents(int dependents) throws ParseException {
-        if (!Dependents.isValidDependents(dependents)) {
+    public static Dependents parseDependents(String dependents) throws ParseException {
+        requireNonNull(dependents);
+        int num;
+
+        try {
+            num = Integer.parseInt(dependents.trim());
+        } catch (NumberFormatException e) {
+            // Catches "d/abc"
             throw new ParseException(Dependents.MESSAGE_CONSTRAINTS);
         }
-        return new Dependents(dependents);
+
+        // This test is stricter than the Dependents class's own validation
+        // because the user cannot enter a negative number.
+        if (num < 0) {
+            throw new ParseException(Dependents.MESSAGE_CONSTRAINTS);
+        }
+
+        try {
+            return new Dependents(num);
+        } catch (IllegalArgumentException e) {
+            throw new ParseException(Dependents.MESSAGE_CONSTRAINTS);
+        }
     }
 
     /**

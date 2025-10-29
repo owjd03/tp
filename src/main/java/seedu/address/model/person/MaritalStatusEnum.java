@@ -8,7 +8,8 @@ public enum MaritalStatusEnum {
     SINGLE("Single"),
     MARRIED("Married"),
     DIVORCED("Divorced"),
-    WIDOWED("Widowed");
+    WIDOWED("Widowed"),
+    UNSPECIFIED("Unspecified");
 
     private final String displayValue;
 

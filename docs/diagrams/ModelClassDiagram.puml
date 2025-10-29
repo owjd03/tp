@@ -4,7 +4,7 @@ skinparam arrowThickness 1.1
 skinparam arrowColor MODEL_COLOR
 skinparam classBackgroundColor MODEL_COLOR
 
-Package Model as ModelPackage <<Rectangle>>{
+package Model as ModelPackage <<Rectangle>> {
 Class "<<interface>>\nReadOnlyAddressBook" as ReadOnlyAddressBook
 Class "<<interface>>\nReadOnlyUserPrefs" as ReadOnlyUserPrefs
 Class "<<interface>>\nModel" as Model
@@ -14,6 +14,12 @@ Class ModelManager
 Class UserPrefs
 Class InsuranceCatalog
 
+package insurance <<Rectangle>> {
+Class InsurancePackage
+Class UniqueInsurancePackageList
+}
+
+package person <<Rectangle>> {
 Class UniquePersonList
 Class Person
 Class Address
@@ -25,12 +31,8 @@ Class DateOfBirth
 Class MaritalStatus
 Class Dependents
 Class Occupation
-Class InsurancePackage
 Class Tag
-
-Class UniqueInsurancePackageList
-Class PackageName
-Class PackageDescription
+}
 
 Class I #FFFFFF
 }
@@ -69,9 +71,6 @@ Person *--> Occupation
 Person *--> InsurancePackage
 Person *--> "*" Tag
 
-InsurancePackage *--> PackageName
-InsurancePackage *--> PackageDescription
-
 Person -[hidden]up--> I
 UniquePersonList -[hidden]right-> I
 
@@ -86,9 +85,6 @@ Salary -[hidden]right-> Dependents
 Dependents -[hidden]right-> Occupation
 Occupation -[hidden]right-> InsurancePackage
 InsurancePackage -[hidden]right-> Tag
-
-PackageName -[hidden]right-> PackageDescription
-InsurancePackage -[hidden]down- PackageName
 
 UserPrefs -[hidden]down- InsuranceCatalog
 AddressBook -[hidden]down- Person

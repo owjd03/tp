@@ -12,7 +12,11 @@ import static seedu.address.testutil.TypicalPersons.DANIEL;
 import static seedu.address.testutil.TypicalPersons.ELLE;
 import static seedu.address.testutil.TypicalPersons.FIONA;
 import static seedu.address.testutil.TypicalPersons.GEORGE;
+import static seedu.address.testutil.TypicalPersons.HARRY;
+import static seedu.address.testutil.TypicalPersons.MARRY;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +25,7 @@ import seedu.address.logic.commands.SortCommand.SortField;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Person;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for SortCommand.
@@ -30,6 +35,22 @@ public class SortCommandTest {
     private Model model = new ModelManager(getTypicalAddressBook(), getTypicalInsuranceCatalog(), new UserPrefs());
     private Model expectedModel =
             new ModelManager(getTypicalAddressBook(), getTypicalInsuranceCatalog(), new UserPrefs());
+
+    /**
+     * Creates a model with persons that have "Unspecified" or -1 fields
+     * Contains 2 new persons with unspecified fields: HARRY and MARRY
+     * HARRY (unspecified salary)
+     * MARRY (unspecified dateOfBirth, occupation, dependents)
+     * @return Model including person with "Unspecified" or -1 fields
+     */
+    private Model createModelWithUnspecifiedPersons() {
+        Model testModel = new ModelManager(getTypicalAddressBook(), getTypicalInsuranceCatalog(), new UserPrefs());
+        testModel.addPerson(HARRY);
+        testModel.addPerson(MARRY);
+        return testModel;
+    }
+
+
 
     @Test
     public void execute_sortByNameAscending_success() {
@@ -203,6 +224,120 @@ public class SortCommandTest {
 
         assertCommandSuccess(command, emptyModel, expectedMessage, expectedEmptyModel);
         assertEquals(0, emptyModel.getFilteredPersonList().size());
+    }
+
+    //Tests for test model with unspecified persons
+
+    @Test
+    public void execute_sortBySalaryAscending_unspecifiedAtBottom() {
+        Model testModel = createModelWithUnspecifiedPersons();
+        Model expectedModel = createModelWithUnspecifiedPersons();
+
+        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.SALARY + " in ascending order";
+        SortCommand command = new SortCommand(SortField.SALARY, SortDirection.ASCENDING);
+        new SortCommand(SortField.SALARY, SortDirection.ASCENDING).execute(expectedModel);
+
+        assertCommandSuccess(command, testModel, expectedMessage, expectedModel);
+        List<Person> sortedList = testModel.getFilteredPersonList();
+        assertEquals(HARRY, sortedList.get(sortedList.size() - 1));
+    }
+
+    @Test
+    public void execute_sortBySalaryDescending_unspecifiedAtBottom() {
+        Model testModel = createModelWithUnspecifiedPersons();
+        Model expectedModel = createModelWithUnspecifiedPersons();
+
+        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.SALARY + " in descending order";
+        SortCommand command = new SortCommand(SortField.SALARY, SortDirection.DESCENDING);
+        new SortCommand(SortField.SALARY, SortDirection.DESCENDING).execute(expectedModel);
+
+        assertCommandSuccess(command, testModel, expectedMessage, expectedModel);
+        List<Person> sortedList = testModel.getFilteredPersonList();
+        assertEquals(HARRY, sortedList.get(sortedList.size() - 1));
+    }
+
+    @Test
+    public void execute_sortByOccupationAscending_unspecifiedAtBottom() {
+        Model testModel = createModelWithUnspecifiedPersons();
+        Model expectedModel = createModelWithUnspecifiedPersons();
+
+        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.OCCUPATION + " in ascending order";
+        SortCommand command = new SortCommand(SortField.OCCUPATION, SortDirection.ASCENDING);
+        new SortCommand(SortField.OCCUPATION, SortDirection.ASCENDING).execute(expectedModel);
+
+        assertCommandSuccess(command, testModel, expectedMessage, expectedModel);
+        List<Person> sortedList = testModel.getFilteredPersonList();
+        assertEquals(MARRY, sortedList.get(sortedList.size() - 1));
+    }
+
+    @Test
+    public void execute_sortByOccupationDescending_unspecifiedAtBottom() {
+        Model testModel = createModelWithUnspecifiedPersons();
+        Model expectedModel = createModelWithUnspecifiedPersons();
+
+        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.OCCUPATION + " in descending order";
+        SortCommand command = new SortCommand(SortField.OCCUPATION, SortDirection.DESCENDING);
+        new SortCommand(SortField.OCCUPATION, SortDirection.DESCENDING).execute(expectedModel);
+
+        assertCommandSuccess(command, testModel, expectedMessage, expectedModel);
+        List<Person> sortedList = testModel.getFilteredPersonList();
+        assertEquals(MARRY, sortedList.get(sortedList.size() - 1));
+    }
+
+    @Test
+    public void execute_sortByDateOfBirthAscending_unspecifiedAtBottom() {
+        Model testModel = createModelWithUnspecifiedPersons();
+        Model expectedModel = createModelWithUnspecifiedPersons();
+
+        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.DATEOFBIRTH + " in ascending order";
+        SortCommand command = new SortCommand(SortField.DATEOFBIRTH, SortDirection.ASCENDING);
+        new SortCommand(SortField.DATEOFBIRTH, SortDirection.ASCENDING).execute(expectedModel);
+
+        assertCommandSuccess(command, testModel, expectedMessage, expectedModel);
+        List<Person> sortedList = testModel.getFilteredPersonList();
+        assertEquals(MARRY, sortedList.get(sortedList.size() - 1));
+    }
+
+    @Test
+    public void execute_sortByDateOfBirthDescending_unspecifiedAtBottom() {
+        Model testModel = createModelWithUnspecifiedPersons();
+        Model expectedModel = createModelWithUnspecifiedPersons();
+
+        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.DATEOFBIRTH + " in descending order";
+        SortCommand command = new SortCommand(SortField.DATEOFBIRTH, SortDirection.DESCENDING);
+        new SortCommand(SortField.DATEOFBIRTH, SortDirection.DESCENDING).execute(expectedModel);
+
+        assertCommandSuccess(command, testModel, expectedMessage, expectedModel);
+        List<Person> sortedList = testModel.getFilteredPersonList();
+        assertEquals(MARRY, sortedList.get(sortedList.size() - 1));
+    }
+
+    @Test
+    public void execute_sortByDependentAscending_unspecifiedAtBottom() {
+        Model testModel = createModelWithUnspecifiedPersons();
+        Model expectedModel = createModelWithUnspecifiedPersons();
+
+        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.DEPENDENT + " in ascending order";
+        SortCommand command = new SortCommand(SortField.DEPENDENT, SortDirection.ASCENDING);
+        new SortCommand(SortField.DEPENDENT, SortDirection.ASCENDING).execute(expectedModel);
+
+        assertCommandSuccess(command, testModel, expectedMessage, expectedModel);
+        List<Person> sortedList = testModel.getFilteredPersonList();
+        assertEquals(MARRY, sortedList.get(sortedList.size() - 1));
+    }
+
+    @Test
+    public void execute_sortByDependentDescending_unspecifiedAtBottom() {
+        Model testModel = createModelWithUnspecifiedPersons();
+        Model expectedModel = createModelWithUnspecifiedPersons();
+
+        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.DEPENDENT + " in descending order";
+        SortCommand command = new SortCommand(SortField.DEPENDENT, SortDirection.DESCENDING);
+        new SortCommand(SortField.DEPENDENT, SortDirection.DESCENDING).execute(expectedModel);
+
+        assertCommandSuccess(command, testModel, expectedMessage, expectedModel);
+        List<Person> sortedList = testModel.getFilteredPersonList();
+        assertEquals(MARRY, sortedList.get(sortedList.size() - 1));
     }
 
     @Test

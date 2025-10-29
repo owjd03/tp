@@ -69,8 +69,8 @@ public class JsonInsuranceCatalogStorageTest {
         JsonInsuranceCatalogStorage jsonInsuranceCatalogStorage = new JsonInsuranceCatalogStorage(filePath);
 
         // Define new packages just for this test
-        InsurancePackage Platinum = new InsurancePackage("Platinum", "A new package");
-        InsurancePackage Diamond = new InsurancePackage("Diamond", "Another new package");
+        InsurancePackage platinum = new InsurancePackage("Platinum", "A new package");
+        InsurancePackage diamond = new InsurancePackage("Diamond", "Another new package");
 
         // Save in new file and read back
         jsonInsuranceCatalogStorage.saveInsuranceCatalog(original, filePath);
@@ -78,14 +78,14 @@ public class JsonInsuranceCatalogStorageTest {
         assertEquals(original, new InsuranceCatalog(readBack));
 
         // Modify data, overwrite exiting file, and read back
-        original.addInsurancePackage(Platinum);
+        original.addInsurancePackage(platinum);
         original.removeInsurancePackage(GOLD);
         jsonInsuranceCatalogStorage.saveInsuranceCatalog(original, filePath);
         readBack = jsonInsuranceCatalogStorage.readInsuranceCatalog(filePath).get();
         assertEquals(original, new InsuranceCatalog(readBack));
 
         // Save and read without specifying file path
-        original.addInsurancePackage(Diamond);
+        original.addInsurancePackage(diamond);
         jsonInsuranceCatalogStorage.saveInsuranceCatalog(original); // file path not specified
         readBack = jsonInsuranceCatalogStorage.readInsuranceCatalog().get(); // file path not specified
         assertEquals(original, new InsuranceCatalog(readBack));
