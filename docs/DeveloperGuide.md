@@ -507,7 +507,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-**Use case: U7. Adding a package**
+**Use case: U7. Adding an insurance package**
 
 **Precondition:** FA is logged into the app
 
@@ -532,7 +532,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-**Use case: U8. Deleting a package**
+**Use case: U8. Deleting an insurance package**
 
 **Precondition:**
 
@@ -544,7 +544,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 1. FA requests to list packages.
 2. ClientCore shows the list of packages.
 3. FA requests to delete one of the packages.
-4. ClientCore deletes the package and remove it from the list of packages.
+4. ClientCore deletes the package and removes it from the list of packages.
 
    Use case ends.
 
