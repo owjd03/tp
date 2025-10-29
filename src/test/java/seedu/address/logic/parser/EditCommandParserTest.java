@@ -51,12 +51,19 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_PERSON;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
+import seedu.address.model.InsuranceCatalog;
+import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.DateOfBirth;
 import seedu.address.model.person.Dependents;
@@ -75,16 +82,38 @@ public class EditCommandParserTest {
 
     private EditCommandParser parser = new EditCommandParser();
 
+    @BeforeEach
+    public void setUpCatalog() {
+        InsurancePackage validPackage = new InsurancePackage(
+                VALID_INSURANCE_PACKAGE_NAME_AMY,
+                VALID_INSURANCE_PACKAGE_DESCRIPTION_AMY);
+
+        InsuranceCatalog catalog = new InsuranceCatalog();
+        catalog.setInsurancePackages(List.of(validPackage));
+    }
+
+    @AfterEach
+    public void tearDownCatalog() {
+        InsuranceCatalog catalog = new InsuranceCatalog();
+        catalog.setInsurancePackages(Collections.emptyList());
+    }
+
     @Test
-    public void parse_missingParts_failure() {
-        String expectedError = String.format("%s\n\n%s",
+    public void parse_noFieldSpecified_failure() {
+        String expectedError = String.format("%s\n%s",
+                EditCommand.MESSAGE_NOT_EDITED, EditCommand.MESSAGE_USAGE);
+
+        // no field specified
+        assertParseFailure(parser, "1", expectedError);
+    }
+
+    @Test
+    public void parse_missingIndex_failure() {
+        String expectedError = String.format("%s\n%s",
                 MESSAGE_INVALID_INDEX, EditCommand.MESSAGE_USAGE);
 
         // no index specified
         assertParseFailure(parser, VALID_NAME_AMY, expectedError);
-
-        // no field specified
-        assertParseFailure(parser, "1", EditCommand.MESSAGE_NOT_EDITED);
 
         // no index and no field specified
         assertParseFailure(parser, "", expectedError);
@@ -92,7 +121,7 @@ public class EditCommandParserTest {
 
     @Test
     public void parse_invalidPreamble_failure() {
-        String expectedError = String.format("%s\n\n%s",
+        String expectedError = String.format("%s\n%s",
                 MESSAGE_INVALID_INDEX, EditCommand.MESSAGE_USAGE);
 
         // negative index
