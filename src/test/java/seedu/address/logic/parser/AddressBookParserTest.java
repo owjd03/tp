@@ -31,7 +31,7 @@ import seedu.address.logic.commands.ListPackageCommand;
 import seedu.address.logic.commands.SortCommand;
 import seedu.address.logic.commands.ViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.logic.parser.filter.FilterDescriptivePrefixParser;
+import seedu.address.logic.parser.filter.FilterContainsPrefixParser;
 import seedu.address.logic.parser.filter.FilterPrefixParser;
 import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
@@ -96,19 +96,20 @@ public class AddressBookParserTest {
         FilterCommand command = (FilterCommand) parser.parseCommand(FilterCommand.COMMAND_WORD + args);
 
         List<FilterPrefixParser> expectedKeywords = new ArrayList<>();
-        FilterDescriptivePrefixParser nameParser =
-                new FilterDescriptivePrefixParser(CliSyntax.PREFIX_NAME, p -> p.getName().fullName);
+        FilterContainsPrefixParser nameParser =
+                new FilterContainsPrefixParser(CliSyntax.PREFIX_NAME, p -> p.getName().fullName);
         nameParser.parse("foo");
         expectedKeywords.add(nameParser);
 
-        FilterDescriptivePrefixParser addressParser =
-                new FilterDescriptivePrefixParser(CliSyntax.PREFIX_ADDRESS, p -> p.getAddress().value);
+        FilterContainsPrefixParser addressParser =
+                new FilterContainsPrefixParser(CliSyntax.PREFIX_ADDRESS, p -> p.getAddress().value);
         addressParser.parse("bar");
         expectedKeywords.add(addressParser);
 
         PersonContainsKeywordsPredicate expectedPredicate = new PersonContainsKeywordsPredicate(expectedKeywords);
 
-        assertEquals(new FilterCommand(expectedPredicate), command);
+        String expectedArgs = CliSyntax.PREFIX_NAME + "foo " + CliSyntax.PREFIX_ADDRESS + "bar";
+        assertEquals(new FilterCommand(expectedPredicate, expectedArgs), command);
     }
 
     @Test

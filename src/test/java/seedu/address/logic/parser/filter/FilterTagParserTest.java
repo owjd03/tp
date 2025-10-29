@@ -20,35 +20,35 @@ import seedu.address.model.person.Person;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
 
-public class FilterMultiplePrefixParserTest {
+public class FilterTagParserTest {
 
     @Test
     public void constructor_nullPrefix_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new FilterMultiplePrefixParser(null));
+        assertThrows(NullPointerException.class, () -> new FilterTagParser(null));
     }
 
     @Test
     public void getPrefix_returnsCorrectPrefix() {
-        FilterMultiplePrefixParser parser = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
         assertEquals(PREFIX_TAG, parser.getPrefix());
     }
 
     @Test
     public void parse_emptyArgs_throwsParseException() {
-        FilterMultiplePrefixParser parser = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
         assertThrows(ParseException.class, () -> parser.parse(""),
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, "Empty keyword for: " + PREFIX_TAG));
     }
 
     @Test
     public void parse_nullArgs_throwsNullPointerException() {
-        FilterMultiplePrefixParser parser = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
         assertThrows(NullPointerException.class, () -> parser.parse(null));
     }
 
     @Test
     public void parse_validSingleTag_success() throws ParseException {
-        FilterMultiplePrefixParser parser = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
         parser.parse("friends");
         Set<Tag> expectedTags = new HashSet<>();
         expectedTags.add(new Tag("friends"));
@@ -58,7 +58,7 @@ public class FilterMultiplePrefixParserTest {
 
     @Test
     public void parse_validMultipleTags_success() throws ParseException {
-        FilterMultiplePrefixParser parser = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
         parser.parse("friends");
         parser.parse("family");
 
@@ -73,7 +73,7 @@ public class FilterMultiplePrefixParserTest {
     // test() method tests
     @Test
     public void test_matchingTags_returnsTrue() throws ParseException {
-        FilterMultiplePrefixParser parser = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
         parser.parse("friends");
         parser.parse("owesmoney");
 
@@ -94,7 +94,7 @@ public class FilterMultiplePrefixParserTest {
 
     @Test
     public void test_matchingTagsCaseInsensitive_returnsTrue() throws ParseException {
-        FilterMultiplePrefixParser parser = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
         parser.parse("FRIENDS");
         parser.parse("OwesMoney");
 
@@ -103,7 +103,7 @@ public class FilterMultiplePrefixParserTest {
 
     @Test
     public void test_matchingTagsPartialMatch_returnsTrue() throws ParseException {
-        FilterMultiplePrefixParser parser = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
         parser.parse("friend");
 
         assertTrue(parser.test(ALICE));
@@ -111,7 +111,7 @@ public class FilterMultiplePrefixParserTest {
 
     @Test
     public void test_noTagsParsed_returnsTrue() {
-        FilterMultiplePrefixParser parser = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
         // If no tags are parsed, it should be vacuously true
         assertTrue(parser.test(ALICE));
         assertTrue(parser.test(BENSON));
@@ -120,15 +120,15 @@ public class FilterMultiplePrefixParserTest {
 
     @Test
     public void equals() throws ParseException {
-        FilterMultiplePrefixParser parser1 = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser1 = new FilterTagParser(PREFIX_TAG);
         parser1.parse("friends");
         parser1.parse("family");
 
-        FilterMultiplePrefixParser parser2 = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser2 = new FilterTagParser(PREFIX_TAG);
         parser2.parse("friends");
         parser2.parse("family");
 
-        FilterMultiplePrefixParser parser3 = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser3 = new FilterTagParser(PREFIX_TAG);
         parser3.parse("friends");
 
         // same object -> returns true
@@ -149,15 +149,15 @@ public class FilterMultiplePrefixParserTest {
 
     @Test
     public void hashCode_consistentWithEquals() throws ParseException {
-        FilterMultiplePrefixParser parser1 = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser1 = new FilterTagParser(PREFIX_TAG);
         parser1.parse("friends");
         parser1.parse("family");
 
-        FilterMultiplePrefixParser parser2 = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser2 = new FilterTagParser(PREFIX_TAG);
         parser2.parse("friends");
         parser2.parse("family");
 
-        FilterMultiplePrefixParser parser3 = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser3 = new FilterTagParser(PREFIX_TAG);
         parser3.parse("friends");
 
         assertEquals(parser1.hashCode(), parser2.hashCode());
@@ -166,10 +166,10 @@ public class FilterMultiplePrefixParserTest {
 
     @Test
     public void toString_returnsCorrectStringRepresentation() throws ParseException {
-        FilterMultiplePrefixParser parser = new FilterMultiplePrefixParser(PREFIX_TAG);
+        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
         parser.parse("friends");
         parser.parse("family");
-        String expected = "seedu.address.logic.parser.filter.FilterMultiplePrefixParser{prefix=t/, "
+        String expected = "seedu.address.logic.parser.filter.FilterTagParser{prefix=t/, "
             + "parsedTags=[[family], [friends]]}";
         String actual = parser.toString();
         assertEquals(expected, actual);

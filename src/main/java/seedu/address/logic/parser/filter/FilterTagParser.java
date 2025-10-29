@@ -1,7 +1,6 @@
 package seedu.address.logic.parser.filter;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.ParserUtil.parseTags;
 
 import java.util.HashSet;
@@ -15,20 +14,20 @@ import seedu.address.model.person.Person;
 import seedu.address.model.tag.Tag;
 
 /**
- * Parses prefixes that can appear multiple times (tags only) for the filter command.
+ * Parses prefixes that a Person is able to store multiple values of (Tag only).
  */
-public class FilterMultiplePrefixParser implements FilterPrefixParser {
+public class FilterTagParser implements FilterPrefixParser {
 
     private final Prefix prefix;
     private Set<String> keywords = new HashSet<>();
     private Set<Tag> parsedTags;
 
     /**
-     * Constructs a {@code FilterMultiplePrefixParser}.
+     * Constructs a {@code FilterTagParser}.
      *
      * @param prefix The multiple-occurrence prefix to handle (only PREFIX_TAG).
      */
-    public FilterMultiplePrefixParser(Prefix prefix) {
+    public FilterTagParser(Prefix prefix) {
         requireNonNull(prefix);
         this.prefix = prefix;
     }
@@ -45,12 +44,7 @@ public class FilterMultiplePrefixParser implements FilterPrefixParser {
      */
     @Override
     public void parse(String args) throws ParseException {
-        // Do not allow empty tags, i.e. filter t/
         requireNonNull(args);
-        if (args.isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, "Empty keyword for: " + this.prefix));
-        }
         this.keywords.add(args);
         this.parsedTags = parseTags(this.keywords);
     }
@@ -61,7 +55,7 @@ public class FilterMultiplePrefixParser implements FilterPrefixParser {
             // If no tags were specified, this filter is vacuously true
             return true;
         }
-        // All specified tags must be present in the person's tags (case-insensitive contains)
+        // All specified tags must be present in the person's tags
         return this.parsedTags.stream()
                 .allMatch(filterTag -> person.getTags().stream()
                         .anyMatch(personTag ->
@@ -83,11 +77,11 @@ public class FilterMultiplePrefixParser implements FilterPrefixParser {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof FilterMultiplePrefixParser)) {
+        if (!(other instanceof FilterTagParser)) {
             return false;
         }
 
-        FilterMultiplePrefixParser otherParser = (FilterMultiplePrefixParser) other;
+        FilterTagParser otherParser = (FilterTagParser) other;
 
         return this.prefix.equals(otherParser.prefix)
                 && this.parsedTags.containsAll(otherParser.parsedTags)

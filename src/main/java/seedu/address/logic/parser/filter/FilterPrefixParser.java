@@ -18,9 +18,8 @@ public interface FilterPrefixParser {
 
     /**
      * Parses the string args associated with the prefix.
-     * Implementations should validate the input and store the parsed args.
      *
-     * @param args The trimmed string args for the prefix.
+     * @param args The trimmed string args for the prefix. Guaranteed to be non-empty.
      * @throws ParseException If the args is invalid for this prefix type.
      */
     void parse(String args) throws ParseException;
