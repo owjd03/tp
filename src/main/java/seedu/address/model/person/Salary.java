@@ -12,9 +12,8 @@ import java.text.DecimalFormat;
 public class Salary {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Salary must be non-negative, "
+            "Salary must be a non-negative number that contains up to 2 decimal places, "
                     + "should not be blank, "
-                    + "should have up to 2 decimal places, "
                     + "or be declared as 'Unspecified' (case-insensitive).";
 
     /*
