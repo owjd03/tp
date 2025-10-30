@@ -21,10 +21,10 @@ import static seedu.address.testutil.TypicalPersons.FIONA;
 import static seedu.address.testutil.TypicalPersons.GEORGE;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,6 +37,7 @@ import seedu.address.logic.parser.filter.FilterTagParser;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonContainsKeywordsPredicate;
 
 /**
@@ -54,7 +55,7 @@ public class FilterCommandTest {
     }
 
     @Test
-    public void equals() throws ParseException {
+    public void equals_variousScenarios_correctResults() throws ParseException {
         // Setup first predicate
         FilterContainsPrefixParser firstParser =
                 new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
@@ -93,191 +94,8 @@ public class FilterCommandTest {
     }
 
     @Test
-    public void execute_zeroKeywords_noPersonFound() throws ParseException {
-        String userInput = "n/NonExistentName";
-        String expectedMessage = MESSAGE_NO_PERSONS_FOUND + "\nCommand: filter " + userInput;
-        FilterContainsPrefixParser nameParser =
-                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        nameParser.parse("NonExistentName");
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(nameParser));
-        FilterCommand command = new FilterCommand(predicate, userInput);
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(Collections.emptyList(), model.getFilteredPersonList());
-    }
-
-    @Test
-    public void execute_singleDescriptiveKeyword_singlePersonFound() throws ParseException {
-        String userInput = "n/Benson";
-        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1) + "\nCommand: filter " + userInput;
-        FilterContainsPrefixParser nameParser =
-                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        nameParser.parse("Benson");
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(nameParser));
-        FilterCommand command = new FilterCommand(predicate, userInput);
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(Arrays.asList(BENSON), model.getFilteredPersonList());
-    }
-
-    @Test
-    public void execute_multipleDescriptiveKeywords_singlePersonFound() throws ParseException {
-        String userInput = "n/Alice p/94351253";
-        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1) + "\nCommand: filter " + userInput;
-        List<FilterPrefixParser> parsers = new ArrayList<>();
-        FilterContainsPrefixParser nameParser =
-                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        nameParser.parse("Alice");
-        parsers.add(nameParser);
-        FilterContainsPrefixParser phoneParser =
-                new FilterContainsPrefixParser(PREFIX_PHONE, p -> p.getPhone().value);
-        phoneParser.parse("94351253");
-        parsers.add(phoneParser);
-
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(parsers);
-        FilterCommand command = new FilterCommand(predicate, userInput);
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(Arrays.asList(ALICE), model.getFilteredPersonList());
-    }
-
-    @Test
-    public void execute_singleTag_multiplePersonsFound() throws ParseException {
-        String userInput = "t/friends";
-        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 3) + "\nCommand: filter " + userInput;
-        FilterTagParser tagParser = new FilterTagParser(PREFIX_TAG);
-        tagParser.parse("friends");
-
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(tagParser));
-        FilterCommand command = new FilterCommand(predicate, "t/friends");
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(Arrays.asList(ALICE, BENSON, DANIEL), model.getFilteredPersonList());
-    }
-
-    @Test
-    public void execute_multipleTags_singlePersonFound() throws ParseException {
-        String userInput = "t/friends t/owesMoney";
-        String expectedMessage =
-                String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1) + "\nCommand: filter " + userInput;
-        FilterTagParser tagParser = new FilterTagParser(PREFIX_TAG);
-        tagParser.parse("friends");
-        tagParser.parse("owesMoney");
-
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(tagParser));
-        FilterCommand command = new FilterCommand(predicate, "t/friends t/owesMoney");
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(Arrays.asList(BENSON), model.getFilteredPersonList());
-    }
-
-    @Test
-    public void execute_descriptiveAndTags_singlePersonFound() throws ParseException {
-        String userInput = "n/Alice t/friends";
-        String expectedMessage =
-                String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1) + "\nCommand: filter " + userInput;
-        List<FilterPrefixParser> parsers = new ArrayList<>();
-        FilterContainsPrefixParser nameParser =
-                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        nameParser.parse("Alice");
-        parsers.add(nameParser);
-        FilterTagParser tagParser = new FilterTagParser(PREFIX_TAG);
-        tagParser.parse("friends");
-        parsers.add(tagParser);
-
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(parsers);
-        FilterCommand command = new FilterCommand(predicate, "n/Alice t/friends");
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(Arrays.asList(ALICE), model.getFilteredPersonList());
-    }
-
-    @Test
-    public void execute_salaryEquals_singlePersonFound() throws ParseException {
-        String expectedMessage =
-                String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1) + "\nCommand: filter s/7000";
-        FilterComparisonPrefixParser salaryParser =
-                new FilterComparisonPrefixParser(PREFIX_SALARY,
-                        p -> p.getSalary().getNumericValue(),
-                        p -> p.getSalary().isUnspecified());
-        salaryParser.parse("7000");
-
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(salaryParser));
-        FilterCommand command = new FilterCommand(predicate, "s/7000");
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(Arrays.asList(CARL), model.getFilteredPersonList());
-    }
-
-    @Test
-    public void execute_salaryGreaterThan_multiplePersonsFound() throws ParseException {
-        String expectedMessage =
-                String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 2) + "\nCommand: filter s/>9999";
-        FilterComparisonPrefixParser salaryParser =
-                new FilterComparisonPrefixParser(PREFIX_SALARY,
-                        p -> p.getSalary().getNumericValue(),
-                        p -> p.getSalary().isUnspecified());
-        salaryParser.parse(">9999");
-
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(salaryParser));
-        FilterCommand command = new FilterCommand(predicate, "s/>9999");
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(Arrays.asList(FIONA, GEORGE), model.getFilteredPersonList());
-    }
-
-    @Test
-    public void execute_dependentsLessThanOrEqual_multiplePersonsFound() throws ParseException {
-        String expectedMessage =
-                String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 5) + "\nCommand: filter dep/<=1";
-        FilterComparisonPrefixParser depParser =
-                new FilterComparisonPrefixParser(PREFIX_DEPENDENTS,
-                        p -> p.getDependents().getNumericValue(),
-                        p -> p.getDependents().isUnspecified());
-        depParser.parse("<=1");
-
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(depParser));
-        FilterCommand command = new FilterCommand(predicate, "dep/<=1");
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(model.getFilteredPersonList(), Arrays.asList(ALICE, CARL, DANIEL, ELLE, GEORGE));
-    }
-
-    @Test
-    public void execute_numericalAndDescriptive_singlePersonFound() throws ParseException {
-        String expectedMessage =
-                String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1) + "\nCommand: filter dep/>=3 n/Fiona";
-        List<FilterPrefixParser> parsers = new ArrayList<>();
-        FilterComparisonPrefixParser depParser = new
-                FilterComparisonPrefixParser(PREFIX_DEPENDENTS,
-                p -> p.getDependents().getNumericValue(),
-                p -> p.getDependents().isUnspecified());
-        depParser.parse(">=3");
-        parsers.add(depParser);
-        FilterContainsPrefixParser nameParser =
-                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        nameParser.parse("Fiona");
-        parsers.add(nameParser);
-
-        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(parsers);
-        FilterCommand command = new FilterCommand(predicate, "dep/>=3 n/Fiona");
-        expectedModel.updateFilteredPersonList(predicate);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        assertEquals(Arrays.asList(FIONA), model.getFilteredPersonList());
-    }
-
-    @Test
-    public void toStringMethod() throws ParseException {
-        FilterContainsPrefixParser nameParser =
-                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        nameParser.parse("keyword");
+    public void toString_validCommand_correctStringRepresentation() throws ParseException {
+        FilterContainsPrefixParser nameParser = createNameParser("keyword");
         PersonContainsKeywordsPredicate predicate =
                 new PersonContainsKeywordsPredicate(Collections.singletonList(nameParser));
         FilterCommand filterCommand = new FilterCommand(predicate, "n/keyword");
@@ -285,5 +103,138 @@ public class FilterCommandTest {
                 + "{predicate=" + predicate + ", "
                 + "args=" + "n/keyword" + "}";
         assertEquals(expected, filterCommand.toString());
+    }
+
+    @Test
+    public void execute_zeroKeywords_noPersonFound() throws ParseException {
+        String userInput = "n/NonExistentName";
+        FilterContainsPrefixParser nameParser = createNameParser("NonExistentName");
+        assertFilterSuccess(userInput, Collections.emptyList(), nameParser);
+    }
+
+    @Test
+    public void execute_singleDescriptiveKeyword_singlePersonFound() throws ParseException {
+        String userInput = "n/Benson";
+        FilterContainsPrefixParser nameParser = createNameParser("Benson");
+        assertFilterSuccess(userInput, Collections.singletonList(BENSON), nameParser);
+    }
+
+    @Test
+    public void execute_multipleDescriptiveKeywords_singlePersonFound() throws ParseException {
+        String userInput = "n/Alice p/94351253";
+        FilterContainsPrefixParser nameParser = createNameParser("Alice");
+        FilterContainsPrefixParser phoneParser = createPhoneParser("94351253");
+        assertFilterSuccess(userInput, Collections.singletonList(ALICE), nameParser, phoneParser);
+    }
+
+    @Test
+    public void execute_singleTag_multiplePersonsFound() throws ParseException {
+        String userInput = "t/friends";
+        FilterTagParser tagParser = createTagParser("friends");
+        assertFilterSuccess(userInput, Arrays.asList(ALICE, BENSON, DANIEL), tagParser);
+    }
+
+    @Test
+    public void execute_multipleTags_singlePersonFound() throws ParseException {
+        String userInput = "t/friends t/owesMoney";
+        FilterTagParser tagParser = createTagParser("friends", "owesMoney");
+        assertFilterSuccess(userInput, Collections.singletonList(BENSON), tagParser);
+    }
+
+    @Test
+    public void execute_descriptiveAndTags_singlePersonFound() throws ParseException {
+        String userInput = "n/Alice t/friends";
+        FilterContainsPrefixParser nameParser = createNameParser("Alice");
+        FilterTagParser tagParser = createTagParser("friends");
+        assertFilterSuccess(userInput, Collections.singletonList(ALICE), nameParser, tagParser);
+    }
+
+    @Test
+    public void execute_salaryEquals_singlePersonFound() throws ParseException {
+        String userInput = "s/7000";
+        FilterComparisonPrefixParser salaryParser = createSalaryParser("7000");
+        assertFilterSuccess(userInput, Collections.singletonList(CARL), salaryParser);
+    }
+
+    @Test
+    public void execute_salaryGreaterThan_multiplePersonsFound() throws ParseException {
+        String userInput = "s/>9999";
+        FilterComparisonPrefixParser salaryParser = createSalaryParser(">9999");
+        assertFilterSuccess(userInput, Arrays.asList(FIONA, GEORGE), salaryParser);
+    }
+
+    @Test
+    public void execute_dependentsLessThanOrEqual_multiplePersonsFound() throws ParseException {
+        String userInput = "dep/<=1";
+        FilterComparisonPrefixParser depParser = createDependentsParser("<=1");
+        assertFilterSuccess(userInput, Arrays.asList(ALICE, CARL, DANIEL, ELLE, GEORGE), depParser);
+    }
+
+    @Test
+    public void execute_numericalAndDescriptive_singlePersonFound() throws ParseException {
+        String userInput = "dep/>=3 n/Fiona";
+        FilterComparisonPrefixParser depParser = createDependentsParser(">=3");
+        FilterContainsPrefixParser nameParser = createNameParser("Fiona");
+        assertFilterSuccess(userInput, Collections.singletonList(FIONA), depParser, nameParser);
+    }
+
+    //----- Helper Methods -----
+
+    /**
+     * Asserts that the execution of a {@code FilterCommand} with the given parsers is successful.
+     */
+    private void assertFilterSuccess(String userInput, List<Person> expectedFilteredList,
+                                     FilterPrefixParser... parsers) {
+        List<FilterPrefixParser> parserList = Arrays.stream(parsers).collect(Collectors.toList());
+        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(parserList);
+        FilterCommand command = new FilterCommand(predicate, userInput);
+
+        String expectedMessage;
+        if (expectedFilteredList.isEmpty()) {
+            expectedMessage = MESSAGE_NO_PERSONS_FOUND + "\nCommand: filter " + userInput;
+        } else {
+            expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, expectedFilteredList.size())
+                    + "\nCommand: filter " + userInput;
+        }
+
+        expectedModel.updateFilteredPersonList(predicate);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(expectedFilteredList, model.getFilteredPersonList());
+    }
+
+    private FilterContainsPrefixParser createNameParser(String keyword) throws ParseException {
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
+        parser.parse(keyword);
+        return parser;
+    }
+
+    private FilterContainsPrefixParser createPhoneParser(String keyword) throws ParseException {
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_PHONE, p -> p.getPhone().value);
+        parser.parse(keyword);
+        return parser;
+    }
+
+    private FilterTagParser createTagParser(String... keywords) throws ParseException {
+        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
+        for (String keyword : keywords) {
+            parser.parse(keyword);
+        }
+        return parser;
+    }
+
+    private FilterComparisonPrefixParser createSalaryParser(String keyword) throws ParseException {
+        FilterComparisonPrefixParser parser = new FilterComparisonPrefixParser(PREFIX_SALARY,
+                p -> p.getSalary().getNumericValue(),
+                p -> p.getSalary().isUnspecified());
+        parser.parse(keyword);
+        return parser;
+    }
+
+    private FilterComparisonPrefixParser createDependentsParser(String keyword) throws ParseException {
+        FilterComparisonPrefixParser parser = new FilterComparisonPrefixParser(PREFIX_DEPENDENTS,
+                p -> p.getDependents().getNumericValue(),
+                p -> p.getDependents().isUnspecified());
+        parser.parse(keyword);
+        return parser;
     }
 }

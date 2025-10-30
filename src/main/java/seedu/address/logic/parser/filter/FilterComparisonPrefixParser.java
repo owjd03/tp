@@ -18,10 +18,10 @@ import seedu.address.model.person.Person;
 
 /**
  * Parses prefixes that involve numerical comparison (e.g., salary, dependents) or contains-search.
- * This parser implements a hybrid logic:
- * 1. It checks for an optional operator (>, <, >=, <=, =).
+ * This parser implements a hybrid logic:<br>
+ * 1. It checks for an optional operator (>, <, >=, <=, =).<br>
  * 2. If an operator is present, it parses the rest of the string as a number and
- * creates a comparison predicate.
+ * creates a comparison predicate.<br>
  * 3. If no operator is present, it defaults to a case-insensitive "contains" search.
  * This "contains" search works on the string representation of the number, or
  * on the "unspecified" keyword.
