@@ -1,5 +1,7 @@
 package seedu.address.model.person;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -16,9 +18,11 @@ public class PersonContainsKeywordsPredicate implements Predicate<Person> {
      * Constructs a {@code PersonContainsKeywordsPredicate} with the specified keywords.
      *
      * @param filterPrefixList A list of {@code FilterPrefixParser} objects, each encapsulating the
-     *                   parsing and testing logic for a specific prefix. It is guaranteed to be non-empty.
+     *                                  parsing and testing logic for a specific prefix.
+     *                                  It is guaranteed to be non-empty.
      */
     public PersonContainsKeywordsPredicate(List<FilterPrefixParser> filterPrefixList) {
+        requireNonNull(filterPrefixList);
         this.filterPrefixList = filterPrefixList;
     }
 

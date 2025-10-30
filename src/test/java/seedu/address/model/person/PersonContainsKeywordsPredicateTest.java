@@ -8,7 +8,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +27,7 @@ public class PersonContainsKeywordsPredicateTest {
     private static final Function<Person, Double> GET_SALARY_DOUBLE =
             p -> p.getSalary().getNumericValue();
     private static final Function<Person, Double> GET_DEPENDENTS_DOUBLE =
-            p -> (double) p.getDependents().getNumericValue();
+            p -> p.getDependents().getNumericValue();
     private static final Function<Person, Boolean> IS_SALARY_UNSPECIFIED =
             p -> p.getSalary().isUnspecified();
     private static final Function<Person, Boolean> IS_DEPENDENTS_UNSPECIFIED =
@@ -36,21 +35,10 @@ public class PersonContainsKeywordsPredicateTest {
 
     @Test
     public void equals() throws ParseException {
-        // Setup first predicate
-        List<FilterPrefixParser> firstParserList = new ArrayList<>();
-        FilterContainsPrefixParser firstParser =
-                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        firstParser.parse("first");
-        firstParserList.add(firstParser);
-        PersonContainsKeywordsPredicate firstPredicate =
-                new PersonContainsKeywordsPredicate(firstParserList);
+        List<FilterPrefixParser> firstParserList = Collections.singletonList(createNameContainsParser("first"));
+        List<FilterPrefixParser> secondParserList = Collections.singletonList(createNameContainsParser("second"));
 
-        // Setup second predicate
-        List<FilterPrefixParser> secondParserList = new ArrayList<>();
-        FilterContainsPrefixParser secondParser =
-                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        secondParser.parse("second");
-        secondParserList.add(secondParser);
+        PersonContainsKeywordsPredicate firstPredicate = new PersonContainsKeywordsPredicate(firstParserList);
         PersonContainsKeywordsPredicate secondPredicate = new PersonContainsKeywordsPredicate(secondParserList);
 
         // same object -> returns true
@@ -79,147 +67,95 @@ public class PersonContainsKeywordsPredicateTest {
 
     @Test
     public void test_descriptiveNameContainsKeyword_returnsTrue() throws ParseException {
-        FilterContainsPrefixParser parser =
-                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        parser.parse("Alice");
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
+        List<FilterPrefixParser> parsers = Collections.singletonList(createNameContainsParser("Alice"));
+        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(parsers);
         assertTrue(predicate.test(new PersonBuilder().withName("Alice Bob").build()));
     }
 
     @Test
     public void test_descriptiveNameDoesNotContainKeyword_returnsFalse() throws ParseException {
-        FilterContainsPrefixParser parser =
-                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        parser.parse("Carol");
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
+        List<FilterPrefixParser> parsers = Collections.singletonList(createNameContainsParser("Carol"));
+        PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(parsers);
         assertFalse(predicate.test(new PersonBuilder().withName("Alice Bob").build()));
     }
 
     @Test
     public void test_multipleDescriptiveAllMatch_returnsTrue() throws ParseException {
-        FilterContainsPrefixParser nameParser =
-                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        nameParser.parse("Alice");
-        FilterContainsPrefixParser addressParser =
-                new FilterContainsPrefixParser(PREFIX_ADDRESS, p -> p.getAddress().value);
-        addressParser.parse("Main");
-        List<FilterPrefixParser> parsers = Arrays.asList(nameParser, addressParser);
+        List<FilterPrefixParser> parsers = Arrays.asList(
+                createNameContainsParser("Alice"),
+                createAddressContainsParser("Main")
+        );
         PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(parsers);
         assertTrue(predicate.test(new PersonBuilder().withName("Alice Bob").withAddress("Main Street").build()));
     }
 
     @Test
     public void test_multipleDescriptiveOneMismatch_returnsFalse() throws ParseException {
-        FilterContainsPrefixParser nameParser =
-                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        nameParser.parse("Alice");
-        FilterContainsPrefixParser addressParser =
-                new FilterContainsPrefixParser(PREFIX_ADDRESS, p -> p.getAddress().value);
-        addressParser.parse("Jurong"); // Wrong address
-        List<FilterPrefixParser> parsers = Arrays.asList(nameParser, addressParser);
+        List<FilterPrefixParser> parsers = Arrays.asList(
+                createNameContainsParser("Alice"),
+                createAddressContainsParser("Jurong") // Wrong address
+        );
         PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(parsers);
         assertFalse(predicate.test(new PersonBuilder().withName("Alice Bob").withAddress("Main Street").build()));
     }
 
     @Test
-    public void test_numericalSalaryEquals_returnsTrue() throws ParseException {
-        FilterComparisonPrefixParser parser =
-                new FilterComparisonPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
-        parser.parse("50000");
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
-        assertTrue(predicate.test(new PersonBuilder().withSalary("50000").build()));
+    public void test_numericalSalaryComparison_returnsCorrectly() throws ParseException {
+        // Equals
+        List<FilterPrefixParser> parsersEq = Collections.singletonList(createSalaryComparisonParser("50000"));
+        PersonContainsKeywordsPredicate predEq = new PersonContainsKeywordsPredicate(parsersEq);
+        assertTrue(predEq.test(new PersonBuilder().withSalary("50000").build()));
+
+        // Greater than (true)
+        List<FilterPrefixParser> parsersGt = Collections.singletonList(createSalaryComparisonParser(">49999"));
+        PersonContainsKeywordsPredicate predGt = new PersonContainsKeywordsPredicate(parsersGt);
+        assertTrue(predGt.test(new PersonBuilder().withSalary("50000").build()));
+
+        // Greater than (false)
+        List<FilterPrefixParser> parsersGtFalse = Collections.singletonList(createSalaryComparisonParser(">50000"));
+        PersonContainsKeywordsPredicate predGtFalse = new PersonContainsKeywordsPredicate(parsersGtFalse);
+        assertFalse(predGtFalse.test(new PersonBuilder().withSalary("50000").build()));
     }
 
     @Test
-    public void test_numericalSalaryGreaterThan_returnsTrue() throws ParseException {
-        FilterComparisonPrefixParser parser =
-                new FilterComparisonPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
-        parser.parse(">49999");
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
-        assertTrue(predicate.test(new PersonBuilder().withSalary("50000").build()));
+    public void test_numericalDependentsComparison_returnsCorrectly() throws ParseException {
+        // Less than or equal (true)
+        List<FilterPrefixParser> parsersLte = Collections.singletonList(createDependentsComparisonParser("<=2"));
+        PersonContainsKeywordsPredicate predLte = new PersonContainsKeywordsPredicate(parsersLte);
+        assertTrue(predLte.test(new PersonBuilder().withDependents(2).build()));
+        assertTrue(predLte.test(new PersonBuilder().withDependents(1).build()));
+
+        // Less than (false)
+        List<FilterPrefixParser> parsersLt = Collections.singletonList(createDependentsComparisonParser("<2"));
+        PersonContainsKeywordsPredicate predLt = new PersonContainsKeywordsPredicate(parsersLt);
+        assertFalse(predLt.test(new PersonBuilder().withDependents(2).build()));
     }
 
     @Test
-    public void test_numericalSalaryGreaterThan_returnsFalse() throws ParseException {
-        FilterComparisonPrefixParser parser =
-                new FilterComparisonPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
-        parser.parse(">50000");
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
-        assertFalse(predicate.test(new PersonBuilder().withSalary("50000").build()));
-    }
+    public void test_tagFilter_returnsCorrectly() throws ParseException {
+        // Single tag match
+        List<FilterPrefixParser> parsersSingle = Collections.singletonList(createTagParser("friends"));
+        PersonContainsKeywordsPredicate predSingle = new PersonContainsKeywordsPredicate(parsersSingle);
+        assertTrue(predSingle.test(new PersonBuilder().withTags("friends", "colleagues").build()));
 
-    @Test
-    public void test_numericalDependentsLessThanOrEqual_returnsTrue() throws ParseException {
-        FilterComparisonPrefixParser parser =
-                new FilterComparisonPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
-        parser.parse("<=2");
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
-        assertTrue(predicate.test(new PersonBuilder().withDependents(2).build()));
-        assertTrue(predicate.test(new PersonBuilder().withDependents(1).build()));
-    }
+        // Multiple tags all match
+        List<FilterPrefixParser> parsersMultiMatch = Collections.singletonList(createTagParser("friends", "owesMoney"));
+        PersonContainsKeywordsPredicate predMultiMatch = new PersonContainsKeywordsPredicate(parsersMultiMatch);
+        assertTrue(predMultiMatch.test(new PersonBuilder().withTags("friends", "owesMoney", "family").build()));
 
-    @Test
-    public void test_numericalDependentsLessThan_returnsFalse() throws ParseException {
-        FilterComparisonPrefixParser parser =
-                new FilterComparisonPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
-        parser.parse("<2");
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
-        assertFalse(predicate.test(new PersonBuilder().withDependents(2).build()));
-    }
-
-    @Test
-    public void test_singleTagMatch_returnsTrue() throws ParseException {
-        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
-        parser.parse("friends");
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
-        assertTrue(predicate.test(new PersonBuilder().withTags("friends", "colleagues").build()));
-    }
-
-    @Test
-    public void test_multipleTagsAllMatch_returnsTrue() throws ParseException {
-        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
-        parser.parse("friends");
-        parser.parse("owesMoney");
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
-        assertTrue(predicate.test(new PersonBuilder().withTags("friends", "owesMoney", "family").build()));
-    }
-
-    @Test
-    public void test_multipleTagsOneMismatch_returnsFalse() throws ParseException {
-        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
-        parser.parse("friends");
-        parser.parse("owesMoney");
-        PersonContainsKeywordsPredicate predicate =
-                new PersonContainsKeywordsPredicate(Collections.singletonList(parser));
-        assertFalse(predicate.test(new PersonBuilder().withTags("friends", "family").build()));
+        // Multiple tags one mismatch
+        List<FilterPrefixParser> parsersMultiMismatch = Collections.singletonList(createTagParser("friends", "owesMoney"));
+        PersonContainsKeywordsPredicate predMultiMismatch = new PersonContainsKeywordsPredicate(parsersMultiMismatch);
+        assertFalse(predMultiMismatch.test(new PersonBuilder().withTags("friends", "family").build()));
     }
 
     @Test
     public void test_mixedFiltersAllMatch_returnsTrue() throws ParseException {
-        // Name contains "Alice"
-        FilterContainsPrefixParser nameParser =
-                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        nameParser.parse("Alice");
-
-        // Salary is >= 50000
-        FilterComparisonPrefixParser salaryParser =
-                new FilterComparisonPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
-        salaryParser.parse(">=50000");
-
-        // Has tag "friends"
-        FilterTagParser tagParser = new FilterTagParser(PREFIX_TAG);
-        tagParser.parse("friends");
-
-        List<FilterPrefixParser> parsers = Arrays.asList(nameParser, salaryParser, tagParser);
+        List<FilterPrefixParser> parsers = Arrays.asList(
+                createNameContainsParser("Alice"), // Name contains "Alice"
+                createSalaryComparisonParser(">=50000"), // Salary is >= 50000
+                createTagParser("friends") // Has tag "friends"
+        );
         PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(parsers);
 
         assertTrue(predicate.test(
@@ -228,22 +164,50 @@ public class PersonContainsKeywordsPredicateTest {
 
     @Test
     public void test_mixedFiltersOneMismatch_returnsFalse() throws ParseException {
-        FilterContainsPrefixParser nameParser =
-                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        nameParser.parse("Alice");
-
-        // Wrong salary
-        FilterComparisonPrefixParser salaryParser =
-                new FilterComparisonPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
-        salaryParser.parse(">=50000");
-
-        FilterTagParser tagParser = new FilterTagParser(PREFIX_TAG);
-        tagParser.parse("friends");
-
-        List<FilterPrefixParser> parsers = Arrays.asList(nameParser, salaryParser, tagParser);
+        List<FilterPrefixParser> parsers = Arrays.asList(
+                createNameContainsParser("Alice"),
+                createSalaryComparisonParser(">=50000"), // Wrong salary
+                createTagParser("friends")
+        );
         PersonContainsKeywordsPredicate predicate = new PersonContainsKeywordsPredicate(parsers);
 
         assertFalse(predicate.test(
                 new PersonBuilder().withName("Alice Bob").withSalary("40000").withTags("friends").build()));
+    }
+
+    //----- Helper Methods -----
+
+    private FilterContainsPrefixParser createNameContainsParser(String keyword) throws ParseException {
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
+        parser.parse(keyword);
+        return parser;
+    }
+
+    private FilterContainsPrefixParser createAddressContainsParser(String keyword) throws ParseException {
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_ADDRESS, p -> p.getAddress().value);
+        parser.parse(keyword);
+        return parser;
+    }
+
+    private FilterComparisonPrefixParser createSalaryComparisonParser(String keyword) throws ParseException {
+        FilterComparisonPrefixParser parser = new FilterComparisonPrefixParser(
+                PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
+        parser.parse(keyword);
+        return parser;
+    }
+
+    private FilterComparisonPrefixParser createDependentsComparisonParser(String keyword) throws ParseException {
+        FilterComparisonPrefixParser parser = new FilterComparisonPrefixParser(
+                PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
+        parser.parse(keyword);
+        return parser;
+    }
+
+    private FilterTagParser createTagParser(String... keywords) throws ParseException {
+        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
+        for (String keyword : keywords) {
+            parser.parse(keyword);
+        }
+        return parser;
     }
 }

@@ -80,7 +80,18 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     public FilterCommand parse(String args) throws ParseException {
         requireNonNull(args);
         ArgumentMultimap argMultiMap = ArgumentTokenizer.tokenize(args, ALL_PREFIXES);
+        validateArgs(argMultiMap, args);
 
+        List<FilterPrefixParser> filterPrefixParsers = new ArrayList<>();
+        addAllContainsPrefixParsersIfPresent(argMultiMap, filterPrefixParsers);
+        addAllComparisonPrefixParsersIfPresent(argMultiMap, filterPrefixParsers);
+        addTagParserIfPresent(argMultiMap, PREFIX_TAG, filterPrefixParsers);
+
+        String argsPrettyString = getArgsPrettyString(argMultiMap, ALL_PREFIXES);
+        return new FilterCommand(new PersonContainsKeywordsPredicate(filterPrefixParsers), argsPrettyString);
+    }
+
+    private void validateArgs(ArgumentMultimap argMultiMap, String args) throws ParseException {
         if (!areAnyPrefixesPresent(argMultiMap, ALL_PREFIXES) || !argMultiMap.getPreamble().isEmpty()) {
             throw new ParseException(PARSE_EXCEPTION_MESSAGE);
         }
@@ -95,14 +106,6 @@ public class FilterCommandParser implements Parser<FilterCommand> {
                     String.format(MESSAGE_MISSING_KEYWORDS, prefixWord, affectedPrefixes)
             );
         }
-
-        List<FilterPrefixParser> filterPrefixParsers = new ArrayList<>();
-        addAllContainsPrefixParsersIfPresent(argMultiMap, filterPrefixParsers);
-        addAllComparisonPrefixParsersIfPresent(argMultiMap, filterPrefixParsers);
-        addTagParserIfPresent(argMultiMap, PREFIX_TAG, filterPrefixParsers);
-
-        String argsPrettyString = getArgsPrettyString(argMultiMap, ALL_PREFIXES);
-        return new FilterCommand(new PersonContainsKeywordsPredicate(filterPrefixParsers), argsPrettyString);
     }
 
     /**
@@ -201,7 +204,7 @@ public class FilterCommandParser implements Parser<FilterCommand> {
      */
     private void addAllContainsPrefixParsersIfPresent(
             ArgumentMultimap argMultiMap, List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
-        addContainsPrefixParserIfPresent(argMultiMap, PREFIX_NAME, GET_NAME, filterPrefixParsers);
+        this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_NAME, GET_NAME, filterPrefixParsers);
         this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_ADDRESS, GET_ADDRESS, filterPrefixParsers);
         this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_PHONE, GET_PHONE, filterPrefixParsers);
         this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_EMAIL, GET_EMAIL, filterPrefixParsers);
