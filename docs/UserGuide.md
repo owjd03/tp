@@ -248,13 +248,25 @@ Examples:
 
 ### Exporting all persons: `export`
 
-Exports all contacts from the address book into a single CSV (Comma-Separated Values) file. This is useful for creating backups 
+Exports all contact details from the address book into a single CSV (Comma-Separated Values) file. This is useful for creating backups
 for external safekeeping or for importing contacts into other applications like spreadsheet software (e.g. Microsoft Excel).
 
-Format: `export`
+Format: `export [FILE_PATH]`
 
-* After running the command, a file named  `addressbook.csv` will be created in the `data` folder.
-* **Caution**: If an `addressbook.csv` file already exists in the `data` folder, it will be **overwritten** with the current data from the address book. 
+* **Default Export:** Using `export` with no specified filepath will export the address book data to the default filepath data/addressbook.csv.
+* **Specific Path Export:** Using `export FILE_PATH` will export the address book data to the specified filepath.
+  If you specify a file path where the directories do not yet exist, the command will automatically create any necessary parent directories before creating the file.
+* **Overwriting Files:** Doing the export command to the same filepath will overwrite the existing file with the new data.
+  E.g. If a data/addressbook.csv file already exists, using `export` again will overwrite the existing file and replace it with a new data/addressbook.csv.
+
+Examples:
+* `export` exports the contact details in addressbook.json to the default filepath data/addressbook.csv.
+* `export ~/Downloads/mycontacts.csv` exports the contact details to a file named mycontacts.csv under the Downloads directory.
+
+Invalid Usages:
+* `export ~/Downloads/addressbook` (the filepath must end with .csv)
+* `export ~/Directory/` (must specify a file name, not just directory path)
+* `export data/<addressbook>.csv` (filepath cannot contain characters that are not allowed by your operating system)
 
 ### Deleting a person : `delete`
 
@@ -378,7 +390,7 @@ Action | Format, Examples
 **Clear** | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [ip/INSURANCE_PACKAGE] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com s/5000 dep/Unspecified t/friend`
-**Export** | `export`
+**Export** | `export [FILE_PATH]` <br> e.g. `export ~/Downloads/addressbook.csv`
 **Filter** | `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g., `filter n/James Lee e/jameslee`
 **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **View** | `view NAME-KEYWORD` `view INDEX` <br> e.g. `view Alex` `view 1`
