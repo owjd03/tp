@@ -144,7 +144,8 @@ public class PersonContainsKeywordsPredicateTest {
         assertTrue(predMultiMatch.test(new PersonBuilder().withTags("friends", "owesMoney", "family").build()));
 
         // Multiple tags one mismatch
-        List<FilterPrefixParser> parsersMultiMismatch = Collections.singletonList(createTagParser("friends", "owesMoney"));
+        List<FilterPrefixParser> parsersMultiMismatch =
+                Collections.singletonList(createTagParser("friends", "owesMoney"));
         PersonContainsKeywordsPredicate predMultiMismatch = new PersonContainsKeywordsPredicate(parsersMultiMismatch);
         assertFalse(predMultiMismatch.test(new PersonBuilder().withTags("friends", "family").build()));
     }

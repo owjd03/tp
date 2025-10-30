@@ -173,7 +173,8 @@ public class FilterComparisonPrefixParserTest {
     //----- Test Logic Edge Cases -----
     @Test
     public void test_personFieldIsNull_returnsFalse() throws ParseException {
-        FilterComparisonPrefixParser parser = new FilterComparisonPrefixParser(PREFIX_SALARY, p -> null, IS_SALARY_UNSPECIFIED);
+        FilterComparisonPrefixParser parser =
+                new FilterComparisonPrefixParser(PREFIX_SALARY, p -> null, IS_SALARY_UNSPECIFIED);
         // Comparison logic
         parser.parse(">=1000");
         assertFalse(parser.test(ALICE));
@@ -277,7 +278,9 @@ public class FilterComparisonPrefixParserTest {
         assertEquals(expected, parser.test(person));
     }
 
-    private void assertDependentsComparison(String input, int personDependents, boolean expected) throws ParseException {
+    private void assertDependentsComparison(String input,
+                                            int personDependents,
+                                            boolean expected) throws ParseException {
         FilterComparisonPrefixParser parser = createDependentsTestParser();
         parser.parse(input);
         Person person = new PersonBuilder().withDependents(personDependents).build();
