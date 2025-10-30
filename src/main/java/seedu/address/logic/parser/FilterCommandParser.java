@@ -15,7 +15,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -72,6 +74,22 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     private static final String PARSE_EXCEPTION_MESSAGE =
             String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE);
 
+    private static final Map<Prefix, Function<Person, String>> CONTAINS_PREFIX_MAP = createContainsMap();
+
+    private static final Map<Prefix, Function<Person, String>> createContainsMap() {
+        Map<Prefix, Function<Person, String>> map = new LinkedHashMap<>();
+        map.put(PREFIX_NAME, GET_NAME);
+        map.put(PREFIX_ADDRESS, GET_ADDRESS);
+        map.put(PREFIX_PHONE, GET_PHONE);
+        map.put(PREFIX_EMAIL, GET_EMAIL);
+        map.put(PREFIX_DATE_OF_BIRTH, GET_DOB);
+        map.put(PREFIX_OCCUPATION, GET_OCCUPATION);
+        map.put(PREFIX_MARITAL_STATUS, GET_MARITAL_STATUS);
+        map.put(PREFIX_INSURANCE_PACKAGE, GET_INSURANCE_PACKAGE);
+
+        return map;
+    }
+
     /**
      * Parses the given {@code String} of arguments in the context of the FilterCommand
      * and returns a FilterCommand object for execution.
@@ -80,18 +98,25 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     public FilterCommand parse(String args) throws ParseException {
         requireNonNull(args);
         ArgumentMultimap argMultiMap = ArgumentTokenizer.tokenize(args, ALL_PREFIXES);
-        validateArgs(argMultiMap, args);
+        validateArgs(argMultiMap);
 
         List<FilterPrefixParser> filterPrefixParsers = new ArrayList<>();
         addAllContainsPrefixParsersIfPresent(argMultiMap, filterPrefixParsers);
         addAllComparisonPrefixParsersIfPresent(argMultiMap, filterPrefixParsers);
-        addTagParserIfPresent(argMultiMap, PREFIX_TAG, filterPrefixParsers);
+        addTagParserIfPresent(argMultiMap, filterPrefixParsers);
 
-        String argsPrettyString = getArgsPrettyString(argMultiMap, ALL_PREFIXES);
+        String argsPrettyString = getArgsPrettyString(filterPrefixParsers);
         return new FilterCommand(new PersonContainsKeywordsPredicate(filterPrefixParsers), argsPrettyString);
     }
 
-    private void validateArgs(ArgumentMultimap argMultiMap, String args) throws ParseException {
+    /**
+     * Validates the arguments provided by the user, ensuring the following:<br>
+     * 1. Prefixes are present.<br>
+     * 2. There is no preamble after filter.<br>
+     * 3. There are no duplicate prefixes.<br>
+     * 4. There are no prefixes with empty keywords.
+     */
+    private void validateArgs(ArgumentMultimap argMultiMap) throws ParseException {
         if (!areAnyPrefixesPresent(argMultiMap, ALL_PREFIXES) || !argMultiMap.getPreamble().isEmpty()) {
             throw new ParseException(PARSE_EXCEPTION_MESSAGE);
         }
@@ -131,16 +156,11 @@ public class FilterCommandParser implements Parser<FilterCommand> {
                 .toList();
     }
 
-    private String getArgsPrettyString(ArgumentMultimap argMultiMap, Prefix... prefixes) {
-        return Stream.of(prefixes)
-                .flatMap(prefix -> {
-                    if (prefix.equals(PREFIX_TAG)) {
-                        return argMultiMap.getAllValues(prefix)
-                                .stream()
-                                .map(value -> prefix.getPrefix() + value);
-                    }
-                    return argMultiMap.getValue(prefix).stream().map(value -> prefix.getPrefix() + value);
-                }).collect(Collectors.joining(" "));
+    /**
+     * Joins the argument strings from all filter parsers into a single, space-separated string.
+     */
+    private String getArgsPrettyString(List<FilterPrefixParser> filterPrefixParsers) {
+        return filterPrefixParsers.stream().map(FilterPrefixParser::getArg).collect(Collectors.joining(" "));
     }
 
     /**
@@ -185,15 +205,14 @@ public class FilterCommandParser implements Parser<FilterCommand> {
      * Applies to prefixes Tag only.
      */
     private void addTagParserIfPresent(ArgumentMultimap argMultiMap,
-                                            Prefix prefix,
                                             List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
-        List<String> keywords = argMultiMap.getAllValues(prefix);
+        List<String> keywords = argMultiMap.getAllValues(PREFIX_TAG);
         if (keywords.isEmpty()) {
             return;
         }
 
-        FilterTagParser parser = new FilterTagParser(prefix);
-        for (String keyword : argMultiMap.getAllValues(prefix)) {
+        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
+        for (String keyword : argMultiMap.getAllValues(PREFIX_TAG)) {
             parser.parse(keyword);
         }
         filterPrefixParsers.add(parser);
@@ -204,16 +223,9 @@ public class FilterCommandParser implements Parser<FilterCommand> {
      */
     private void addAllContainsPrefixParsersIfPresent(
             ArgumentMultimap argMultiMap, List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
-        this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_NAME, GET_NAME, filterPrefixParsers);
-        this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_ADDRESS, GET_ADDRESS, filterPrefixParsers);
-        this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_PHONE, GET_PHONE, filterPrefixParsers);
-        this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_EMAIL, GET_EMAIL, filterPrefixParsers);
-        this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_DATE_OF_BIRTH, GET_DOB, filterPrefixParsers);
-        this.addContainsPrefixParserIfPresent(argMultiMap, PREFIX_OCCUPATION, GET_OCCUPATION, filterPrefixParsers);
-        this.addContainsPrefixParserIfPresent(
-                argMultiMap, PREFIX_MARITAL_STATUS, GET_MARITAL_STATUS, filterPrefixParsers);
-        this.addContainsPrefixParserIfPresent(
-                argMultiMap, PREFIX_INSURANCE_PACKAGE, GET_INSURANCE_PACKAGE, filterPrefixParsers);
+        for (Map.Entry<Prefix, Function<Person, String>> entry : CONTAINS_PREFIX_MAP.entrySet()) {
+            addContainsPrefixParserIfPresent(argMultiMap, entry.getKey(), entry.getValue(), filterPrefixParsers);
+        }
     }
 
     /**

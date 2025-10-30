@@ -31,4 +31,13 @@ public interface FilterPrefixParser {
      * @return true if the person matches, false otherwise.
      */
     boolean test(Person person);
+
+    /**
+     * Returns a string representation of the filter arguments this parser holds, formatted for display.
+     * The format should be the prefix followed by the keyword(s). For parsers that handle
+     * multiple values for the same prefix (like tags), each value should be individually prefixed.
+     *
+     * @return A formatted string representing the filter arguments for this parser.
+     */
+    String getArg();
 }

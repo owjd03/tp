@@ -8,9 +8,11 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.parser.Prefix;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -33,16 +35,19 @@ public class FilterComparisonPrefixParser implements FilterPrefixParser {
     public static final String MESSAGE_INVALID_NUMBER_FOR_OPERATOR =
             "Invalid number for comparison: '%s'. A valid number is required after an operator.";
     public static final String MESSAGE_DEPENDENTS_MUST_BE_INTEGER =
-            "Dependents value must be a whole number (e.g., '2') and cannot be a decimal (e.g., '2.5').";
+            "Dependents value cannot be negative, "
+                    + "must be a whole number (e.g., '2') and cannot be a decimal (e.g., '2.5').";
     public static final String MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY =
             "Invalid number format for salary: '%s'.\n"
-                    + "Must have a leading digit and up to two decimal places (e.g., '5000' or '5000.50').";
+                    + "Number cannot be negative, "
+                    + "must have a leading digit and up to two decimal places (e.g., '5000' or '5000.50').";
 
     private static final String VALIDATION_REGEX = "^(([<>]=?)|=)?\\s*(.*)$";
     private static final Pattern PATTERN = Pattern.compile(VALIDATION_REGEX);
 
     private static final String VALID_NUMBER_REGEX = "^\\d+(\\.\\d{1,2})?$";
 
+    private final Logger logger = LogsCenter.getLogger(FilterComparisonPrefixParser.class);
     private final Prefix prefix;
     private final Function<Person, Double> getPersonField;
     private final Function<Person, Boolean> isPersonFieldUnspecified;
@@ -72,12 +77,14 @@ public class FilterComparisonPrefixParser implements FilterPrefixParser {
 
     @Override
     public void parse(String args) throws ParseException {
+        logger.info("Parsing comparison prefix arguments");
         requireNonNull(args);
-        this.keyword = args.toLowerCase();
+        this.keyword = args;
         Matcher matcher = PATTERN.matcher(this.keyword);
 
         if (!matcher.matches()) {
             // This should never happen
+            logger.warning("Error occurred trying to parse comparison prefix arguments: " + args);
             throw new ParseException("Unexpected parser error");
         }
 
@@ -147,14 +154,14 @@ public class FilterComparisonPrefixParser implements FilterPrefixParser {
 
     private boolean testContainsLogic(Person person) {
         if (this.isPersonFieldUnspecified.apply(person)) {
-            return "unspecified".contains(this.keyword);
+            return "unspecified".contains(this.keyword.toLowerCase());
         }
 
         Double personValue = this.getPersonField.apply(person);
         if (personValue == null) {
             return false;
         }
-        return personValue.toString().contains(this.keyword);
+        return personValue.toString().contains(this.keyword.toLowerCase());
     }
 
     private boolean testComparisonLogic(Person person) {
@@ -169,6 +176,11 @@ public class FilterComparisonPrefixParser implements FilterPrefixParser {
         }
 
         return this.predicate.test(personValue);
+    }
+
+    @Override
+    public String getArg() {
+        return this.prefix.getPrefix() + this.keyword;
     }
 
     @Override
