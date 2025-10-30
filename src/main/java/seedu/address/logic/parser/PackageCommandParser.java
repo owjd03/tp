@@ -1,5 +1,6 @@
 package seedu.address.logic.parser;
 
+import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
@@ -18,21 +19,31 @@ import seedu.address.model.insurance.InsurancePackage;
  * Provides static methods to parse arguments for add, edit, and delete package commands.
  */
 public class PackageCommandParser {
+
+    private static String parseAndValidatePackageName(ArgumentMultimap argMultimap) throws ParseException {
+        String packageName = argMultimap.getValue(PREFIX_INSURANCE_PACKAGE).get().trim();
+        if (packageName.isEmpty()) {
+            throw new ParseException(InsurancePackage.MESSAGE_CONSTRAINTS);
+        }
+        return packageName;
+    }
+
+    private static String parseAndValidatePackageDescription(ArgumentMultimap argMultimap) {
+        return argMultimap.getValue(PREFIX_DESCRIPTION).get().trim();
+    }
+
+
     /**
      * Parses the given {@code String} of arguments in the context of the AddPackageCommand
      * and returns an AddPackageCommand object for execution.
      * @throws ParseException if the user input does not conform the expected format
      */
     public static AddPackageCommand parseAddPackage(String args) throws ParseException {
-        ArgumentMultimap argMultimap =
-                parseAndValidateAddEdit(args, AddPackageCommand.MESSAGE_USAGE);
+        requireNonNull(args);
+        ArgumentMultimap argMultimap = parseAndValidateAddEdit(args, AddPackageCommand.MESSAGE_USAGE);
 
-        String packageName = argMultimap.getValue(PREFIX_INSURANCE_PACKAGE).get().trim();
-        String packageDescription = argMultimap.getValue(PREFIX_DESCRIPTION).get().trim();
-
-        if (packageName.isEmpty()) {
-            throw new ParseException(InsurancePackage.MESSAGE_CONSTRAINTS);
-        }
+        String packageName = parseAndValidatePackageName(argMultimap);
+        String packageDescription = parseAndValidatePackageDescription(argMultimap);
 
         InsurancePackage insurancePackage = new InsurancePackage(packageName, packageDescription);
         return new AddPackageCommand(insurancePackage);
@@ -44,15 +55,11 @@ public class PackageCommandParser {
      * @throws ParseException if the user input does not conform the expected format
      */
     public static EditPackageCommand parseEditPackage(String args) throws ParseException {
-        ArgumentMultimap argMultimap =
-                parseAndValidateAddEdit(args, EditPackageCommand.MESSAGE_USAGE);
+        requireNonNull(args);
+        ArgumentMultimap argMultimap = parseAndValidateAddEdit(args, EditPackageCommand.MESSAGE_USAGE);
 
-        String packageName = argMultimap.getValue(PREFIX_INSURANCE_PACKAGE).get().trim();
-        String packageDescription = argMultimap.getValue(PREFIX_DESCRIPTION).get().trim();
-
-        if (packageName.isEmpty()) {
-            throw new ParseException(InsurancePackage.MESSAGE_CONSTRAINTS);
-        }
+        String packageName = parseAndValidatePackageName(argMultimap);
+        String packageDescription = parseAndValidatePackageDescription(argMultimap);
 
         return new EditPackageCommand(packageName, packageDescription);
     }
@@ -63,11 +70,10 @@ public class PackageCommandParser {
      * @throws ParseException if the user input does not conform the expected format
      */
     public static DeletePackageCommand parseDeletePackage(String args) throws ParseException {
-        ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_INSURANCE_PACKAGE);
+        requireNonNull(args);
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_INSURANCE_PACKAGE);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_INSURANCE_PACKAGE)
-                || !argMultimap.getPreamble().isEmpty()) {
+        if (!arePrefixesPresent(argMultimap, PREFIX_INSURANCE_PACKAGE) || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeletePackageCommand.MESSAGE_USAGE));
         }
 
