@@ -250,6 +250,29 @@ The sequence diagram below illustrates the interactions within the system when e
     * **Pros:** Maintains strict sorting order.
     * **Cons:** "Unspecified" values might appear in the middle of results, making it harder to focus on actual data.
 
+### Export
+
+The `export` command, facilitated by `ExportCommand` and `ExportCommandParser`, allows users to export their client list to a CSV file. 
+This is useful for creating backups of client's contact details and data.
+
+**Aspect: How export executes:**
+
+The sequence diagram below illustrates the interactions within the system when executing an `export` command.
+
+<img src="images/ExportSequenceDiagram.png" width="550" />
+
+**Design Considerations:**
+
+**Aspect: File format:**
+
+* **Current choice:** CSV (Comma-Separated Values).
+    * **Pros:** Widely supported and easy to parse.
+    * **Cons:** Does not support all data types (e.g., images).
+
+* **Alternative:** XML (eXtensible Markup Language).
+    * **Pros:** Highly structured, widely supported, and allows for complex hierarchical data representation.
+    * **Cons:** Can be more verbose than JSON or CSV, leading to larger file sizes. Parsing can also be slightly more complex.
+
 
 ### List Insurance Packages
 
