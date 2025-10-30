@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.person.Person;
 
 /**
@@ -15,8 +17,11 @@ import seedu.address.model.person.Person;
  */
 public class CsvExporter {
 
-    private static final String CSV_HEADER = "Name,Phone,Email,Address,Salary,Date of Birth,"
+    // IMPORTANT: The order of columns in the header must match the order of fields in the personToCsvRow method.
+    public static final String CSV_HEADER = "Name,Phone,Email,Address,Salary,Date of Birth,"
             + "Marital Status,Occupation,Dependents,Insurance Package,Tags";
+
+    private static final Logger logger = LogsCenter.getLogger(CsvExporter.class);
 
     /**
      * Exports a list of persons to a CSV file at the specified path.
@@ -26,11 +31,13 @@ public class CsvExporter {
      * @throws IOException If an error occurs during file writing.
      */
     public static void exportPersons(List<Person> persons, Path filePath) throws IOException {
+        logger.info("Creating parent directories for " + filePath);
         // Create parent directories if they don't exist
         if (filePath.getParent() != null) {
             Files.createDirectories(filePath.getParent());
         }
 
+        logger.info("Writing " + persons.size() + " persons to CSV file: " + filePath);
         try (BufferedWriter writer = Files.newBufferedWriter(filePath)) {
             writer.write(CSV_HEADER);
             writer.newLine();
@@ -40,6 +47,7 @@ public class CsvExporter {
                 writer.newLine();
             }
         }
+        logger.info("Successfully wrote to CSV file: " + filePath);
     }
 
     /**
@@ -48,12 +56,12 @@ public class CsvExporter {
      * @param person The person to convert.
      * @return A string representing a row in CSV format.
      */
-    private static String personToCsvRow(Person person) {
+    public static String personToCsvRow(Person person) {
         String tagsString = person.getTags().stream()
                 .map(tag -> tag.tagName)
                 .collect(Collectors.joining(" | ")); // Use a separator for multiple tags
 
-        // Build the row of data while handling nulls.
+        // IMPORTANT: The order of fields here must match the order of columns in CSV_HEADER.
         return Stream.of(
                         person.getName(),
                         person.getPhone(),
@@ -78,8 +86,10 @@ public class CsvExporter {
     /**
      * Encloses a field in double quotes if it contains a comma, a double quote, or a newline.
      * Double quotes within the field are escaped by another double quote.
+     *
+     * @param field The string field to quote.
      */
-    private static String quoteCsvField(String field) {
+    public static String quoteCsvField(String field) {
         if (field.contains(",") || field.contains("\"") || field.contains("\n")) {
             return "\"" + field.replace("\"", "\"\"") + "\"";
         }

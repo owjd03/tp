@@ -4,7 +4,9 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 
 import java.util.Optional;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -30,6 +32,7 @@ public class DeletePackageCommand extends Command {
             "Standard insurance package (Undecided) cannot be deleted.";
 
     private static final String DEFAULT_PACKAGE = "Undecided";
+    private static final Logger logger = LogsCenter.getLogger(DeletePackageCommand.class);
 
     private final String packageName;
 
@@ -53,6 +56,7 @@ public class DeletePackageCommand extends Command {
         requireNonNull(model);
 
         if (packageName.equalsIgnoreCase(DEFAULT_PACKAGE)) {
+            logger.warning("Attempted to delete the default package.");
             throw new CommandException(MESSAGE_CANNOT_DELETE_STANDARD_PACKAGE);
         }
 
@@ -62,6 +66,7 @@ public class DeletePackageCommand extends Command {
                 .findFirst();
 
         if (packageToDelete.isEmpty()) {
+            logger.warning("Package to delete not found: " + packageName);
             throw new CommandException(MESSAGE_PACKAGE_NOT_FOUND);
         }
 
@@ -71,10 +76,12 @@ public class DeletePackageCommand extends Command {
                 .anyMatch(person -> person.getInsurancePackage().equals(actualPackage));
 
         if (isPackageInUse) {
+            logger.warning("Attempted to delete a package that is in use: " + actualPackage);
             throw new CommandException(MESSAGE_PACKAGE_IN_USE);
         }
 
         model.deleteInsurancePackage(actualPackage);
+        logger.info("Successfully deleted package: " + actualPackage);
         return new CommandResult(String.format(MESSAGE_DELETE_PACKAGE_SUCCESS, actualPackage.getPackageName()));
     }
 
