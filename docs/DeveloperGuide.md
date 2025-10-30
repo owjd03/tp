@@ -187,11 +187,11 @@ The sequence diagram below illustrates the interactions within the system when e
 
 **List Insurance Package**
 
-The listing of insurance packages is facilitated by the `ListPackageCommand` class.
+The listing of insurance packages is facilitated by the `ListPackageCommand` and `PackageWindow` class.
 
 The `ListPackageCommand` requires no input parsing as it takes no parameters. 
-When `Command#execute` is called, `ListPackageCommand` creates a `CommandResult` with the `showPackage` flag set to `true` and provides feedback message "Opened package window." to the user. 
-The UI layer detects this flag and opens a separate package window that displays all available insurance packages from the `Model#getFilteredInsurancePackageList()` method, 
+When `Command#execute` is called, `ListPackageCommand` creates a `CommandResult` with the `showPackage` flag set to `true` and provides feedback message "Opened package window." to the user.
+The `MainWindow#executeCommand` detects this flag and calls `handlePackage()` to open a separate PackageWindow that displays all available insurance packages from the `Model#getFilteredInsurancePackageList()` method,
 allowing users to view the complete catalog of insurance packages with their names and descriptions.
 
 **Add Insurance Package**
