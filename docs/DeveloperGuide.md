@@ -577,11 +577,10 @@ contact being managed.
 age, salary, relationship status, etc.).
 * **Tag**: A label applied to a client profile which provides additional information about a client.
 * **Command**: A typed instruction given to the system to perform an action (e.g. list, add, find, delete).
-* **Offline**: The ability to use the system without an internet connection.
 * **Prefix**: A two-or-three letter code followed by a / (e.g., n/, p/, ip/) used in commands to specify which data 
 field the user wants to work with.
-* **Parameter**: The value provided by the user after a prefix. E.g. in the command add n/John Doe, John Doe is the
-parameter for the n/ prefix.
+* **Parameter**: The value provided by the user after a prefix. E.g. in the partial command `add n/John Doe`, 
+John Doe is the parameter for the n/ prefix.
 * **Case-Insensitive**: A type of search or comparison that ignores the difference between uppercase and lowercase
 letters. E.g. a case-insensitive search for john would match john, John, and jOhN.
 * **Operator**: A symbol (>, >=, <, <=, =) used in the filter command to perform numerical or date-based comparisons,
@@ -593,8 +592,8 @@ like Microsoft, Excel or Google Sheets.
 commands like `edit` and `delete` to identify a specific client.
 * **JSON (JavaScript Object Notation)**: A lightweight, human-readable text format used to store the application's data,
 such as client profiles and user preferences.
-* **Field**: The term used in the application to refer to a specific piece of data within a client profile, such as `Name`,
-`Phone`, or `Salary`.
+* **Field**: The term used in the application to refer to a specific piece of data within a client profile, such as 
+`Name`, `Phone`, or `Salary`.
 * **Insurance Package**: Represents a specific financial product or plan that can be assigned to a client. 
 Each package has a unique name and a description.
 
