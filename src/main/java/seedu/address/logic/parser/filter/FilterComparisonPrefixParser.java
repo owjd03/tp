@@ -35,10 +35,12 @@ public class FilterComparisonPrefixParser implements FilterPrefixParser {
     public static final String MESSAGE_INVALID_NUMBER_FOR_OPERATOR =
             "Invalid number for comparison: '%s'. A valid number is required after an operator.";
     public static final String MESSAGE_DEPENDENTS_MUST_BE_INTEGER =
-            "Dependents value must be a whole number (e.g., '2') and cannot be a decimal (e.g., '2.5').";
+            "Dependents value cannot be negative, "
+                    + "must be a whole number (e.g., '2') and cannot be a decimal (e.g., '2.5').";
     public static final String MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY =
             "Invalid number format for salary: '%s'.\n"
-                    + "Must have a leading digit and up to two decimal places (e.g., '5000' or '5000.50').";
+                    + "Number cannot be negative, "
+                    + "must have a leading digit and up to two decimal places (e.g., '5000' or '5000.50').";
 
     private static final String VALIDATION_REGEX = "^(([<>]=?)|=)?\\s*(.*)$";
     private static final Pattern PATTERN = Pattern.compile(VALIDATION_REGEX);
