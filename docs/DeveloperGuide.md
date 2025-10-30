@@ -151,8 +151,6 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
-### Adding more fields for Add/Edit
-
 ### Filter
 
 The `filter` command's ability to handle multiple, complex criteria is enabled by `FilterCommandParser` and 
@@ -186,7 +184,7 @@ criteria, thus achieving the **"AND"** logic.
 
 <img src="images/PersonContainsKeywordsPredicateClassDiagram.png" width="550" />
 
-#### Design Considerations:
+**Design Considerations:**
 
 **Parser Implementation**<br>
 The `FilterCommandParser` was implemented in this manner to accommodate the `filter` command's diverse 
