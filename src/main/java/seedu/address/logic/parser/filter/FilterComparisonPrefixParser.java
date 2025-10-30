@@ -162,6 +162,11 @@ public class FilterComparisonPrefixParser implements FilterPrefixParser {
         if (personValue == null) {
             return false;
         }
+
+        if (this.prefix.equals(PREFIX_DEPENDENTS)) {
+            // Cut off the decimal onwards
+            return Long.toString(personValue.longValue()).contains(this.keyword);
+        }
         return personValue.toString().contains(this.keyword);
     }
 
