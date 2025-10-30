@@ -20,7 +20,7 @@ public class DateOfBirth {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public final String value;
+    private final String value;
 
     /**
      * Constructs a {@code DateOfBirth}.
@@ -36,6 +36,13 @@ public class DateOfBirth {
         } else {
             value = dateOfBirth;
         }
+    }
+
+    /**
+     * @return The raw date of birth value as a string.
+     */
+    public String getValue() {
+        return this.value;
     }
 
     /**

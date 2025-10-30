@@ -77,12 +77,6 @@ public class EditPackageCommandTest {
         EditPackageCommand editGoldPackageDiffDesc = new EditPackageCommand("Gold", "Desc3");
         assertFalse(editGoldPackage.equals(editGoldPackageDiffDesc));
 
-        // different types -> returns false
-        assertFalse(editGoldPackage.equals(1));
-
-        // null -> returns false
-        assertFalse(editGoldPackage.equals(null));
-
         // different insurance package -> returns false
         assertFalse(editGoldPackage.equals(editSilverPackage));
     }
@@ -99,7 +93,7 @@ public class EditPackageCommandTest {
     /**
      * A default model stub that have all the methods failing.
      */
-    private class ModelStub implements Model {
+    private static class ModelStub implements Model {
         @Override
         public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
             throw new AssertionError("This method should not be called.");

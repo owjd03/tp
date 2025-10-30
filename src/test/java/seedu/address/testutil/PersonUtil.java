@@ -41,11 +41,11 @@ public class PersonUtil {
         sb.append(PREFIX_PHONE + person.getPhone().value + " ");
         sb.append(PREFIX_EMAIL + person.getEmail().value + " ");
         sb.append(PREFIX_ADDRESS + person.getAddress().value + " ");
-        sb.append(PREFIX_SALARY + person.getSalary().value + " ");
-        sb.append(PREFIX_DATE_OF_BIRTH + person.getDateOfBirth().value + " ");
-        sb.append(PREFIX_MARITAL_STATUS + person.getMaritalStatus().value + " ");
-        sb.append(PREFIX_OCCUPATION + person.getOccupation().value + " ");
-        sb.append(PREFIX_DEPENDENTS + String.valueOf(person.getDependents().value) + " ");
+        sb.append(PREFIX_SALARY + person.getSalary().getValue() + " ");
+        sb.append(PREFIX_DATE_OF_BIRTH + person.getDateOfBirth().getValue() + " ");
+        sb.append(PREFIX_MARITAL_STATUS + person.getMaritalStatus().getValue() + " ");
+        sb.append(PREFIX_OCCUPATION + person.getOccupation().getValue() + " ");
+        sb.append(PREFIX_DEPENDENTS + String.valueOf(person.getDependents().getValue()) + " ");
         sb.append(PREFIX_INSURANCE_PACKAGE + person.getInsurancePackage().getPackageName() + " ");
         person.getTags().stream().forEach(
             s -> sb.append(PREFIX_TAG + s.tagName + " ")
@@ -63,13 +63,15 @@ public class PersonUtil {
         descriptor.getEmail().ifPresent(email -> sb.append(PREFIX_EMAIL).append(email.value).append(" "));
         descriptor.getAddress().ifPresent(address -> sb.append(PREFIX_ADDRESS).append(address.value)
                 .append(" "));
-        descriptor.getSalary().ifPresent(salary -> sb.append(PREFIX_SALARY).append(salary.value).append(" "));
-        descriptor.getDateOfBirth().ifPresent(dob -> sb.append(PREFIX_DATE_OF_BIRTH).append(dob.value)
+        descriptor.getSalary().ifPresent(salary -> sb.append(PREFIX_SALARY).append(salary.getValue())
                 .append(" "));
-        descriptor.getMaritalStatus().ifPresent(ms -> sb.append(PREFIX_MARITAL_STATUS).append(ms.value)
+        descriptor.getDateOfBirth().ifPresent(dob -> sb.append(PREFIX_DATE_OF_BIRTH).append(dob.getValue())
                 .append(" "));
-        descriptor.getDependents().ifPresent(dep -> sb.append(PREFIX_DEPENDENTS).append(dep).append(" "));
-        descriptor.getOccupation().ifPresent(occ -> sb.append(PREFIX_OCCUPATION).append(occ.value)
+        descriptor.getMaritalStatus().ifPresent(ms -> sb.append(PREFIX_MARITAL_STATUS).append(ms.getValue())
+                .append(" "));
+        descriptor.getDependents().ifPresent(dep -> sb.append(PREFIX_DEPENDENTS).append(dep.getValue())
+                .append(" "));
+        descriptor.getOccupation().ifPresent(occ -> sb.append(PREFIX_OCCUPATION).append(occ.getValue())
                 .append(" "));
         descriptor.getInsurancePackage().ifPresent(ip -> sb.append(PREFIX_INSURANCE_PACKAGE)
                 .append(ip.getPackageName()).append(" "));

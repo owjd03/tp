@@ -124,10 +124,8 @@ public class EditCommandParserTest {
         String expectedError = String.format("%s\n%s",
                 MESSAGE_INVALID_PERSON_DISPLAYED_INDEX, EditCommand.MESSAGE_USAGE);
 
-        // negative index
         assertParseFailure(parser, "-5" + NAME_DESC_AMY, expectedError);
 
-        // zero index
         assertParseFailure(parser, "0" + NAME_DESC_AMY, expectedError);
     }
 
@@ -147,55 +145,47 @@ public class EditCommandParserTest {
 
     @Test
     public void parse_invalidCompulsoryFields_failure() {
-        // invalid name
+
         assertParseFailure(parser, "1" + INVALID_NAME_DESC, Name.MESSAGE_CONSTRAINTS);
 
-        // invalid phone
         assertParseFailure(parser, "1" + INVALID_PHONE_DESC, Phone.MESSAGE_CONSTRAINTS);
 
-        // invalid email
         assertParseFailure(parser, "1" + INVALID_EMAIL_DESC, Email.MESSAGE_CONSTRAINTS);
 
-        // invalid address
         assertParseFailure(parser, "1" + INVALID_ADDRESS_DESC, Address.MESSAGE_CONSTRAINTS);
     }
 
     @Test
     public void parse_invalidOptionalFields_failure() {
-        // invalid salary
+
         assertParseFailure(parser, "1" + INVALID_SALARY_DESC, Salary.MESSAGE_CONSTRAINTS);
 
-        // invalid date of birth
         assertParseFailure(parser, "1" + INVALID_DOB_DESC, DateOfBirth.MESSAGE_CONSTRAINTS);
 
-        // invalid marital status
         assertParseFailure(parser, "1" + INVALID_MARITAL_STATUS_DESC, MaritalStatus.MESSAGE_CONSTRAINTS);
 
-        // invalid dependents
         assertParseFailure(parser, "1" + INVALID_DEPENDENTS_DESC, Dependents.MESSAGE_CONSTRAINTS);
 
-        // invalid occupation
         assertParseFailure(parser, "1" + INVALID_OCCUPATION_DESC, Occupation.MESSAGE_CONSTRAINTS);
     }
 
     @Test
     public void parse_invalidTag_failure() {
-        // invalid tag
         assertParseFailure(parser, "1" + INVALID_TAG_DESC, Tag.MESSAGE_CONSTRAINTS);
     }
 
     @Test
     public void parse_invalidFieldFollowedByValidField_failure() {
-        // invalid compulsory followed by valid compulsory
+        // invalid compulsory field followed by valid compulsory field
         assertParseFailure(parser, "1" + INVALID_PHONE_DESC + EMAIL_DESC_AMY, Phone.MESSAGE_CONSTRAINTS);
 
-        // invalid optional followed by valid compulsory
+        // invalid optional field followed by valid compulsory field
         assertParseFailure(parser, "1" + INVALID_SALARY_DESC + EMAIL_DESC_AMY, Salary.MESSAGE_CONSTRAINTS);
 
-        // invalid compulsory followed by valid optional
+        // invalid compulsory field followed by valid optional field
         assertParseFailure(parser, "1" + INVALID_ADDRESS_DESC + DOB_DESC_AMY, Address.MESSAGE_CONSTRAINTS);
 
-        // invalid optional followed by valid optional
+        // invalid optional field followed by valid optional field
         assertParseFailure(parser, "1" + INVALID_DEPENDENTS_DESC + OCCUPATION_DESC_AMY, Dependents.MESSAGE_CONSTRAINTS);
     }
 
@@ -210,13 +200,21 @@ public class EditCommandParserTest {
 
     @Test
     public void parse_multipleInvalidValues_reportsFirstFailure() {
-        // multiple invalid values, but only the first invalid value is captured
+        // asserts that the first invalid compulsory field is reported, but the subsequent compulsory field is not
         assertParseFailure(parser, "1" + INVALID_NAME_DESC + INVALID_EMAIL_DESC + VALID_ADDRESS_AMY + VALID_PHONE_AMY,
                 Name.MESSAGE_CONSTRAINTS);
 
-        // multiple invalid optional values, first one captured
+        // asserts that the first invalid compulsory field is reported, but the subsequent optional field is not
+        assertParseFailure(parser, "1" + INVALID_NAME_DESC + INVALID_OCCUPATION_DESC + VALID_ADDRESS_AMY
+                        + VALID_PHONE_AMY, Name.MESSAGE_CONSTRAINTS);
+
+        // asserts that the first invalid optional field is reported, but the subsequent optional field is not
         assertParseFailure(parser, "1" + INVALID_SALARY_DESC + INVALID_OCCUPATION_DESC + VALID_MARITAL_STATUS_AMY,
                 Salary.MESSAGE_CONSTRAINTS);
+
+        // asserts that the compulsory field error is reported first, despite the optional field appearing before it
+        assertParseFailure(parser, "1" + INVALID_SALARY_DESC + INVALID_EMAIL_DESC + VALID_MARITAL_STATUS_AMY,
+                Email.MESSAGE_CONSTRAINTS);
     }
 
     @Test
