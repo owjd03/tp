@@ -534,68 +534,86 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 ### Non-Functional Requirements
 
 #### Platform Compatibility
-1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
+1.  Should work on any _mainstream OS_ (Windows, Linux, Unix, MacOS) as long as it has Java `17` or above installed.
 
-#### Performance and Responsiveness 
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
+#### Performance and Responsiveness
+2. The application should load up in under 3 seconds for a dataset of 1,000 persons.
+3. All commands (`list`, `filter`, `sort`, etc.) should return results in under 1.5 seconds for a dataset of 1,000 
+persons.
 
 #### Scalability 
-4. The system should be designed to scale to larger datasets (e.g., ≥10,000 contacts) with minimal architectural changes.
+4. The system should be designed to scale to larger datasets (e.g., ≥10,000 contacts) with minimal architectural changes
+(less than 10% of the codebase's functional code).
 
 #### Usability 
 5. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) 
-should be able to accomplish most of the tasks faster using commands than using the mouse.
-6. Commands should be concise, memorable, and consistent.
+should be able to accomplish most of the tasks (e.g. adding, editing or finding a contact) faster using commands than
+using the mouse.
+6. Commands should be deterministic in their expected behaviour.
 7. Error messages should be clear, instructive, and suggest corrective action.
 
 #### Reliability and Fault Tolerance 
-8. The application should not crash in the event of invalid inputs. 
-9. Must handle unexpected shutdowns gracefully without loss of stored data. 
+8. The application must not crash in the event of invalid inputs. 
+9. The application must be able to handle unexpected shutdowns without loss of stored data. 
 
 #### Security and Privacy 
-10. All sensitive data (salary, occupation, contact details, etc) must be stored securely.
-11. Must comply with existing data privacy regulations. 
+10. All client data is stored locally on the user's file system and is not transmitted over any network, giving the user
+full control over their data's security.
+11. The application must comply with all data privacy regulations that the user is bound to.
 
 #### Maintainability 
-12. Code must be modular and follow standard Java conventions.
-13. Build should be automated via Gradle. 
-14. Unit and integration tests should provide ample coverage of the codebase. 
+12. Code must be modular and follow the standard Java conventions outlined by the CS2103T course.
+13. The project build should be automated via Gradle. 
+14. Unit and integration tests must provide ample (>80%) coverage of the codebase's functional code. 
 
 #### Extensibility 
-15. The system should support the addition of new commands with minimal changes to existing code.
+15. The system should support the addition of new commands without modification to the core Logic or Model interfaces.
 
 #### Portability 
-16. The application should be distributable as a single JAR file and run consistently across
-supported platforms without requiring external dependencies. 
+16. The application should be distributable as a single JAR file and run consistently across all
+supported platforms (Windows, Linux, Unix, MacOS) without requiring external dependencies. 
 
-#### Documentation 
-17. User guide should explain all commands clearly with examples.
-18. Developer Guide should include instructions for setting up the development environment.
-19. Public classes and methods in the codebase should include Javadoc header comments that describe its purpose, 
-parameters, return values, and any exceptions thrown. These comments should follow the official JavaDoc conventions.
-
-*{More to be added}*
+#### Documentation
+17. The User Guide should be able to clearly explain all commands to a CLI novice. 
+18. The Developer Guide should include instructions for setting up the development environment.
+19. Most of the public classes and methods in the codebase (>80%) should include JavaDoc header comments that describe 
+its purpose, parameters, return values, and any exceptions thrown. These comments should follow the official JavaDoc 
+conventions outlined by the CS2103T course.
 
 ### Glossary
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Command Line Interface (CLI)**: A text-based interface where the user types commands instead of 
 graphical elements.
-* **Private contact detail**: A contact detail that is not meant to be shared with others.
 * **Financial Advisor (FA)**: A professional user of the system whose job is to manage client 
 relationships and recommend suitable financial products or services.
 * **Client**: An individual whose personal and financial details (e.g., age, salary, policies, risk profile) 
 are stored in the system. Clients are the primary focus of the Financial Advisor’s work and the main type of
-contact being managed. 
-* **Client Profile**: A structured record containing personal and financial information of a client (e.g. name,
-age, salary, relationship status). 
-* **Tag**: A label applied to a client profile to group clients meaningfully.
+contact being managed.
+* **Client Profile**: A structured record containing personal and financial information of a client (name, 
+age, salary, relationship status, etc.).
+* **Tag**: A label applied to a client profile which provides additional information about a client.
 * **Command**: A typed instruction given to the system to perform an action (e.g. list, add, find, delete).
-* **Archiving**: The act of marking a client profile as inactive (not deleted) for long-term storage,
-    so that it no longer shows up in day-to-day operations but can be retrieved if needed.
-* **Offline**: The ability to use the system without an internet connection. 
+* **Prefix**: A two-or-three letter code followed by a / (e.g., n/, p/, ip/) used in commands to specify which data 
+field the user wants to work with.
+* **Parameter**: The value provided by the user after a prefix. E.g. in the partial command `add n/John Doe`, 
+John Doe is the parameter for the n/ prefix.
+* **Case-Insensitive**: A type of search or comparison that ignores the difference between uppercase and lowercase
+letters. E.g. a case-insensitive search for john would match john, John, and jOhN.
+* **Operator**: A symbol (>, >=, <, <=, =) used in the filter command to perform numerical or date-based comparisons,
+allowing for more advanced queries beyond simple keyword matching.
+* **CSV (Comma-Separated Values)**: A plain text file format used for the export feature. Each line in the file 
+represents a row of data, with values separated by commas. CSV files are widely compatible with spreadsheet software
+like Microsoft, Excel or Google Sheets.
+* **Index**: A 1-based number corresponding to the position of a client in the currently displayed list. It is used by 
+commands like `edit` and `delete` to identify a specific client.
+* **JSON (JavaScript Object Notation)**: A lightweight, human-readable text format used to store the application's data,
+such as client profiles and user preferences.
+* **Field**: The term used in the application to refer to a specific piece of data within a client profile, such as 
+`Name`, `Phone`, or `Salary`.
+* **Insurance Package**: Represents a specific financial product or plan that can be assigned to a client. 
+Each package has a unique name and a description.
 
-*{More to be added}*
 
 --------------------------------------------------------------------------------------------------------------------
 
