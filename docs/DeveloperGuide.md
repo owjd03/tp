@@ -161,7 +161,7 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Sort
 
-### Add/Edit/Delete/list Insurance Package
+### Add/Edit/Delete/List Insurance Package
 
 --------------------------------------------------------------------------------------------------------------------
 
