@@ -386,18 +386,18 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 
 Action | Format, Examples
 --------|------------------
-**Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 ip/Silver s/5000 dob/1993-02-02 ms/Married dep/3 occ/Artist ip/Bronze t/my first client`
+**Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​` <br> e.g. `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 ip/Silver s/5000 dob/1993-02-02 ms/Married dep/3 occ/Artist ip/Bronze t/my first client`
 **Clear** | `clear`
-**Delete** | `delete INDEX`<br> e.g., `delete 3`
-**Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [ip/INSURANCE_PACKAGE] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com s/5000 dep/Unspecified t/friend`
+**Delete** | `delete INDEX`<br> e.g. `delete 3`
+**Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [ip/INSURANCE_PACKAGE] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g. `edit 2 n/James Lee e/jameslee@example.com s/5000 dep/Unspecified t/friend`
 **Export** | `export [FILE_PATH]` <br> e.g. `export ~/Downloads/addressbook.csv`
-**Filter** | `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g., `filter n/James Lee e/jameslee`
-**Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
+**Filter** | `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g. `filter n/James Lee e/jameslee`
+**Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g. `find James Jake`
 **View** | `view NAME-KEYWORD` `view INDEX` <br> e.g. `view Alex` `view 1`
 **List** | `list`
 **Help** | `help`
-**Sort** | `sort FIELD [DIRECTION]`<br> e.g., `sort name`, `sort salary`
+**Sort** | `sort FIELD [DIRECTION]`<br> e.g. `sort name`, `sort salary`
 **List Package** | `listp`
-**Add Package** | `addp ip/PACKAGE_NAME d/PACKAGE_DESCRIPTION` <br> e.g., `addp ip/Premium Package d/Our best package.`
-**Edit Package** | `editp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION` <br> e.g., `editp ip/Gold d/Updated description.`
-**Delete Package** | `deletep ip/PACKAGE_NAME` <br> e.g., `deletep ip/Gold`
+**Add Package** | `addp ip/PACKAGE_NAME d/PACKAGE_DESCRIPTION` <br> e.g. `addp ip/Premium Package d/Our best package.`
+**Edit Package** | `editp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION` <br> e.g. `editp ip/Gold d/Updated description.`
+**Delete Package** | `deletep ip/PACKAGE_NAME` <br> e.g. `deletep ip/Gold`
