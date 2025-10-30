@@ -8,9 +8,11 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.parser.Prefix;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -43,6 +45,7 @@ public class FilterComparisonPrefixParser implements FilterPrefixParser {
 
     private static final String VALID_NUMBER_REGEX = "^\\d+(\\.\\d{1,2})?$";
 
+    private final Logger logger = LogsCenter.getLogger(FilterComparisonPrefixParser.class);
     private final Prefix prefix;
     private final Function<Person, Double> getPersonField;
     private final Function<Person, Boolean> isPersonFieldUnspecified;
@@ -72,12 +75,14 @@ public class FilterComparisonPrefixParser implements FilterPrefixParser {
 
     @Override
     public void parse(String args) throws ParseException {
+        logger.info("Parsing comparison prefix arguments");
         requireNonNull(args);
         this.keyword = args.toLowerCase();
         Matcher matcher = PATTERN.matcher(this.keyword);
 
         if (!matcher.matches()) {
             // This should never happen
+            logger.warning("Error occurred trying to parse comparison prefix arguments: " + args);
             throw new ParseException("Unexpected parser error");
         }
 
@@ -169,6 +174,11 @@ public class FilterComparisonPrefixParser implements FilterPrefixParser {
         }
 
         return this.predicate.test(personValue);
+    }
+
+    @Override
+    public String getArg() {
+        return this.prefix.getPrefix() + this.keyword;
     }
 
     @Override

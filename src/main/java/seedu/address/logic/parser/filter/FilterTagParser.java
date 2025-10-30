@@ -6,6 +6,7 @@ import static seedu.address.logic.parser.ParserUtil.parseTags;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.parser.Prefix;
@@ -60,6 +61,13 @@ public class FilterTagParser implements FilterPrefixParser {
                 .allMatch(filterTag -> person.getTags().stream()
                         .anyMatch(personTag ->
                                 personTag.tagName.toLowerCase().contains(filterTag.tagName.toLowerCase())));
+    }
+
+    @Override
+    public String getArg() {
+        return this.keywords.stream()
+                .map(keyword -> this.prefix.getPrefix() + keyword)
+                .collect(Collectors.joining(" "));
     }
 
     @Override

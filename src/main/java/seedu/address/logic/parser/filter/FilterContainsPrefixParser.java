@@ -53,6 +53,11 @@ public class FilterContainsPrefixParser implements FilterPrefixParser {
     }
 
     @Override
+    public String getArg() {
+        return this.prefix.getPrefix() + this.keyword;
+    }
+
+    @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("prefix", this.prefix)
