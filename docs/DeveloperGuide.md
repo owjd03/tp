@@ -160,8 +160,38 @@ This section describes some noteworthy details on how certain features are imple
 ### Filter
 
 ### Sort
+The `sort` command, facilitated by `SortCommand` and `SortCommandParser`, allows users to sort and display their client 
+list by various fields (name, phone, email, address, salary, date of birth, marital status, occupation, dependents, insurance package) 
+in ascending or descending order. 
+Special handling ensures that "Unspecified" values are always placed at the bottom of the sorted list regardless of sort direction.
+
+**Aspect: How sort executes:**
+
+The sequence diagram below illustrates the interactions within the system when executing a `sort name ascending` command:
+
+<img src="images/SortSequenceDiagram.png" width="550" />
+
+**Design Considerations:**
+
+**Aspect: How unspecified values are handled:**
+
+* **Current choice:** Always place "Unspecified" values at the bottom regardless of sort direction.
+    * **Pros:** Consistent user experience; important data (specified values) always appears first.
+    * **Cons:** May not follow strict alphabetical/numerical order in some cases.
+
+* **Alternative:** Treat "Unspecified" as a regular string/value in sorting.
+    * **Pros:** Maintains strict sorting order.
+    * **Cons:** "Unspecified" values might appear in the middle of results, making it harder to focus on actual data.
 
 ### Add/Edit/Delete/List Insurance Package
+
+**Add Insurance Package**
+
+**Edit Insurance Package**
+
+**Delete Insurance Package**
+
+**List Insurance Package**
 
 --------------------------------------------------------------------------------------------------------------------
 
