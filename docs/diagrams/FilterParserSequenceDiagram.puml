@@ -27,38 +27,30 @@ deactivate ArgumentMultimap
 ArgumentTokenizer --> FilterCommandParser : a
 deactivate ArgumentTokenizer
 
-FilterCommandParser -> FilterCommandParser : add all present contains prefix parser
-activate FilterCommandParser
-
 create FilterContainsPrefixParser
-FilterCommandParser -> FilterContainsPrefixParser : FilterContainsPrefixParser(PREFIX_INSURANCE_PACKAGE, GET_INSURANCE_PACKAGAE)
+FilterCommandParser -> FilterContainsPrefixParser : Create for insurance package
 activate FilterContainsPrefixParser
 
 FilterContainsPrefixParser --> FilterCommandParser : p1
 deactivate FilterContainsPrefixParser
 
 FilterCommandParser -> FilterContainsPrefixParser : parse("ip/undecided")
-deactivate FilterCommandParser
-
-FilterCommandParser -> FilterCommandParser : add all present comparison prefix parser
-activate FilterCommandParser
 
 create FilterComparisonPrefixParser
-FilterCommandParser -> FilterComparisonPrefixParser : FilterComparisonPrefixParser(PREFIX_SALARY, GET_SALARY)
+FilterCommandParser -> FilterComparisonPrefixParser : Create for salary
 activate FilterComparisonPrefixParser
 
 FilterComparisonPrefixParser --> FilterCommandParser : p2
 deactivate FilterComparisonPrefixParser
 
 FilterCommandParser -> FilterComparisonPrefixParser : parse("s/>=3000")
-deactivate FilterCommandParser
 
 create PersonContainsKeywordsPredicate
-FilterCommandParser -> PersonContainsKeywordsPredicate : PersonContainsKeywordsPredicate([p1, p2])
+FilterCommandParser -> PersonContainsKeywordsPredicate : Create predicate with p1 and p2
 activate PersonContainsKeywordsPredicate
 
 PersonContainsKeywordsPredicate --> FilterCommandParser : predicate
 deactivate PersonContainsKeywordsPredicate
 
-FilterCommandParser -> : FilterCommand(predicate, "s/>=3000 ip/undecided")
+FilterCommandParser -> : Create new FilterCommand
 @enduml

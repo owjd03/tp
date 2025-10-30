@@ -199,7 +199,7 @@ for each prefix to a specialized `FilterPrefixParser`. This makes it easy to man
 rules (e.g. contains vs. numerical comparison) for each field.
 
 **Predicate Implementation**<br>
-The `Model` requires a single `Predicate` to update its filtered list. Thus,  `PersonContainsKeywordsPredicate` 
+The `Model` requires a single `Predicate` to update its filtered list. Thus, `PersonContainsKeywordsPredicate` 
 was designed to serve as a composite predicate. It holds multiple `FilterPrefixParser` instances, each 
 representing a single filter criterion. This approach keeps the testing logic for each criterion separate and 
 modular while providing a unified interface to the `Model`.
