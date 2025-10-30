@@ -185,13 +185,13 @@ The sequence diagram below illustrates the interactions within the system when e
 
 ### Add/Edit/Delete/List Insurance Package
 
+**List Insurance Package**
+
 **Add Insurance Package**
 
 **Edit Insurance Package**
 
 **Delete Insurance Package**
-
-**List Insurance Package**
 
 --------------------------------------------------------------------------------------------------------------------
 
