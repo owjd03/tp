@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
@@ -28,7 +29,7 @@ import seedu.address.model.tag.Tag;
  */
 public class ParserUtil {
 
-    public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
+    public static final String MESSAGE_INVALID_INDEX = "The index must be a positive whole number (e.g. 1, 2, 3).";
 
     /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
@@ -43,6 +44,16 @@ public class ParserUtil {
         return Index.fromOneBased(Integer.parseInt(trimmedIndex));
     }
 
+    private static String validateStringField(String value, Predicate<String> validator, String constraintMessage)
+            throws ParseException {
+        requireNonNull(value);
+        String trimmedValue = value.trim();
+        if (!validator.test(trimmedValue)) {
+            throw new ParseException(constraintMessage);
+        }
+        return trimmedValue;
+    }
+
     /**
      * Parses a {@code String name} into a {@code Name}.
      * Leading and trailing whitespaces will be trimmed.
@@ -50,11 +61,7 @@ public class ParserUtil {
      * @throws ParseException if the given {@code name} is invalid.
      */
     public static Name parseName(String name) throws ParseException {
-        requireNonNull(name);
-        String trimmedName = name.trim();
-        if (!Name.isValidName(trimmedName)) {
-            throw new ParseException(Name.MESSAGE_CONSTRAINTS);
-        }
+        String trimmedName = validateStringField(name, Name::isValidName, Name.MESSAGE_CONSTRAINTS);
         return new Name(trimmedName);
     }
 
@@ -65,11 +72,7 @@ public class ParserUtil {
      * @throws ParseException if the given {@code phone} is invalid.
      */
     public static Phone parsePhone(String phone) throws ParseException {
-        requireNonNull(phone);
-        String trimmedPhone = phone.trim();
-        if (!Phone.isValidPhone(trimmedPhone)) {
-            throw new ParseException(Phone.MESSAGE_CONSTRAINTS);
-        }
+        String trimmedPhone = validateStringField(phone, Phone::isValidPhone, Phone.MESSAGE_CONSTRAINTS);
         return new Phone(trimmedPhone);
     }
 
@@ -80,11 +83,7 @@ public class ParserUtil {
      * @throws ParseException if the given {@code address} is invalid.
      */
     public static Address parseAddress(String address) throws ParseException {
-        requireNonNull(address);
-        String trimmedAddress = address.trim();
-        if (!Address.isValidAddress(trimmedAddress)) {
-            throw new ParseException(Address.MESSAGE_CONSTRAINTS);
-        }
+        String trimmedAddress = validateStringField(address, Address::isValidAddress, Address.MESSAGE_CONSTRAINTS);
         return new Address(trimmedAddress);
     }
 
@@ -95,11 +94,7 @@ public class ParserUtil {
      * @throws ParseException if the given {@code email} is invalid.
      */
     public static Email parseEmail(String email) throws ParseException {
-        requireNonNull(email);
-        String trimmedEmail = email.trim();
-        if (!Email.isValidEmail(trimmedEmail)) {
-            throw new ParseException(Email.MESSAGE_CONSTRAINTS);
-        }
+        String trimmedEmail = validateStringField(email, Email::isValidEmail, Email.MESSAGE_CONSTRAINTS);
         return new Email(trimmedEmail);
     }
 
@@ -110,11 +105,7 @@ public class ParserUtil {
      * @throws ParseException if the given {@code salary} is invalid.
      */
     public static Salary parseSalary(String salary) throws ParseException {
-        requireNonNull(salary);
-        String trimmedSalary = salary.trim();
-        if (!Salary.isValidSalary(trimmedSalary)) {
-            throw new ParseException(Salary.MESSAGE_CONSTRAINTS);
-        }
+        String trimmedSalary = validateStringField(salary, Salary::isValidSalary, Salary.MESSAGE_CONSTRAINTS);
         return new Salary(trimmedSalary);
     }
 
@@ -125,11 +116,8 @@ public class ParserUtil {
      * @throws ParseException if the given {@code dateOfBirth} is invalid.
      */
     public static DateOfBirth parseDateOfBirth(String input) throws ParseException {
-        requireNonNull(input);
-        String trimmedDateOfBirth = input.trim();
-        if (!DateOfBirth.isValidDateOfBirth(trimmedDateOfBirth)) {
-            throw new ParseException(DateOfBirth.MESSAGE_CONSTRAINTS);
-        }
+        String trimmedDateOfBirth = validateStringField(input, DateOfBirth::isValidDateOfBirth,
+                DateOfBirth.MESSAGE_CONSTRAINTS);
         return new DateOfBirth(trimmedDateOfBirth);
     }
 
@@ -159,11 +147,8 @@ public class ParserUtil {
      * @throws ParseException if the given {@code occupation} is invalid.
      */
     public static Occupation parseOccupation(String occupation) throws ParseException {
-        requireNonNull(occupation);
-        String trimmedOccupation = occupation.trim();
-        if (!Occupation.isValidOccupation(trimmedOccupation)) {
-            throw new ParseException(Occupation.MESSAGE_CONSTRAINTS);
-        }
+        String trimmedOccupation = validateStringField(occupation, Occupation::isValidOccupation,
+                Occupation.MESSAGE_CONSTRAINTS);
         return new Occupation(trimmedOccupation);
     }
 
@@ -229,11 +214,7 @@ public class ParserUtil {
      * @throws ParseException if the given {@code tag} is invalid.
      */
     public static Tag parseTag(String tag) throws ParseException {
-        requireNonNull(tag);
-        String trimmedTag = tag.trim();
-        if (!Tag.isValidTagName(trimmedTag)) {
-            throw new ParseException(Tag.MESSAGE_CONSTRAINTS);
-        }
+        String trimmedTag = validateStringField(tag, Tag::isValidTagName, Tag.MESSAGE_CONSTRAINTS);
         return new Tag(trimmedTag);
     }
 

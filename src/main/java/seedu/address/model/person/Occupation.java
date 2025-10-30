@@ -20,7 +20,7 @@ public class Occupation {
 
     public static final String UNSPECIFIED_VALUE = "Unspecified";
 
-    public final String value;
+    private final String value;
 
     /**
      * Constructs an {@code Occupation}.
@@ -36,6 +36,13 @@ public class Occupation {
         } else {
             value = occupation;
         }
+    }
+
+    /**
+     * @return The raw occupation value as a string.
+     */
+    public String getValue() {
+        return this.value;
     }
 
     /**

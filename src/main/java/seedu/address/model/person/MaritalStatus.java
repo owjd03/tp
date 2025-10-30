@@ -15,7 +15,7 @@ public class MaritalStatus {
 
     public static final String UNSPECIFIED_VALUE = "Unspecified";
 
-    public final String value;
+    private final String value;
 
     /**
      * Constructs a {@code MaritalStatus}.
@@ -28,6 +28,12 @@ public class MaritalStatus {
         value = String.valueOf(MaritalStatusEnum.fromString(maritalStatus));
     }
 
+    /**
+     * @return The raw marital status value as a string.
+     */
+    public String getValue() {
+        return this.value;
+    }
 
     /**
      * Static factory method for creating the default "Unspecified" MaritalStatus

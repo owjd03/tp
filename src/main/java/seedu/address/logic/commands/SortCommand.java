@@ -65,15 +65,15 @@ public class SortCommand extends Command {
     private static boolean isPersonUnspecified(Person person, SortField sortField) {
         switch(sortField) {
         case SALARY:
-            return person.getSalary().value.equals(Salary.UNSPECIFIED_VALUE);
+            return person.getSalary().getValue().equals(Salary.UNSPECIFIED_VALUE);
         case DATEOFBIRTH:
-            return person.getDateOfBirth().value.equals(DateOfBirth.UNSPECIFIED_VALUE);
+            return person.getDateOfBirth().getValue().equals(DateOfBirth.UNSPECIFIED_VALUE);
         case MARITALSTATUS:
-            return person.getMaritalStatus().value.equals(MaritalStatus.UNSPECIFIED_VALUE);
+            return person.getMaritalStatus().getValue().equals(MaritalStatus.UNSPECIFIED_VALUE);
         case OCCUPATION:
-            return person.getOccupation().value.equals(Occupation.UNSPECIFIED_VALUE);
+            return person.getOccupation().getValue().equals(Occupation.UNSPECIFIED_VALUE);
         case DEPENDENTS:
-            return person.getDependents().value == Dependents.UNSPECIFIED_VALUE;
+            return person.getDependents().getValue() == Dependents.UNSPECIFIED_VALUE;
         case NAME:
         case PHONE:
         case EMAIL:
@@ -115,22 +115,23 @@ public class SortCommand extends Command {
                     person1.getAddress().value.compareToIgnoreCase(person2.getAddress().value);
             break;
         case SALARY:
-            baseComparator = Comparator.comparingDouble(person -> Double.parseDouble(person.getSalary().value));
+            baseComparator = Comparator.comparingDouble(person -> Double.parseDouble(person.getSalary()
+                    .getValue()));
             break;
         case DATEOFBIRTH:
             baseComparator = (person1, person2) ->
-                    person1.getDateOfBirth().value.compareToIgnoreCase(person2.getDateOfBirth().value);
+                    person1.getDateOfBirth().getValue().compareToIgnoreCase(person2.getDateOfBirth().getValue());
             break;
         case MARITALSTATUS:
             baseComparator = (person1, person2) ->
-                    person1.getMaritalStatus().value.compareToIgnoreCase(person2.getMaritalStatus().value);
+                    person1.getMaritalStatus().getValue().compareToIgnoreCase(person2.getMaritalStatus().getValue());
             break;
         case OCCUPATION:
             baseComparator = (person1, person2) ->
-                    person1.getOccupation().value.compareToIgnoreCase(person2.getOccupation().value);
+                    person1.getOccupation().getValue().compareToIgnoreCase(person2.getOccupation().getValue());
             break;
         case DEPENDENTS:
-            baseComparator = Comparator.comparingInt(person -> person.getDependents().value);
+            baseComparator = Comparator.comparingInt(person -> person.getDependents().getValue());
             break;
         case INSURANCEPACKAGE:
             baseComparator = (person1, person2) ->

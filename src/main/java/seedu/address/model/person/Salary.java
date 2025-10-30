@@ -4,6 +4,10 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
 import java.text.DecimalFormat;
+import java.util.logging.Logger;
+
+import seedu.address.commons.core.LogsCenter;
+
 
 /**
  * Represents a Person's salary in the address book.
@@ -16,17 +20,18 @@ public class Salary {
                     + "should not be blank, "
                     + "or be declared as 'Unspecified' (case-insensitive).";
 
+    public static final String UNSPECIFIED_VALUE = "Unspecified";
+
     /*
      * For a salary to be valid, it must be non-negative.
      * It can be an integer (e.g. "100") or a decimal with up to 2 decimal places (e.g. "100.10").
      * Users can optionally include commas as separators for every 3 digits (e.g. "1,000" or "10,000.99").
      * Leading and/or trailing whitespaces are not allowed.
      */
-    public static final String VALIDATION_REGEX = "\\d+(\\.\\d{1,2})?";
+    private static final String VALIDATION_REGEX = "\\d+(\\.\\d{1,2})?";
+    private static final Logger logger = LogsCenter.getLogger(Salary.class);
 
-    public static final String UNSPECIFIED_VALUE = "Unspecified";
-
-    public final String value;
+    private final String value;
 
     /**
      * Constructs a {@code Salary}.
@@ -45,6 +50,13 @@ public class Salary {
         } else {
             this.value = sanitizedSalary;
         }
+    }
+
+    /**
+     * @return The raw salary value as a string.
+     */
+    public String getValue() {
+        return this.value;
     }
 
     /**
@@ -96,7 +108,8 @@ public class Salary {
             DecimalFormat formatter = new DecimalFormat("$#,##0.00");
             return formatter.format(amount);
         } catch (NumberFormatException e) {
-            return value;
+            logger.severe("Salary object in invalid state. Value: " + value);
+            throw new IllegalStateException("Salary object has an invalid numeric value.", e);
         }
     }
 

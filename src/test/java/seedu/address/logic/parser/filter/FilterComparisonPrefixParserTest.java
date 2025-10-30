@@ -225,6 +225,7 @@ public class FilterComparisonPrefixParserTest {
         // Text after operator
         assertThrows(ParseException.class, () -> parser.parse(">= abc"),
                 String.format(invalidNumberSalaryMessage, "abc"));
+
         // Invalid operator
         assertThrows(ParseException.class, () -> parser.parse(">>50000"),
                 String.format(invalidNumberMessage, ">50000"));
