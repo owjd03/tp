@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.Comparator;
+import java.util.function.Function;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.Model;
@@ -15,7 +16,7 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.Salary;
 
 /**
- * Sorts all persons in the address book in alphabetical order.
+ * Sorts all persons in the address book by specified field and direction.
  */
 public class SortCommand extends Command {
 
@@ -33,6 +34,8 @@ public class SortCommand extends Command {
     private final SortDirection sortDirection;
 
     /**
+     * Creates a SortCommand to sort persons by the specified field and direction
+     *
      * @param sortField of the selected sort criteria
      * @param sortDirection of the selected sort criteria
      */
@@ -53,6 +56,120 @@ public class SortCommand extends Command {
         String directionText = sortDirection.toString().toLowerCase();
         String message = MESSAGE_SUCCESS + sortField + " in " + directionText + " order";
         return new CommandResult(message);
+    }
+
+    /**
+     * Creates a comparator for sorting persons based on a particular field and direction
+     * and returns the comparator
+     *
+     * @param sortField the field is sorted by NAME, PHONE, EMAIL, ADDRESS, SALARY,
+     *                  DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENTS, INSURANCEPACKAGE
+     * @param sortDirection the direction is sorted by ASCENDING OR DESCENDING
+     * @return comparator that compares two persons based on the provided field and direction
+     */
+    private static Comparator<Person> createComparator(SortField sortField, SortDirection sortDirection) {
+        Comparator<Person> baseComparator = createBaseComparator(sortField);
+        Comparator<Person> directedComparator = applyDirection(baseComparator, sortDirection);
+        return handleUnspecifiedValues(directedComparator, sortField);
+    }
+
+    /**
+     * Creates a comparator for sorting persons based on a particular field
+     * and returns the comparator
+     *
+     * @param sortField the field is sorted by NAME, PHONE, EMAIL, ADDRESS, SALARY,
+     *                  DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENTS, INSURANCEPACKAGE
+     * @return base comparator that compares two persons based on the provided field and direction
+     */
+    private static Comparator<Person> createBaseComparator(SortField sortField) {
+        switch (sortField) {
+        case NAME:
+            return createStringComparator(person -> person.getName().fullName);
+        case PHONE:
+            return createStringComparator(person -> person.getPhone().value);
+        case EMAIL:
+            return createStringComparator(person -> person.getEmail().value);
+        case ADDRESS:
+            return createStringComparator(person -> person.getAddress().value);
+        case SALARY:
+            return createNumericComparator(person -> Double.parseDouble(person.getSalary().getValue()));
+        case DATEOFBIRTH:
+            return createStringComparator(person -> person.getDateOfBirth().getValue());
+        case MARITALSTATUS:
+            return createStringComparator(person -> person.getMaritalStatus().getValue());
+        case OCCUPATION:
+            return createStringComparator(person -> person.getOccupation().getValue());
+        case DEPENDENTS:
+            return Comparator.comparingInt(person -> person.getDependents().getValue());
+        case INSURANCEPACKAGE:
+            return createStringComparator(person -> person.getInsurancePackage().getPackageName());
+        default:
+            throw new AssertionError("Invalid sort field: " + sortField);
+        }
+    }
+
+    /**
+     * Creates a string comparator using the provided mapper function.
+     *
+     * @param mapper function that gets a string value from a Person for comparison
+     * @return string comparator that compares two persons based on the provided field and direction
+     */
+    private static Comparator<Person> createStringComparator(Function<Person, String> mapper) {
+        return (person1, person2) -> mapper.apply(person1).compareToIgnoreCase(mapper.apply(person2));
+    }
+
+    /**
+     * Creates a numeric comparator using the provided mapper function.
+     *
+     * @param mapper function that gets a double value from a Person for comparison
+     * @return numeric comparator that compares two persons based on the provided field and direction
+     */
+    private static Comparator<Person> createNumericComparator(Function<Person, Double> mapper) {
+        return Comparator.comparing(mapper);
+    }
+
+    /**
+     * Applies the sort direction to the base comparator.
+     *
+     * @param baseComparator base comparator that compares two persons based on provided field
+     * @param sortDirection the direction is sorted by ASCENDING OR DESCENDING
+     * @return comparator with the specified direction applied
+     */
+    private static Comparator<Person> applyDirection(Comparator<Person> baseComparator, SortDirection sortDirection) {
+        if (sortDirection == SortDirection.DESCENDING) {
+            return baseComparator.reversed();
+        }
+        return baseComparator;
+    }
+
+    /**
+     * Wraps the comparator to handle unspecified values by placing them at the bottom.
+     *
+     * @param directedComparator direction comparator that compares two persons based on provided field and direction
+     * @param sortField the field is sorted by NAME, PHONE, EMAIL, ADDRESS, SALARY,
+     *                       DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENTS, INSURANCEPACKAGE
+     * @return comparator that accounts for Unspecified or -1 values
+     */
+    private static Comparator<Person> handleUnspecifiedValues(Comparator<Person> directedComparator,
+                                                              SortField sortField) {
+        return (p1, p2) -> {
+            boolean p1Unspecified = isPersonUnspecified(p1, sortField);
+            boolean p2Unspecified = isPersonUnspecified(p2, sortField);
+
+            if (p1Unspecified && p2Unspecified) {
+                // Both are "Unspecified" or -1
+                return 0;
+            } else if (p1Unspecified) {
+                // p1 is "Unspecified" or -1, sort it last
+                return 1;
+            } else if (p2Unspecified) {
+                // p2 is "Unspecified" or -1, sort it last
+                return -1;
+            } else {
+                // Neither is "Unspecified" or -1
+                return directedComparator.compare(p1, p2);
+            }
+        };
     }
 
     /**
@@ -82,94 +199,6 @@ public class SortCommand extends Command {
         default:
             return false;
         }
-    }
-
-    /**
-     * Creates a comparator for sorting persons based on a particular field
-     * and returns the comparator
-     *
-     * @param sortField the field is sorted by NAME, PHONE, EMAIL, ADDRESS, SALARY,
-     *                  DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENT, INSURANCEPACKAGE
-     * @param sortDirection the direction is sorted by ASCENDING OR DESCENDING
-     * @return comparator that compares two persons based on the provided field and direction
-     * @throws AssertionError if an invalid field is provided
-     **/
-    private static Comparator<Person> createComparator(SortField sortField, SortDirection sortDirection) {
-        Comparator<Person> baseComparator;
-
-        switch (sortField) {
-        case NAME:
-            baseComparator = (person1, person2) ->
-                    person1.getName().fullName.compareToIgnoreCase(person2.getName().fullName);
-            break;
-        case PHONE:
-            baseComparator = (person1, person2) ->
-                    person1.getPhone().value.compareToIgnoreCase(person2.getPhone().value);
-            break;
-        case EMAIL:
-            baseComparator = (person1, person2) ->
-                    person1.getEmail().value.compareToIgnoreCase(person2.getEmail().value);
-            break;
-        case ADDRESS:
-            baseComparator = (person1, person2) ->
-                    person1.getAddress().value.compareToIgnoreCase(person2.getAddress().value);
-            break;
-        case SALARY:
-            baseComparator = Comparator.comparingDouble(person -> Double.parseDouble(person.getSalary()
-                    .getValue()));
-            break;
-        case DATEOFBIRTH:
-            baseComparator = (person1, person2) ->
-                    person1.getDateOfBirth().getValue().compareToIgnoreCase(person2.getDateOfBirth().getValue());
-            break;
-        case MARITALSTATUS:
-            baseComparator = (person1, person2) ->
-                    person1.getMaritalStatus().getValue().compareToIgnoreCase(person2.getMaritalStatus().getValue());
-            break;
-        case OCCUPATION:
-            baseComparator = (person1, person2) ->
-                    person1.getOccupation().getValue().compareToIgnoreCase(person2.getOccupation().getValue());
-            break;
-        case DEPENDENTS:
-            baseComparator = Comparator.comparingInt(person -> person.getDependents().getValue());
-            break;
-        case INSURANCEPACKAGE:
-            baseComparator = (person1, person2) ->
-                    person1.getInsurancePackage().getPackageName().compareToIgnoreCase(
-                            person2.getInsurancePackage().getPackageName());
-            break;
-        default:
-            throw new AssertionError("Invalid sort field" + sortField);
-        }
-
-        Comparator<Person> directedComparator;
-        if (sortDirection == SortDirection.DESCENDING) {
-            directedComparator = baseComparator.reversed();
-        } else {
-            directedComparator = baseComparator;
-        }
-
-        // "Unspecified" values are always sorted to the bottom
-        // regardless of sort direction. This applies to optional fields: Salary, DateOfBirth,
-        // MaritalStatus, Occupation, and Dependents (which uses -1 as its unspecified value).
-        return (p1, p2) -> {
-            boolean p1Unspecified = isPersonUnspecified(p1, sortField);
-            boolean p2Unspecified = isPersonUnspecified(p2, sortField);
-
-            if (p1Unspecified && p2Unspecified) {
-                // Both are "Unspecified" or -1
-                return 0;
-            } else if (p1Unspecified) {
-                // p1 is "Unspecified" or -1, sort it last
-                return 1;
-            } else if (p2Unspecified) {
-                // p2 is "Unspecified" or -1, sort it last
-                return -1;
-            } else {
-                // Neither is "Unspecified" or -1
-                return directedComparator.compare(p1, p2);
-            }
-        };
     }
 
     @Override

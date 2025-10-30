@@ -1,0 +1,31 @@
+@startuml
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor MODEL_COLOR
+skinparam classBackgroundColor MODEL_COLOR
+skinparam classAttributeIconSize 0
+
+class PersonContainsKeywordsPredicate {
+    +test(Person): boolean
+}
+
+package "Filter Prefix Parser classes" <<Rectangle>> {
+Class "<<interface>>\nFilterPrefixParser" as FilterPrefixParser {
++test(Person): boolean
+}
+Class FilterContainsPrefixParser
+Class FilterComparisonPrefixParser
+Class FilterTagParser
+}
+
+show members
+
+Class HiddenOutside #FFFFFF
+HiddenOutside ..> PersonContainsKeywordsPredicate
+
+PersonContainsKeywordsPredicate *-right-> "1..*" FilterPrefixParser
+
+FilterPrefixParser <|.. FilterContainsPrefixParser
+FilterPrefixParser <|.. FilterComparisonPrefixParser
+FilterPrefixParser <|.. FilterTagParser
+@enduml
