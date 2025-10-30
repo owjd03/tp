@@ -3,8 +3,7 @@ package seedu.address.logic.parser.filter;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.ParserUtil.parseTags;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,7 +20,7 @@ import seedu.address.model.tag.Tag;
 public class FilterTagParser implements FilterPrefixParser {
 
     private final Prefix prefix;
-    private List<String> keywords = new ArrayList<>();
+    private Set<String> keywords = new HashSet<>();
     private Set<Tag> parsedTags;
 
     /**
@@ -47,7 +46,7 @@ public class FilterTagParser implements FilterPrefixParser {
     @Override
     public void parse(String args) throws ParseException {
         requireNonNull(args);
-        this.keywords.add(args);
+        this.keywords.add(args.toLowerCase());
         this.parsedTags = parseTags(this.keywords);
     }
 

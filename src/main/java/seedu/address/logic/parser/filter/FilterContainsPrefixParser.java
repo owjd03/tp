@@ -40,7 +40,7 @@ public class FilterContainsPrefixParser implements FilterPrefixParser {
     @Override
     public void parse(String args) throws ParseException {
         requireNonNull(args);
-        this.keyword = args;
+        this.keyword = args.toLowerCase();
     }
 
     @Override
@@ -49,7 +49,7 @@ public class FilterContainsPrefixParser implements FilterPrefixParser {
         if (value == null) {
             return false;
         }
-        return value.toLowerCase().contains(this.keyword.toLowerCase());
+        return value.toLowerCase().contains(this.keyword);
     }
 
     @Override
