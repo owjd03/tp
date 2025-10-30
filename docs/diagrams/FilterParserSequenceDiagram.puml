@@ -1,0 +1,64 @@
+@startuml
+!include style.puml
+
+box Parse Filter Logic LOGIC_COLOR_T1
+participant ":FilterCommandParser" as FilterCommandParser LOGIC_COLOR
+participant "<<class>>\nArgumentTokenizer" as ArgumentTokenizer LOGIC_COLOR
+participant "a:ArgumentMultiMap" as ArgumentMultimap LOGIC_COLOR
+participant "p1:FilterContainsPrefixParser" as FilterContainsPrefixParser LOGIC_COLOR
+participant "p2:FilterComparisonPrefixParser" as FilterComparisonPrefixParser LOGIC_COLOR
+participant "predicate:PersonContainsKeywordsPredicate" as PersonContainsKeywordsPredicate LOGIC_COLOR
+end box
+
+
+[-> FilterCommandParser : parse("s/>=3000 ip/undecided")
+activate FilterCommandParser
+
+FilterCommandParser -> ArgumentTokenizer : tokenize("s/>=3000 ip/undecided", ...prefixes)
+activate ArgumentTokenizer
+
+create ArgumentMultimap
+ArgumentTokenizer -> ArgumentMultimap
+activate ArgumentMultimap
+
+ArgumentMultimap --> ArgumentTokenizer : a
+deactivate ArgumentMultimap
+
+ArgumentTokenizer --> FilterCommandParser : a
+deactivate ArgumentTokenizer
+
+FilterCommandParser -> FilterCommandParser : add all present contains prefix parser
+activate FilterCommandParser
+
+create FilterContainsPrefixParser
+FilterCommandParser -> FilterContainsPrefixParser : FilterContainsPrefixParser(PREFIX_INSURANCE_PACKAGE, GET_INSURANCE_PACKAGAE)
+activate FilterContainsPrefixParser
+
+FilterContainsPrefixParser --> FilterCommandParser : p1
+deactivate FilterContainsPrefixParser
+
+FilterCommandParser -> FilterContainsPrefixParser : parse("ip/undecided")
+deactivate FilterCommandParser
+
+FilterCommandParser -> FilterCommandParser : add all present comparison prefix parser
+activate FilterCommandParser
+
+create FilterComparisonPrefixParser
+FilterCommandParser -> FilterComparisonPrefixParser : FilterComparisonPrefixParser(PREFIX_SALARY, GET_SALARY)
+activate FilterComparisonPrefixParser
+
+FilterComparisonPrefixParser --> FilterCommandParser : p2
+deactivate FilterComparisonPrefixParser
+
+FilterCommandParser -> FilterComparisonPrefixParser : parse("s/>=3000")
+deactivate FilterCommandParser
+
+create PersonContainsKeywordsPredicate
+FilterCommandParser -> PersonContainsKeywordsPredicate : PersonContainsKeywordsPredicate([p1, p2])
+activate PersonContainsKeywordsPredicate
+
+PersonContainsKeywordsPredicate --> FilterCommandParser : predicate
+deactivate PersonContainsKeywordsPredicate
+
+FilterCommandParser -> : FilterCommand(predicate, "s/>=3000 ip/undecided")
+@enduml

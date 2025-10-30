@@ -10,22 +10,22 @@ import seedu.address.logic.parser.filter.FilterPrefixParser;
  * Tests that a {@code Person}'s attributes matches all the keywords given.
  */
 public class PersonContainsKeywordsPredicate implements Predicate<Person> {
-    private final List<FilterPrefixParser> filterList;
+    private final List<FilterPrefixParser> filterPrefixList;
 
     /**
      * Constructs a {@code PersonContainsKeywordsPredicate} with the specified keywords.
      *
-     * @param filterList A list of {@code FilterPrefixParser} objects, each encapsulating the
-     *                   parsing and testing logic for a specific prefix
+     * @param filterPrefixList A list of {@code FilterPrefixParser} objects, each encapsulating the
+     *                   parsing and testing logic for a specific prefix. It is guaranteed to be non-empty.
      */
-    public PersonContainsKeywordsPredicate(List<FilterPrefixParser> filterList) {
-        this.filterList = filterList;
+    public PersonContainsKeywordsPredicate(List<FilterPrefixParser> filterPrefixList) {
+        this.filterPrefixList = filterPrefixList;
     }
 
     @Override
     public boolean test(Person person) {
         // A person matches if they satisfy ALL the specified filters.
-        return filterList.stream().allMatch(filterPrefixParser -> filterPrefixParser.test(person));
+        return filterPrefixList.stream().allMatch(filterPrefixParser -> filterPrefixParser.test(person));
     }
 
     @Override
@@ -40,13 +40,13 @@ public class PersonContainsKeywordsPredicate implements Predicate<Person> {
         }
 
         PersonContainsKeywordsPredicate otherPersonContainsKeywordsPredicate = (PersonContainsKeywordsPredicate) other;
-        return this.filterList.equals(otherPersonContainsKeywordsPredicate.filterList);
+        return this.filterPrefixList.equals(otherPersonContainsKeywordsPredicate.filterPrefixList);
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .add("filters", this.filterList)
+                .add("filters", this.filterPrefixList)
                 .toString();
     }
 }
