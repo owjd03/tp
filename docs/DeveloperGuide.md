@@ -9,7 +9,8 @@ title: Developer Guide
 
 ## **Acknowledgements**
 
-* {list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well}
+* Salary.java, line 31, regex for validating salary adapted from https://stackoverflow.com/questions/50524080/regex-with-maximum-2-digits-after-the-decimal-point.
+* Occupation.java, line 19, regex for validating non-blank strings adapted from https://stackoverflow.com/questions/13750716/what-does-regular-expression-s-s-do.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -117,7 +118,7 @@ How the parsing works:
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
 
-<img src="images/ModelClassDiagram.png" width="450" />
+<img src="images/NewModelClassDiagram.png" width="700" />
 
 
 The `Model` component,
@@ -127,11 +128,6 @@ The `Model` component,
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
-
-<img src="images/BetterModelClassDiagram.png" width="450" />
-
-</div>
 
 
 ### Storage component
@@ -155,13 +151,181 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
-### Adding more fields for Add/Edit
-
 ### Filter
 
-### Sort
+The `filter` command's ability to handle multiple, complex criteria is enabled by `FilterCommandParser` and 
+a hierarchy of specialized `FilterPrefixParser` classes. A single, composite `PersonContainsKeywordsPredicate` is used to
+combine the various filtering criteria. This predicate is the main driver for `FilterCommand#execute(model)`
+in updating the `filteredPersonsList`.<br>
 
-### Add/Edit/Delete/List Insurance Package
+The `FilterCommandParser`uses `ArgumentTokenizer` to produce an `ArgumentMultimap`, mapping each prefix
+to its corresponding argument from the user's input. The `parse` method in `FilterCommandParser` then
+determines which prefixes have been provided and instantiates the appropriate parser for each one.
+
+Unlike a simple keyword search, the `filter` command supports different matching logic for different fields.
+This is handled by a family of `FilterPrefixParser` classes:
+
+1. `FilterContainsPrefixParser`: Performs a case-insensitive `contains` search. This is used for most
+    text-based fields such as name, address and email.
+2. `FilterComparisonPrefixParser`: Handles numerical fields (`s/` and `dep/`). It can perform a `contains`
+    search by default, or a strict numerical comparison if an operator (`>`, `>=`, `<`, `<=`, `=`)
+    is provided.
+3. `FilterTagParser`: A specialized parser to handle the logic for matching tags, including support for
+    multiple `t/` prefixes.
+
+Each of these parsers is responsible for parsing the user's keyword and implementing a `test(Person)` 
+method for its specific logic.
+<br>
+
+The `PersonContainsKeywordsPredicate` holds a list of these initialized `FilterPrefixParser` instances.
+Its `test(Person)` method iterates through this list, calling the `test` method of each 
+individual parser. It returns `true` only if the person object passes the test for **all** the provided 
+criteria, thus achieving the **"AND"** logic.
+
+<img src="images/PersonContainsKeywordsPredicateClassDiagram.png" width="550" />
+
+**Design Considerations:**
+
+**Parser Implementation**<br>
+The `FilterCommandParser` was implemented in this manner to accommodate the `filter` command's diverse 
+field types and logic. Instead of a single parsing strategy, it delegates the parsing and testing logic 
+for each prefix to a specialized `FilterPrefixParser`. This makes it easy to manage different validation 
+rules (e.g. contains vs. numerical comparison) for each field.
+
+**Predicate Implementation**<br>
+The `Model` requires a single `Predicate` to update its filtered list. Thus, `PersonContainsKeywordsPredicate` 
+was designed to serve as a composite predicate. It holds multiple `FilterPrefixParser` instances, each 
+representing a single filter criterion. This approach keeps the testing logic for each criterion separate and 
+modular while providing a unified interface to the `Model`.
+
+The sequence diagram below illustrates the interactions of `filter` within the `Logic` component, 
+taking `execute("filter s/>=3000 ip/undecided")` API call as an example.
+
+![Interactions Inside the Logic Component for the `filter s/>=3000 ip/undecided` Command](images/FilterSequenceDiagram.png)
+
+:information_source: **Note:** The lifeline for `FilterCommandParser` should end at the destroy
+marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+The sequence diagram below represents the reference frame in the above sequence diagram.
+
+![Interactions Inside FilterParser for the `filter s/>=3000 ip/undecided` Command](images/FilterParserSequenceDiagram.png)
+
+:information_source: **Note:** Due to a limitation of PlantUML, it is possible to show the ref frame box but
+not the sd frame box.
+
+**Alternatives Considered:**
+* **Alternative 1 (current choice):** A composite predicate that uses specialized prefix parsers.
+  * Pros: Highly modular and extensible. Adding a new filterable field or a new type of filtering logic
+    (e.g., date range filtering) only requires creating a new FilterPrefixParser subclass without
+    modifying existing ones.
+  * Cons: Introduces a slightly higher number of classes and a layer of abstraction with the parser hierarchy.
+* **Alternative 2:** A single, monolithic predicate for all fields.
+  * Pros: Fewer classes might seem simpler at first glance. 
+  * Cons: The test method would become a large, complex block of if-else statements for each possible prefix.
+  This would be difficult to read, maintain, and test, violating the Single Responsibility Principle.
+
+### Sort
+The `sort` command, facilitated by `SortCommand` and `SortCommandParser`, allows users to sort and display their client 
+list by various fields (name, phone, email, address, salary, date of birth, marital status, occupation, dependents, insurance package) 
+in ascending or descending order. 
+Special handling ensures that "Unspecified" values are always placed at the bottom of the sorted list regardless of sort direction.
+
+**Aspect: How sort executes:**
+
+The sequence diagram below illustrates the interactions within the system when executing a `sort name ascending` command:
+
+<img src="images/SortSequenceDiagram.png" width="550" />
+
+**Design Considerations:**
+
+**Aspect: How unspecified values are handled:**
+
+* **Current choice:** Always place "Unspecified" values at the bottom regardless of sort direction.
+    * **Pros:** Consistent user experience; important data (specified values) always appears first.
+    * **Cons:** May not follow strict alphabetical/numerical order in some cases.
+
+* **Alternative:** Treat "Unspecified" as a regular string/value in sorting.
+    * **Pros:** Maintains strict sorting order.
+    * **Cons:** "Unspecified" values might appear in the middle of results, making it harder to focus on actual data.
+
+### Export
+
+The `export` command, facilitated by `ExportCommand` and `ExportCommandParser`, allows users to export their client list to a CSV file. 
+This is useful for creating backups of client's contact details and data.
+
+**Aspect: How export executes:**
+
+The sequence diagram below illustrates the interactions within the system when executing an `export` command.
+
+<img src="images/ExportSequenceDiagram.png" width="550" />
+
+**Design Considerations:**
+
+**Aspect: File format:**
+
+* **Current choice:** CSV (Comma-Separated Values).
+    * **Pros:** Widely supported and easy to parse.
+    * **Cons:** Does not support all data types (e.g., images).
+
+* **Alternative:** XML (eXtensible Markup Language).
+    * **Pros:** Highly structured, widely supported, and allows for complex hierarchical data representation.
+    * **Cons:** Can be more verbose than JSON or CSV, leading to larger file sizes. Parsing can also be slightly more complex.
+
+
+### List Insurance Packages
+
+The listing of insurance packages is facilitated by the `ListPackageCommand` and `PackageWindow` class.
+
+The `ListPackageCommand` requires no input parsing as it takes no parameters. 
+When `Command#execute` is called, `ListPackageCommand` creates a `CommandResult` with the `showPackage` flag set to `true` and provides feedback message "Opened package window." to the user.
+The `MainWindow#executeCommand` detects this flag and calls `handlePackage()` to open a separate `PackageWindow` that displays all available insurance packages from the `Model#getFilteredInsurancePackageList()` method,
+allowing users to view the complete catalog of insurance packages with their names and descriptions.
+
+### Add/Edit/Delete Insurance Package
+
+These three commands (`addp`, `editp`, `deletep` respectively) are parsed by a central `PackageCommandParser` before they are executed.
+
+`PackageCommandParser` parses the input to obtain the package name and description using the `ip/` and `d/` prefixes respectively.
+For `addp` and `editp`, the parser tokenizes the arguments and validates that both required prefixes are present.
+For `deletep`, the parser only validates the package name using the `ip/` prefix.
+The parser also validates that there is no preamble text before the prefixes and that the required prefixes are not duplicated.
+
+**Add Insurance Package**
+The addition of insurance packages is further facilitated by the `AddPackageCommand` and `InsurancePackage` classes.
+
+After parsing, an `InsurancePackage` object is created with the parsed values. The `InsurancePackage` constructor automatically formats the package name to capitalize each word for consistency. 
+
+When `Command#execute` is called, `AddPackageCommand` first checks for duplicate packages using `Model#hasInsurancePackage()` method. If no duplicate exists, it adds the new insurance package to the catalog via the `Model#addInsurancePackage()` method, which stores it in the `UniqueInsurancePackageList` in `InsuranceCatalog`.
+
+**Edit Insurance Package**
+
+The editing of insurance packages is further facilitated by the `EditPackageCommand` and `InsurancePackage` classes.
+
+After parsing, the target package name and new description are stored in the `EditPackageCommand` object.
+
+When `Command#execute` is called, `EditPackageCommand` first searches for the original package `targetPackage` by its name (case-insensitively). If this package is not found, a `CommandException` is thrown. If found, a new `InsurancePackage` object `editedInsurancePackage` is created using the original name and the new description. The `InsurancePackage` constructor automatically formats the package name for consistency. 
+Finally, the command calls `Model#setInsurancePackage()` to replace the `targetPackage` with the `editedInsurancePackage` in the `UniqueInsurancePackageList` in `InsuranceCatalog`.
+
+**Aspect: How editp executes:**
+
+The sequence diagram below illustrates the interactions within the system when executing a `editp ip/packageName d/newDescription` command:
+
+<img src="images/EditPackageSequenceDiagram.png" width="550" />
+
+**Design Considerations:**
+
+**Aspect: Identifying the target insurance package:**
+
+* **Current choice:** Use a case-insensitive package name match.
+    * **Pros:** More user-friendly and forgiving since users do not have to worry about exact casing, so fast typists are not slowed down.
+    * **Cons:** Requires careful handling in `UniqueInsurancePackageList` to avoid duplicate names differing only by case.
+
+* **Alternative:** Use a case-sensitive package name match.
+    * **Pros:** Allows for better data specificity due to a stricter uniqueness constraint.
+    * **Cons:** Less user-friendly as users must remember exact casing, which can be frustrating for fast typists.
+
+
+**Delete Insurance Package**
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -487,68 +651,86 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 ### Non-Functional Requirements
 
 #### Platform Compatibility
-1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
+1.  Should work on any _mainstream OS_ (Windows, Linux, Unix, MacOS) as long as it has Java `17` or above installed.
 
-#### Performance and Responsiveness 
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
+#### Performance and Responsiveness
+2. The application should load up in under 3 seconds for a dataset of 1,000 persons.
+3. All commands (`list`, `filter`, `sort`, etc.) should return results in under 1.5 seconds for a dataset of 1,000 
+persons.
 
 #### Scalability 
-4. The system should be designed to scale to larger datasets (e.g., ≥10,000 contacts) with minimal architectural changes.
+4. The system should be designed to scale to larger datasets (e.g., ≥10,000 contacts) with minimal architectural changes
+(less than 10% of the codebase's functional code).
 
 #### Usability 
 5. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) 
-should be able to accomplish most of the tasks faster using commands than using the mouse.
-6. Commands should be concise, memorable, and consistent.
+should be able to accomplish most of the tasks (e.g. adding, editing or finding a contact) faster using commands than
+using the mouse.
+6. Commands should be deterministic in their expected behaviour.
 7. Error messages should be clear, instructive, and suggest corrective action.
 
 #### Reliability and Fault Tolerance 
-8. The application should not crash in the event of invalid inputs. 
-9. Must handle unexpected shutdowns gracefully without loss of stored data. 
+8. The application must not crash in the event of invalid inputs. 
+9. The application must be able to handle unexpected shutdowns without loss of stored data. 
 
 #### Security and Privacy 
-10. All sensitive data (salary, occupation, contact details, etc) must be stored securely.
-11. Must comply with existing data privacy regulations. 
+10. All client data is stored locally on the user's file system and is not transmitted over any network, giving the user
+full control over their data's security.
+11. The application must comply with all data privacy regulations that the user is bound to.
 
 #### Maintainability 
-12. Code must be modular and follow standard Java conventions.
-13. Build should be automated via Gradle. 
-14. Unit and integration tests should provide ample coverage of the codebase. 
+12. Code must be modular and follow the standard Java conventions outlined by the CS2103T course.
+13. The project build should be automated via Gradle. 
+14. Unit and integration tests must provide ample (>80%) coverage of the codebase's functional code. 
 
 #### Extensibility 
-15. The system should support the addition of new commands with minimal changes to existing code.
+15. The system should support the addition of new commands without modification to the core Logic or Model interfaces.
 
 #### Portability 
-16. The application should be distributable as a single JAR file and run consistently across
-supported platforms without requiring external dependencies. 
+16. The application should be distributable as a single JAR file and run consistently across all
+supported platforms (Windows, Linux, Unix, MacOS) without requiring external dependencies. 
 
-#### Documentation 
-17. User guide should explain all commands clearly with examples.
-18. Developer Guide should include instructions for setting up the development environment.
-19. Public classes and methods in the codebase should include Javadoc header comments that describe its purpose, 
-parameters, return values, and any exceptions thrown. These comments should follow the official JavaDoc conventions.
-
-*{More to be added}*
+#### Documentation
+17. The User Guide should be able to clearly explain all commands to a CLI novice. 
+18. The Developer Guide should include instructions for setting up the development environment.
+19. Most of the public classes and methods in the codebase (>80%) should include JavaDoc header comments that describe 
+its purpose, parameters, return values, and any exceptions thrown. These comments should follow the official JavaDoc 
+conventions outlined by the CS2103T course.
 
 ### Glossary
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Command Line Interface (CLI)**: A text-based interface where the user types commands instead of 
 graphical elements.
-* **Private contact detail**: A contact detail that is not meant to be shared with others.
 * **Financial Advisor (FA)**: A professional user of the system whose job is to manage client 
 relationships and recommend suitable financial products or services.
 * **Client**: An individual whose personal and financial details (e.g., age, salary, policies, risk profile) 
 are stored in the system. Clients are the primary focus of the Financial Advisor’s work and the main type of
-contact being managed. 
-* **Client Profile**: A structured record containing personal and financial information of a client (e.g. name,
-age, salary, relationship status). 
-* **Tag**: A label applied to a client profile to group clients meaningfully.
+contact being managed.
+* **Client Profile**: A structured record containing personal and financial information of a client (name, 
+age, salary, relationship status, etc.).
+* **Tag**: A label applied to a client profile which provides additional information about a client.
 * **Command**: A typed instruction given to the system to perform an action (e.g. list, add, find, delete).
-* **Archiving**: The act of marking a client profile as inactive (not deleted) for long-term storage,
-    so that it no longer shows up in day-to-day operations but can be retrieved if needed.
-* **Offline**: The ability to use the system without an internet connection. 
+* **Prefix**: A two-or-three letter code followed by a / (e.g., n/, p/, ip/) used in commands to specify which data 
+field the user wants to work with.
+* **Parameter**: The value provided by the user after a prefix. E.g. in the partial command `add n/John Doe`, 
+John Doe is the parameter for the n/ prefix.
+* **Case-Insensitive**: A type of search or comparison that ignores the difference between uppercase and lowercase
+letters. E.g. a case-insensitive search for john would match john, John, and jOhN.
+* **Operator**: A symbol (>, >=, <, <=, =) used in the filter command to perform numerical or date-based comparisons,
+allowing for more advanced queries beyond simple keyword matching.
+* **CSV (Comma-Separated Values)**: A plain text file format used for the export feature. Each line in the file 
+represents a row of data, with values separated by commas. CSV files are widely compatible with spreadsheet software
+like Microsoft, Excel or Google Sheets.
+* **Index**: A 1-based number corresponding to the position of a client in the currently displayed list. It is used by 
+commands like `edit` and `delete` to identify a specific client.
+* **JSON (JavaScript Object Notation)**: A lightweight, human-readable text format used to store the application's data,
+such as client profiles and user preferences.
+* **Field**: The term used in the application to refer to a specific piece of data within a client profile, such as 
+`Name`, `Phone`, or `Salary`.
+* **Insurance Package**: Represents a specific financial product or plan that can be assigned to a client. 
+Each package has a unique name and a description.
 
-*{More to be added}*
 
 --------------------------------------------------------------------------------------------------------------------
 

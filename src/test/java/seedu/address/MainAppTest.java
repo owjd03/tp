@@ -29,7 +29,6 @@ public class MainAppTest {
 
     private InMemoryStorageStub storage;
     private MainApp mainApp;
-    private ReadOnlyUserPrefs userPrefs;
     private ReadOnlyAddressBook sampleAddressBook;
     private ReadOnlyInsuranceCatalog sampleCatalog;
 
@@ -37,7 +36,6 @@ public class MainAppTest {
     public void setUp() {
         storage = new InMemoryStorageStub();
         mainApp = new MainApp();
-        userPrefs = new UserPrefs();
         sampleAddressBook = SampleDataUtil.getSampleAddressBook();
         sampleCatalog = SampleDataUtil.getSampleInsuranceCatalog();
     }
@@ -208,25 +206,28 @@ public class MainAppTest {
         }
 
         @Override
-        public void saveAddressBook(ReadOnlyAddressBook addressBook) throws IOException {
+        public void saveAddressBook(ReadOnlyAddressBook addressBook) {
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void saveAddressBook(ReadOnlyAddressBook addressBook, Path filePath) throws IOException {
+        public void saveAddressBook(ReadOnlyAddressBook addressBook, Path filePath) {
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
         public Path getUserPrefsFilePath() {
-            return Paths.get("dummy/path/userprefs.json");
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public Optional<UserPrefs> readUserPrefs() throws DataLoadingException {
-            return Optional.of(new UserPrefs());
+        public Optional<UserPrefs> readUserPrefs() {
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void saveUserPrefs(ReadOnlyUserPrefs userPrefs) throws IOException {
+        public void saveUserPrefs(ReadOnlyUserPrefs userPrefs) {
+            throw new AssertionError("This method should not be called.");
         }
     }
 }

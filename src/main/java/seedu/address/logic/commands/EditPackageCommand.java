@@ -4,11 +4,15 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INSURANCE_PACKAGE;
 
+import java.util.logging.Logger;
+
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.insurance.InsurancePackage;
+
 
 /**
  * Edits the details of an existing insurance package in the address book.
@@ -28,6 +32,8 @@ public class EditPackageCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "Edited insurance package: %1$s";
     public static final String MESSAGE_EDIT_PACKAGE_SUCCESS = "Edited Insurance Package: %1$s";
+
+    private static final Logger logger = LogsCenter.getLogger(EditPackageCommand.class);
 
     private final String packageName;
     private final String editedPackageDesc;
@@ -61,6 +67,7 @@ public class EditPackageCommand extends Command {
                 .filter(pkg -> pkg.getPackageName().equalsIgnoreCase(packageName)).findFirst().orElse(null);
 
         if (targetPackage == null) {
+            logger.warning("Invalid package specified for edit: " + packageName);
             throw new CommandException(Messages.MESSAGE_INVALID_PACKAGE);
         }
 

@@ -13,7 +13,7 @@ public class Dependents {
 
     public static final int UNSPECIFIED_VALUE = -1;
 
-    public final int value;
+    private final int value;
 
     /**
      * Constructs a {@code Dependents}.
@@ -26,6 +26,13 @@ public class Dependents {
     }
 
     /**
+     * @return The raw number of dependents as an int.
+     */
+    public int getValue() {
+        return this.value;
+    }
+
+    /**
      * Returns true if a given integer is a valid number of dependents
      * or is the unspecified value (-1).
      */
@@ -33,6 +40,10 @@ public class Dependents {
         return test >= 0 || test == UNSPECIFIED_VALUE;
     }
 
+    /**
+     * Static factory method for creating the default "Unspecified" Dependents
+     * @return A Dependents object with value -1.
+     */
     public static Dependents createUnspecified() {
         return new Dependents(UNSPECIFIED_VALUE);
     }
@@ -49,10 +60,6 @@ public class Dependents {
      */
     public boolean isUnspecified() {
         return this.value == UNSPECIFIED_VALUE;
-    }
-
-    public int toInt() {
-        return value;
     }
 
     @Override

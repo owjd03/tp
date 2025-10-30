@@ -99,16 +99,16 @@ public class AddressBookParser {
             return new ViewCommandParser().parse(arguments);
 
         case AddPackageCommand.COMMAND_WORD:
-            return new AddPackageCommandParser().parse(arguments);
+            return new PackageCommandParser().parseAddPackage(arguments);
 
         case ListPackageCommand.COMMAND_WORD:
             return new ListPackageCommand();
 
         case EditPackageCommand.COMMAND_WORD:
-            return new EditPackageCommandParser().parse(arguments);
+            return new PackageCommandParser().parseEditPackage(arguments);
 
         case DeletePackageCommand.COMMAND_WORD:
-            return new DeletePackageCommandParser().parse(arguments);
+            return new PackageCommandParser().parseDeletePackage(arguments);
 
         default:
             logger.finer("This user input caused a ParseException: " + userInput);
