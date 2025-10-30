@@ -21,7 +21,7 @@ public class ViewCommand extends Command {
 
     public static final String COMMAND_WORD = "view";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Shows the full details of a Person.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Shows the full detail of a Person.\n"
             + "Parameters: [NAME-KEYWORD] or [INDEX] (must be a positive integer)\n"
             + "Example #1: " + COMMAND_WORD + " alex\n"
             + "Example #2: " + COMMAND_WORD + " 1";
@@ -32,7 +32,7 @@ public class ViewCommand extends Command {
             + "Please write the full name or use INDEX instead.";
 
     private final Index index;
-    private final String predicate;
+    private final String nameKeyword;
     private Person personToView;
 
     /**
@@ -41,16 +41,16 @@ public class ViewCommand extends Command {
     public ViewCommand(Index index) {
         requireNonNull(index);
         this.index = index;
-        this.predicate = null;
+        this.nameKeyword = null;
     }
 
     /**
-     * @param predicate of the person in the filtered person list
+     * @param nameKeyword of the person in the filtered person list
      */
-    public ViewCommand(String predicate) {
-        requireNonNull(predicate);
+    public ViewCommand(String nameKeyword) {
+        requireNonNull(nameKeyword);
         this.index = null;
-        this.predicate = predicate;
+        this.nameKeyword = nameKeyword;
     }
 
     /**
@@ -67,7 +67,7 @@ public class ViewCommand extends Command {
         requireNonNull(model);
         if (index != null) {
             return executeByIndex(model);
-        } else if (!predicate.isBlank()) {
+        } else if (!nameKeyword.isBlank()) {
             return executeByName(model);
         } else {
             throw new CommandException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewCommand.MESSAGE_USAGE));
@@ -91,10 +91,7 @@ public class ViewCommand extends Command {
 
         this.personToView = lastShownList.get(index.getZeroBased());
 
-        ViewData last = new ViewData(true, this.personToView);
-
-        return new CommandResult(getMessageViewSuccess(this.personToView.getName()), false, last,
-                false, false);
+        return prepareViewResult();
     }
 
     /**
@@ -109,7 +106,7 @@ public class ViewCommand extends Command {
                 .stream()
                 .filter(p ->
                         p.getName().fullName.toLowerCase()
-                                   .contains(predicate.toLowerCase())
+                                   .contains(nameKeyword.toLowerCase())
                         )
                 .toList();
 
@@ -120,11 +117,17 @@ public class ViewCommand extends Command {
         } else {
             this.personToView = filteredList.get(0);
 
-            ViewData last = new ViewData(true, this.personToView);
-
-            return new CommandResult(getMessageViewSuccess(this.personToView.getName()), false, last,
-                    false, false);
+            return prepareViewResult();
         }
+    }
+
+    /**
+     * Construct a CommandResult to execute
+     * @return CommandResult
+     */
+    private CommandResult prepareViewResult() {
+        ViewData last = new ViewData(true, personToView);
+        return new CommandResult(getMessageViewSuccess(personToView.getName()), false, last, false, false);
     }
 
     @Override
@@ -133,7 +136,6 @@ public class ViewCommand extends Command {
             return true;
         }
 
-        // instanceof handles nulls
         if (!(other instanceof ViewCommand)) {
             return false;
         }
@@ -142,7 +144,7 @@ public class ViewCommand extends Command {
         if (index != null) {
             return e.index.equals(index);
         } else {
-            return e.predicate.equals(predicate);
+            return e.nameKeyword.equals(nameKeyword);
         }
     }
 }
