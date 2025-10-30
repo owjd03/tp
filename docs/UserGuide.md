@@ -92,7 +92,7 @@ A person can have any number of tags (including 0)
 Examples:
 * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 s/120000 dob/2001-01-01 ms/Married ip/Gold dep/2 t/friend t/colleague`
 * After running the above command:
-  ![successful add](images/addSuccessful.png)
+  ![result for `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 s/120000 dob/2001-01-01 ms/Married ip/Gold dep/2 t/friend t/colleague`](images/addSuccessful.png)
 * `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 dep/0 ip/Undecided t/wanted criminal`
 
 ### Listing all persons : `list`
@@ -117,10 +117,10 @@ Format: `edit INDEX n/NAME p/PHONE e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SAL
 Examples:
 *  `edit 1 p/91234567 e/johndoe@newemail.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@newemail.com` respectively. 
 *  After running the above command:
-   ![successful edit](images/editSuccessful.png)
+   ![result for `edit 1 p/91234567 e/johndoe@newemail.com`](images/editSuccessful.png)
 * `edit 1 s/unspecified dob/UNSPECified` Edits the salary and date of birth of the 1st person to be `Unspecified`.
 *  After running the above command:
-   ![edit to unspecified](images/editToUnspecified.png) 
+   ![result for `edit 1 s/unspecified dob/UNSPECified`](images/editToUnspecified.png) 
 * `edit 3 a/John street, block 321, #01-01 s/150000` Edits the address and salary of the 3rd person to be `John street, block 321, #01-01` and `$150,000` respectively.
 * `edit 4 ip/Silver dep/0` Edits the insurance package and number of dependents of the 4th person to be `Silver` and `0` respectively.
 * `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
@@ -143,7 +143,7 @@ Examples:
 * `find John` returns `john` and `John Doe`
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
 * After running the above command:
-  ![result for 'find alex david'](images/findAlexDavidResult.png)
+  ![result for `find alex david`](images/findAlexDavidResult.png)
 
 ### Viewing persons details: `view`
 
@@ -162,7 +162,7 @@ Examples:
 * `view Alex` opens up a new window containing the details of the contact `Alex Yeoh`.
 * `view 1` opens up a new window containing details of the first person in the list.
 * After running the above command:
-  ![successful view](images/viewSuccessful.png)
+  ![result for `view 1`](images/viewSuccessful.png)
 
 ### Filtering persons: `filter`
 
@@ -196,7 +196,7 @@ These fields have two modes:
    * `filter s/>=60000` finds salaries greater than or equal to `60000`.
    * `filter dep/=2` finds people with **exactly** 2 dependents.
    * **Rules**
-     * You must provide a valid number after the operator.
+     * You must provide a valid number after the operator. The provided number cannot be negative.
      * `dep/` must be a whole number (e.g. `2`).
      * `s/` can have up to two decimal places (e.g. `5000.50`).
 <br>
@@ -205,10 +205,10 @@ Examples:
 * `filter n/josh a/kent ridge` displays all contacts whose name contains `josh` **AND** whose address contains `kent ridge`.
 * `filter s/500 dep/1` displays all contacts whose salary contains `500` **AND** dependents count contains `1`.
 * After running the above command:
-  ![result for 'filter s/500 dep/1'](images/filterSalary500Dep1.png)
+  ![result for `filter s/500 dep/1`](images/filterSalary500Dep1.png)
 * `filter s/>3000 dep/<1` displays all contacts with a salary greater than `3000` **AND** have `0` dependents.
 * After running the above command:
-* ![result for 'filter s/>3000 dep/<1'](images/filterSalaryGreaterThan3000DepLessThan1.png)
+* ![result for `filter s/>3000 dep/<1`](images/filterSalaryGreaterThan3000DepLessThan1.png)
 
 Invalid Usages:
 * `filter` (at least one prefix must be provided)
@@ -286,7 +286,7 @@ Format: `addp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION`
 Examples:
 * `addp ip/Premium Package d/Our top-tier insurance with comprehensive coverage and benefits.` Adds a "Premium Package" with the specified description.
 * After running the above command:
-    ![successful add package](images/addPackageSuccessful.png)
+    ![result for `addp ip/Premium Package d/Our top-tier insurance with comprehensive coverage and benefits.`](images/addPackageSuccessful.png)
 * `addp ip/basic plan d/Essential coverage at an affordable price point.` Adds a "Basic Plan" (auto-formatted) with the description.
 * `addp ip/Student Package d/` Adds a "Student Package" with an empty description.
 
@@ -305,7 +305,7 @@ Format: `editp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION`
 Examples:
 * `editp ip/Gold d/New description.` Edits the description of "Gold" package to be `New description.`
 * After running the above command:
-    ![successful edit package](images/editPackageSuccessful.png)
+    ![result for `editp ip/Gold d/New description.`](images/editPackageSuccessful.png)
 * `editp ip/Basic Plan d/ ` Edits the description of "Basic Plan" to be empty.
 
 ### Deleting an insurance package: `deletep`
@@ -328,7 +328,7 @@ Shows all existing insurance package in the address book.
 
 Format: `listp`
 
-![list package message](images/listPackage.png)
+![result for `listp`](images/listPackage.png)
 
 ### Clearing all entries : `clear`
 
