@@ -183,9 +183,8 @@ The sequence diagram below illustrates the interactions within the system when e
     * **Pros:** Maintains strict sorting order.
     * **Cons:** "Unspecified" values might appear in the middle of results, making it harder to focus on actual data.
 
-### Add/Edit/Delete/List Insurance Package
 
-**List Insurance Package**
+### List Insurance Packages
 
 The listing of insurance packages is facilitated by the `ListPackageCommand` and `PackageWindow` class.
 
@@ -194,19 +193,49 @@ When `Command#execute` is called, `ListPackageCommand` creates a `CommandResult`
 The `MainWindow#executeCommand` detects this flag and calls `handlePackage()` to open a separate `PackageWindow` that displays all available insurance packages from the `Model#getFilteredInsurancePackageList()` method,
 allowing users to view the complete catalog of insurance packages with their names and descriptions.
 
+### Add/Edit/Delete Insurance Package
+
+These three commands (`addp`, `editp`, `deletep` respectively) are parsed by a central `PackageCommandParser` before they are executed.
+
+`PackageCommandParser` parses the input to obtain the package name and description using the `ip/` and `d/` prefixes respectively.
+For `addp` and `editp`, the parser tokenizes the arguments and validates that both required prefixes are present.
+For `deletep`, the parser only validates the package name using the `ip/` prefix.
+The parser also validates that there is no preamble text before the prefixes and that the required prefixes are not duplicated.
+
 **Add Insurance Package**
+The addition of insurance packages is further facilitated by the `AddPackageCommand` and `InsurancePackage` classes.
 
-The addition of insurance packages is facilitated by the `AddPackageCommand`, `AddPackageCommandParser`, and `InsurancePackage` classes.
+After parsing, an `InsurancePackage` object is created with the parsed values. The `InsurancePackage` constructor automatically formats the package name to capitalize each word for consistency. 
 
-`AddPackageCommandParser` parses the input to obtain the package name and description using the `ip/` and `d/` prefixes respectively.
-It validates that both required prefixes are present and creates an `InsurancePackage` object with the parsed values.
-The `InsurancePackage` constructor automatically formats the package name to capitalize each word for consistency.
-
-When `Command#execute` is called, `AddPackageCommand` first checks for duplicate packages using `Model#hasInsurancePackage()` method.
-If no duplicate exists, it adds the new insurance package to the catalog via the `Model#addInsurancePackage()` method,
-which stores it in the `UniqueInsurancePackageList` in `InsuranceCatalog`.
+When `Command#execute` is called, `AddPackageCommand` first checks for duplicate packages using `Model#hasInsurancePackage()` method. If no duplicate exists, it adds the new insurance package to the catalog via the `Model#addInsurancePackage()` method, which stores it in the `UniqueInsurancePackageList` in `InsuranceCatalog`.
 
 **Edit Insurance Package**
+
+The editing of insurance packages is further facilitated by the `EditPackageCommand` and `InsurancePackage` classes.
+
+After parsing, the target package name and new description are stored in the `EditPackageCommand` object.
+
+When `Command#execute` is called, `EditPackageCommand` first searches for the original package `targetPackage` by its name (case-insensitively). If this package is not found, a `CommandException` is thrown. If found, a new `InsurancePackage` object `editedInsurancePackage` is created using the original name and the new description. The `InsurancePackage` constructor automatically formats the package name for consistency. 
+Finally, the command calls `Model#setInsurancePackage()` to replace the `targetPackage` with the `editedInsurancePackage` in the `UniqueInsurancePackageList` in `InsuranceCatalog`.
+
+**Aspect: How editp executes:**
+
+The sequence diagram below illustrates the interactions within the system when executing a `editp ip/packageName d/newDescription` command:
+
+<img src="images/EditPackageSequenceDiagram.png" width="550" />
+
+**Design Considerations:**
+
+**Aspect: Identifying the target insurance package:**
+
+* **Current choice:** Use a case-insensitive package name match.
+    * **Pros:** More user-friendly and forgiving since users do not have to worry about exact casing, so fast typists are not slowed down.
+    * **Cons:** Requires careful handling in `UniqueInsurancePackageList` to avoid duplicate names differing only by case.
+
+* **Alternative:** Use a case-sensitive package name match.
+    * **Pros:** Allows for better data specificity due to a stricter uniqueness constraint.
+    * **Cons:** Less user-friendly as users must remember exact casing, which can be frustrating for fast typists.
+
 
 **Delete Insurance Package**
 
