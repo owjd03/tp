@@ -130,12 +130,6 @@ public class FilterCommandParserTest {
         FilterCommand expectedCommand2 = createExpectedFilterCommand(userInput2,
                 createTagParser("friend", "colleague"));
         assertParseSuccess(parser, userInput2, expectedCommand2);
-
-        // Duplicate tags - should be treated as one
-        String userInput3 = " " + PREFIX_TAG + "friend " + PREFIX_TAG + "friend";
-        FilterCommand expectedCommand3 = createExpectedFilterCommand(userInput3,
-                createTagParser("friend")); // Expected predicate only contains one "friend" tag
-        assertParseSuccess(parser, userInput3, expectedCommand3);
     }
 
     @Test

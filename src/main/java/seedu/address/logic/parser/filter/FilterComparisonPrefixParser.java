@@ -77,7 +77,7 @@ public class FilterComparisonPrefixParser implements FilterPrefixParser {
     public void parse(String args) throws ParseException {
         logger.info("Parsing comparison prefix arguments");
         requireNonNull(args);
-        this.keyword = args.toLowerCase();
+        this.keyword = args;
         Matcher matcher = PATTERN.matcher(this.keyword);
 
         if (!matcher.matches()) {
@@ -152,14 +152,14 @@ public class FilterComparisonPrefixParser implements FilterPrefixParser {
 
     private boolean testContainsLogic(Person person) {
         if (this.isPersonFieldUnspecified.apply(person)) {
-            return "unspecified".contains(this.keyword);
+            return "unspecified".contains(this.keyword.toLowerCase());
         }
 
         Double personValue = this.getPersonField.apply(person);
         if (personValue == null) {
             return false;
         }
-        return personValue.toString().contains(this.keyword);
+        return personValue.toString().contains(this.keyword.toLowerCase());
     }
 
     private boolean testComparisonLogic(Person person) {
