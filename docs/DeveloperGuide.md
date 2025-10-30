@@ -159,6 +159,77 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Filter
 
+The `filter` command's ability to handle multiple, complex criteria is enabled by `FilterCommandParser` and 
+a hierarchy of specialized `FilterPrefixParser` classes. A single, composite `PersonContainsKeywordsPredicate` is used to
+combine the various filtering criteria. This predicate is the main driver for `FilterCommand#execute(model)`
+in updating the `filteredPersonsList`.<br>
+
+The `FilterCommandParser`uses `ArgumentTokenizer` to produce an `ArgumentMultimap`, mapping each prefix
+to its corresponding argument from the user's input. The `parse` method in `FilterCommandParser` then
+determines which prefixes have been provided and instantiates the appropriate parser for each one.
+
+Unlike a simple keyword search, the `filter` command supports different matching logic for different fields.
+This is handled by a family of `FilterPrefixParser` classes:
+
+1. `FilterContainsPrefixParser`: Performs a case-insensitive `contains` search. This is used for most
+    text-based fields such as name, address and email.
+2. `FilterComparisonPrefixParser`: Handles numerical fields (`s/` and `dep/`). It can perform a `contains`
+    search by default, or a strict numerical comparison if an operator (`>`, `>=`, `<`, `<=`, `=`)
+    is provided.
+3. `FilterTagParser`: A specialized parser to handle the logic for matching tags, including support for
+    multiple `t/` prefixes.
+
+Each of these parsers is responsible for parsing the user's keyword and implementing a `test(Person)` 
+method for its specific logic.
+<br>
+
+The `PersonContainsKeywordsPredicate` holds a list of these initialized `FilterPrefixParser` instances.
+Its `test(Person)` method iterates through this list, calling the `test` method of each 
+individual parser. It returns `true` only if the person object passes the test for **all** the provided 
+criteria, thus achieving the **"AND"** logic.
+
+<img src="images/PersonContainsKeywordsPredicateClassDiagram.png" width="550" />
+
+#### Design Considerations:
+
+**Parser Implementation**<br>
+The `FilterCommandParser` was implemented in this manner to accommodate the `filter` command's diverse 
+field types and logic. Instead of a single parsing strategy, it delegates the parsing and testing logic 
+for each prefix to a specialized `FilterPrefixParser`. This makes it easy to manage different validation 
+rules (e.g. contains vs. numerical comparison) for each field.
+
+**Predicate Implementation**<br>
+The `Model` requires a single `Predicate` to update its filtered list. Thus, `PersonContainsKeywordsPredicate` 
+was designed to serve as a composite predicate. It holds multiple `FilterPrefixParser` instances, each 
+representing a single filter criterion. This approach keeps the testing logic for each criterion separate and 
+modular while providing a unified interface to the `Model`.
+
+The sequence diagram below illustrates the interactions of `filter` within the `Logic` component, 
+taking `execute("filter s/>=3000 ip/undecided")` API call as an example.
+
+![Interactions Inside the Logic Component for the `filter s/>=3000 ip/undecided` Command](images/FilterSequenceDiagram.png)
+
+:information_source: **Note:** The lifeline for `FilterCommandParser` should end at the destroy
+marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+The sequence diagram below represents the reference frame in the above sequence diagram.
+
+![Interactions Inside FilterParser for the `filter s/>=3000 ip/undecided` Command](images/FilterParserSequenceDiagram.png)
+
+:information_source: **Note:** Due to a limitation of PlantUML, it is possible to show the ref frame box but
+not the sd frame box.
+
+**Alternatives Considered:**
+* **Alternative 1 (current choice):** A composite predicate that uses specialized prefix parsers.
+  * Pros: Highly modular and extensible. Adding a new filterable field or a new type of filtering logic
+    (e.g., date range filtering) only requires creating a new FilterPrefixParser subclass without
+    modifying existing ones.
+  * Cons: Introduces a slightly higher number of classes and a layer of abstraction with the parser hierarchy.
+* **Alternative 2:** A single, monolithic predicate for all fields.
+  * Pros: Fewer classes might seem simpler at first glance. 
+  * Cons: The test method would become a large, complex block of if-else statements for each possible prefix.
+  This would be difficult to read, maintain, and test, violating the Single Responsibility Principle.
+
 ### Sort
 The `sort` command, facilitated by `SortCommand` and `SortCommandParser`, allows users to sort and display their client 
 list by various fields (name, phone, email, address, salary, date of birth, marital status, occupation, dependents, insurance package) 
