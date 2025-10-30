@@ -185,13 +185,30 @@ The sequence diagram below illustrates the interactions within the system when e
 
 ### Add/Edit/Delete/List Insurance Package
 
+**List Insurance Package**
+
+The listing of insurance packages is facilitated by the `ListPackageCommand` class.
+
+The `ListPackageCommand` requires no input parsing as it takes no parameters. 
+When `Command#execute` is called, `ListPackageCommand` creates a `CommandResult` with the `showPackage` flag set to `true` and provides feedback message "Opened package window." to the user. 
+The UI layer detects this flag and opens a separate package window that displays all available insurance packages from the `Model#getFilteredInsurancePackageList()` method, 
+allowing users to view the complete catalog of insurance packages with their names and descriptions.
+
 **Add Insurance Package**
+
+The addition of insurance packages is facilitated by the `AddPackageCommand`, `AddPackageCommandParser`, and `InsurancePackage` classes.
+
+`AddPackageCommandParser` parses the input to obtain the package name and description using the `ip/` and `d/` prefixes respectively.
+It validates that both required prefixes are present and creates an `InsurancePackage` object with the parsed values.
+The `InsurancePackage` constructor automatically formats the package name to capitalize each word for consistency.
+
+When `Command#execute` is called, `AddPackageCommand` first checks for duplicate packages using `Model#hasInsurancePackage()` method.
+If no duplicate exists, it adds the new insurance package to the catalog via the `Model#addInsurancePackage()` method,
+which stores it in the `UniqueInsurancePackageList` in `InsuranceCatalog`.
 
 **Edit Insurance Package**
 
 **Delete Insurance Package**
-
-**List Insurance Package**
 
 --------------------------------------------------------------------------------------------------------------------
 
