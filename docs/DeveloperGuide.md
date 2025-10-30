@@ -191,7 +191,7 @@ The listing of insurance packages is facilitated by the `ListPackageCommand` and
 
 The `ListPackageCommand` requires no input parsing as it takes no parameters. 
 When `Command#execute` is called, `ListPackageCommand` creates a `CommandResult` with the `showPackage` flag set to `true` and provides feedback message "Opened package window." to the user.
-The `MainWindow#executeCommand` detects this flag and calls `handlePackage()` to open a separate PackageWindow that displays all available insurance packages from the `Model#getFilteredInsurancePackageList()` method,
+The `MainWindow#executeCommand` detects this flag and calls `handlePackage()` to open a separate `PackageWindow` that displays all available insurance packages from the `Model#getFilteredInsurancePackageList()` method,
 allowing users to view the complete catalog of insurance packages with their names and descriptions.
 
 **Add Insurance Package**
