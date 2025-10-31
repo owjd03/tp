@@ -16,6 +16,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyInsuranceCatalog;
@@ -253,7 +254,7 @@ public class DeletePackageCommandTest {
 
         @Override
         public ReadOnlyAddressBook getAddressBook() {
-            return new seedu.address.model.AddressBook();
+            return new AddressBook();
         }
     }
 
@@ -276,7 +277,7 @@ public class DeletePackageCommandTest {
 
         @Override
         public ReadOnlyAddressBook getAddressBook() {
-            seedu.address.model.AddressBook ab = new seedu.address.model.AddressBook();
+            AddressBook ab = new AddressBook();
             ab.addPerson(person);
             return ab;
         }
@@ -305,7 +306,7 @@ public class DeletePackageCommandTest {
 
         @Override
         public ReadOnlyAddressBook getAddressBook() {
-            return new seedu.address.model.AddressBook();
+            return new AddressBook();
         }
     }
 }

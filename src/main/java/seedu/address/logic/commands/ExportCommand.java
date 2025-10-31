@@ -7,7 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
@@ -30,6 +33,8 @@ public class ExportCommand extends Command {
     public static final String MESSAGE_SUCCESS = "Address book has been exported to %1$s";
     public static final String MESSAGE_EXPORT_FAILURE = "Error occurred during exporting: %1$s";
     public static final String MESSAGE_IS_DIRECTORY = "The specified path is a directory, please specify a file path.";
+
+    private static final Logger logger = LogsCenter.getLogger(ExportCommand.class);
 
     // Default file path for the export.
     private final Path filePath;
@@ -60,17 +65,21 @@ public class ExportCommand extends Command {
         requireNonNull(model);
 
         if (Files.isDirectory(filePath)) {
+            logger.warning("Export failed: The specified path is a directory.");
             throw new CommandException(MESSAGE_IS_DIRECTORY);
         }
 
         List<Person> personList = model.getAddressBook().getPersonList();
+        logger.info("Starting to export " + personList.size() + " persons to " + filePath);
 
         try {
             CsvExporter.exportPersons(personList, filePath);
         } catch (IOException e) {
+            logger.log(Level.SEVERE, "Exporting to " + filePath + " failed.", e);
             throw new CommandException(String.format(MESSAGE_EXPORT_FAILURE, e.getMessage()));
         }
 
+        logger.info("Successfully exported address book to " + filePath);
         return new CommandResult(String.format(MESSAGE_SUCCESS, filePath.toString()));
     }
 

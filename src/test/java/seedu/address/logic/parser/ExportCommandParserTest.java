@@ -17,9 +17,11 @@ import seedu.address.logic.commands.ExportCommand;
 public class ExportCommandParserTest {
 
     private final ExportCommandParser parser = new ExportCommandParser();
+    private final String expectedParseFailureMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+            ExportCommand.MESSAGE_USAGE);
 
     @Test
-    public void parse_noArgs_returnsExportCommand() {
+    public void parse_emptyOrWhitespaceArgs_returnsDefaultExportCommand() {
         // No arguments
         assertParseSuccess(parser, "", new ExportCommand());
         // Whitespace only
@@ -27,7 +29,7 @@ public class ExportCommandParserTest {
     }
 
     @Test
-    public void parse_validFilePath_returnsExportCommand() {
+    public void parse_validArgs_returnsExportCommandWithFilePath() {
         // Windows path
         Path path1 = Paths.get("C:\\Users\\User\\Documents\\data.csv");
         assertParseSuccess(parser, "C:\\Users\\User\\Documents\\data.csv", new ExportCommand(path1));
@@ -43,16 +45,15 @@ public class ExportCommandParserTest {
     }
 
     @Test
-    public void parse_invalidFilePath_throwsParseException() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ExportCommand.MESSAGE_USAGE);
+    public void parse_invalidPathSyntax_throwsParseException() {
         // Invalid null character in path
-        assertParseFailure(parser, "test\0.csv", expectedMessage);
+        assertParseFailure(parser, "test\0.csv", expectedParseFailureMessage);
     }
 
     @Test
-    public void parse_notCsvFile_throwsParseException() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ExportCommand.MESSAGE_USAGE);
-        assertParseFailure(parser, "test.txt", expectedMessage);
-        assertParseFailure(parser, "test", expectedMessage);
+    public void parse_pathNotEndingInCsv_throwsParseException() {
+        // Does not end with .csv
+        assertParseFailure(parser, "test.txt", expectedParseFailureMessage);
+        assertParseFailure(parser, "test", expectedParseFailureMessage);
     }
 }
