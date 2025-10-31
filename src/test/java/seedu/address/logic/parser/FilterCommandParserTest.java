@@ -100,20 +100,20 @@ public class FilterCommandParserTest {
         // Single keyword
         String userInput1 = " " + PREFIX_NAME + "Alpha";
         FilterCommand expectedCommand1 = createExpectedFilterCommand(userInput1,
-                createNameContainsParser("Alpha"));
+                createNameContainsParser("alpha"));
         assertParseSuccess(parser, userInput1, expectedCommand1);
 
         // Multiple keywords
         String userInput2 = " " + PREFIX_NAME + "Alpha " + PREFIX_ADDRESS + "Beta";
         FilterCommand expectedCommand2 = createExpectedFilterCommand(userInput2,
-                createNameContainsParser("Alpha"),
-                createAddressContainsParser("Beta"));
+                createNameContainsParser("alpha"),
+                createAddressContainsParser("beta"));
         assertParseSuccess(parser, userInput2, expectedCommand2);
 
         // Multi-word keyword
         String userInput3 = " " + PREFIX_ADDRESS + "Kent Ridge";
         FilterCommand expectedCommand3 = createExpectedFilterCommand(userInput3,
-                createAddressContainsParser("Kent Ridge"));
+                createAddressContainsParser("kent ridge"));
         assertParseSuccess(parser, userInput3, expectedCommand3);
     }
 
@@ -130,6 +130,12 @@ public class FilterCommandParserTest {
         FilterCommand expectedCommand2 = createExpectedFilterCommand(userInput2,
                 createTagParser("friend", "colleague"));
         assertParseSuccess(parser, userInput2, expectedCommand2);
+
+        // Duplicate tags
+        String userInput3 = " " + PREFIX_TAG + "friend " + PREFIX_TAG + "FRIEND";
+        FilterCommand expectedCommand3 = createExpectedFilterCommand("t/friend",
+                createTagParser("friend"));
+        assertParseSuccess(parser, userInput3, expectedCommand3);
     }
 
     @Test
@@ -167,7 +173,7 @@ public class FilterCommandParserTest {
     public void parse_validMixedArgs_returnsFilterCommand() throws ParseException {
         String userInput = " " + PREFIX_NAME + "Alice " + PREFIX_SALARY + "<120000 " + PREFIX_TAG + "friend";
         FilterCommand expectedCommand = createExpectedFilterCommand(userInput,
-                createNameContainsParser("Alice"),
+                createNameContainsParser("alice"),
                 createSalaryComparisonParser("<120000"),
                 createTagParser("friend"));
         assertParseSuccess(parser, userInput, expectedCommand);
@@ -180,17 +186,19 @@ public class FilterCommandParserTest {
      */
     private FilterCommand createExpectedFilterCommand(String userInput, FilterPrefixParser... parsers) {
         List<FilterPrefixParser> parserList = Arrays.stream(parsers).collect(Collectors.toList());
-        return new FilterCommand(new PersonContainsKeywordsPredicate(parserList), userInput.trim());
+        return new FilterCommand(new PersonContainsKeywordsPredicate(parserList), userInput.trim().toLowerCase());
     }
 
     private FilterContainsPrefixParser createNameContainsParser(String keyword) throws ParseException {
-        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().fullName);
+        FilterContainsPrefixParser parser =
+                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().toString());
         parser.parse(keyword);
         return parser;
     }
 
     private FilterContainsPrefixParser createAddressContainsParser(String keyword) throws ParseException {
-        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_ADDRESS, p -> p.getAddress().value);
+        FilterContainsPrefixParser parser =
+                new FilterContainsPrefixParser(PREFIX_ADDRESS, p -> p.getAddress().toString());
         parser.parse(keyword);
         return parser;
     }
