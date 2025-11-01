@@ -36,7 +36,7 @@ public class ExportCommandTest {
     @Test
     public void execute_validPerson_success() throws IOException {
         // 1. Define the test file path within the temporary directory
-        Path exportFilePath = testFolder.resolve("addressbook.csv");
+        Path exportFilePath = testFolder.resolve("clientcore.csv");
 
         // 2. Create the command with the specific file path
         ExportCommand exportCommand = new ExportCommand(exportFilePath);
