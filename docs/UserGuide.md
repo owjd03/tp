@@ -260,7 +260,7 @@ Format: `export [FILE_PATH]`
   E.g. If a data/clientcore.csv file already exists, using `export` again will overwrite the existing file and replace it with a new data/clientcore.csv.
 
 Examples:
-* `export` exports the contact details in clientcore.json to the default filepath data/clientcore.csv.
+* `export` exports the contact details in addressbook.json to the default filepath data/clientcore.csv.
 * `export ~/Downloads/mycontacts.csv` exports the contact details to a file named mycontacts.csv under the Downloads directory.
 
 Invalid Usages:
@@ -360,7 +360,7 @@ ClientCore data are saved in the hard disk automatically after any command that 
 
 ### Editing the data file
 
-ClientCore data are saved automatically as a JSON file `[JAR file location]/data/clientcore.json`. Advanced users are welcome to update data directly by editing that data file.
+ClientCore data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
 If your changes to the data file makes its format invalid, ClientCore will discard all data and start with an empty data file at the next run. Hence, it is recommended to take a backup of the file before editing it.<br>
