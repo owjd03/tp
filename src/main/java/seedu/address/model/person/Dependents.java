@@ -8,8 +8,10 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Dependents {
 
-    public static final String MESSAGE_CONSTRAINTS = "Number of dependents must be a non-negative integer "
-            + "or be declared as 'Unspecified' (case-insensitive).";
+    public static final int MAX_DEPENDENTS = 100;
+
+    public static final String MESSAGE_CONSTRAINTS = "Number of dependents must be a non-negative integer from 0 "
+            + "to " + MAX_DEPENDENTS + " inclusive or be declared as 'Unspecified' (case-insensitive).";
 
     public static final int UNSPECIFIED_VALUE = -1;
 
@@ -37,7 +39,7 @@ public class Dependents {
      * or is the unspecified value (-1).
      */
     public static boolean isValidDependents(int test) {
-        return test >= 0 || test == UNSPECIFIED_VALUE;
+        return (test >= 0 && test <= MAX_DEPENDENTS) || test == UNSPECIFIED_VALUE;
     }
 
     /**

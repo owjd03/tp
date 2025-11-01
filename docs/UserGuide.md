@@ -64,6 +64,56 @@ ClientCore is a **comprehensive desktop application for financial advisors to ma
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </div>
 
+
+
+### Input parameter constraints
+When executing `add` and `edit` commands, all parameters used must adhere to the following rules. These constraints prevent errors and ensure data integrity.
+
+**Name:**
+* Names can contain letters (from English, Chinese, Spanish, Korean), numbers, spaces, and the following special characters: - ' . / ( )
+* If a name contains text that looks like another valid prefix (e.g., s/, p/, e/), it must be enclosed in double quotes.
+* Names are automatically formatted with proper capitalization (e.g., "john s/o doe" becomes "John S/O Doe", "anne-marie" becomes "Anne-Marie").
+* To ensure consistent formatting, this logic also standardizes names with internal upper case letters to title case (e.g., "McDonald" becomes "Mcdonald").
+
+**Phone Number:**
+* Phone numbers can contain only numbers and are 7 to 15 digits long.
+
+**Email:**
+* Emails must follow the standard email format (e.g., local-part@domain).
+* The local-part should only contain alphanumeric characters and these special characters, + _ . - 
+* The local-part may not start or end with any special characters.
+* The domain name must end with a domain label at least 2 characters long, have each domain label start and end with alphanumeric characters and have each domain label consist of alphanumeric characters, separated only by hyphens, if any.
+
+**Address:**
+* Address must not be blank.
+
+**Insurance Package:**
+* Only the name of the insurance package needs to be provided. (case-insensitive)
+* The package must already exist in the address book.
+
+For the following fields, they can either follow the specified constraints or be set to "Unspecified" (case-insensitive). 
+For instance, both omitting the salary field during an `add` command or typing `s/Unspecified` in the `add` command will result in the salary being set to "Unspecified". More examples will be provided in the respective sections.
+
+**Salary:**
+* Salary must be a non-negative number and can have up to two decimal places.
+* It should not have any currency symbols (e.g., $) or spaces.
+* It can also be separated by commas for thousands (e.g., 1,000,000.50).
+
+**Date of Birth:**
+* Date of Birth must follow the format YYYY-MM-DD.
+* The date must be a valid calendar date. 
+* Leap years are taken into account (e.g., 2020-02-29 is valid, but 2019-02-29 is not).
+
+**Marital Status:**
+* Marital status must be one of the predefined constants: Single, Married, Divorced, Widowed (case-insensitive).
+
+**Number of Dependents:**
+* Number of dependents must be a non-negative integer between 0 and 100 inclusive.
+
+**Occupation:**
+* Occupation must not be blank.
+
+
 ### Viewing help : `help`
 
 Shows a message explaining how to access the help page.
@@ -82,7 +132,7 @@ Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SAL
 * Each user must have a name, phone number, email, address and insurance package. 
 * All other fields are optional.
 * For any field that is not specified in the command, it will be show up as "Unspecified" in the contact's details.
-* Names will be auto-formatted with proper capitalization (e.g. "john doe" and "jOhn DoE" will both be formatted to "John Doe").
+* Names will be auto-formatted with title capitalization (e.g. "john doe" and "jOhn DoE" will both be formatted to "John Doe"). 
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags (including 0)
@@ -93,6 +143,8 @@ Examples:
 * After running the above command:
   ![result for `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 s/120000 dob/2001-01-01 ms/Married ip/Gold dep/2 t/friend t/colleague`](images/addSuccessful.png)
 * `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 dep/0 ip/Undecided t/wanted criminal`
+* `add n/"muthu a/l ganesan (sam)" p/92345678 e/muthu@example.com a/456 Serangoon Rd ip/Bronze s/45000` 
+* `add n/Dr. strange p/98989898 e/strange@email.com a/67 Mystic Ave ip/Silver occ/Sorcerer`
 
 ### Listing all persons : `list`
 
@@ -102,15 +154,17 @@ Format: `list`
 
 ### Editing a person : `edit`
 
-Edits an existing person in ClientCore.
+Edits an existing person in ClientCore. At least one field to edit must be provided.
 
-Format: `edit INDEX n/NAME p/PHONE e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`
+Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [ip/INSURANCE_PACKAGE] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`
 
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** e.g. 1, 2, 3, …​
-* At least one field to edit must be provided.
+* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer that exists in the list** e.g. 1, 2, 3, …​
 * Existing values in each provided field will be updated to the input values.
-* Optional fields (i.e. Salary, Date of Birth, Marital Status, Number of Dependents, Occupation) can be set to "Unspecified" (This is case-insensitive; Both "unspecified" and "UNSPECIFIED" will show up as "Unspecified" in the contact's details).
+* Optional fields (i.e. Salary, Date of Birth, Marital Status, Number of Dependents, Occupation) can be set to "Unspecified" (case-insensitive)
+
+Tag Specific Behaviour:
 * When editing tags, the existing tags of the person will be removed i.e. adding of tags is not cumulative.
+* Duplicate tags (case-insensitive) will be ignored. For example, if the user inputs `t/friend t/Friend`, only one `friend` tag will be added.
 * You can remove all the person’s tags by typing `t/` without specifying any tags after it.
 
 Examples:
@@ -148,20 +202,21 @@ Examples:
 
 Views persons whose names contain the given keyword or is in the given index.
 
-Format: `view NAME-KEYWORD` or `view INDEX`
+Format: `view NAME-KEYWORD` or `view i/INDEX`
 
 * The search is case-insensitive. e.g. `alex` will match `Alex`
 * The command will not work if it finds more than 1 name with given keyword.
 * The order of the keywords matter. e.g. `Alex Yo` will not match `Yo Alex` 
 * Keywords will match with any name that contains the keyword. e.g. `ale` will match `Alex` and `Bale`
+* The prefix `i/` must be specified to view based on index and followed by an index. 
 * The index **must be a positive integer** 1, 2, 3, …​
 * The index must be within the size of the current list that is being displayed.
 
 Examples:
 * `view Alex` opens up a new window containing the details of the contact `Alex Yeoh`.
-* `view 1` opens up a new window containing details of the first person in the list.
+* `view i/1` opens up a new window containing details of the first person in the list.
 * After running the above command:
-  ![result for `view 1`](images/viewSuccessful.png)
+  ![result for `view i/1`](images/viewSuccessful.png)
 
 ### Filtering persons: `filter`
 
@@ -385,7 +440,7 @@ Furthermore, certain edits can cause ClientCore to behave in unexpected ways (e.
 
 Action | Format, Examples
 --------|------------------
-**Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​` <br> e.g. `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 ip/Silver s/5000 dob/1993-02-02 ms/Married dep/3 occ/Artist ip/Bronze t/my first client`
+**Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​` <br> e.g. `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 ip/Silver s/5000 dob/1993-02-02 ms/Married dep/3 occ/Artist t/my first client`
 **Clear** | `clear`
 **Delete** | `delete INDEX`<br> e.g. `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [ip/INSURANCE_PACKAGE] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g. `edit 2 n/James Lee e/jameslee@example.com s/5000 dep/Unspecified t/friend`

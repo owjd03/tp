@@ -61,8 +61,21 @@ public class ParserUtil {
      * @throws ParseException if the given {@code name} is invalid.
      */
     public static Name parseName(String name) throws ParseException {
-        String trimmedName = validateStringField(name, Name::isValidName, Name.MESSAGE_CONSTRAINTS);
-        return new Name(trimmedName);
+        requireNonNull(name);
+        String processedName = name.trim();
+
+        if (processedName.startsWith("\"") && processedName.endsWith("\"")) {
+            if (processedName.length() < 2) {
+                throw new ParseException("Name value cannot be an empty quote.");
+            }
+            processedName = processedName.substring(1, processedName.length() - 1);
+        }
+
+        if (!Name.isValidName(processedName) || processedName.isBlank()) {
+            throw new ParseException(Name.MESSAGE_CONSTRAINTS);
+        }
+
+        return new Name(processedName);
     }
 
     /**
@@ -130,6 +143,10 @@ public class ParserUtil {
     public static MaritalStatus parseMaritalStatus(String maritalStatus) throws ParseException {
         requireNonNull(maritalStatus);
         String trimmedMaritalStatus = maritalStatus.trim();
+
+        if (trimmedMaritalStatus.isEmpty()) {
+            throw new ParseException(MaritalStatus.MESSAGE_CONSTRAINTS);
+        }
 
         String normalizedStatus = Character.toUpperCase(trimmedMaritalStatus.charAt(0))
                 + trimmedMaritalStatus.substring(1).toLowerCase();
