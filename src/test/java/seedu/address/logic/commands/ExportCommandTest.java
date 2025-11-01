@@ -19,6 +19,8 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Person;
+import seedu.address.storage.CsvExporter;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for ExportCommand.
@@ -28,7 +30,8 @@ public class ExportCommandTest {
     @TempDir
     public Path testFolder;
 
-    private Model model = new ModelManager(getTypicalAddressBook(), getTypicalInsuranceCatalog(), new UserPrefs());
+    private final Model model = new ModelManager(getTypicalAddressBook(),
+            getTypicalInsuranceCatalog(), new UserPrefs());
 
     @Test
     public void execute_validPerson_success() throws IOException {
@@ -51,18 +54,25 @@ public class ExportCommandTest {
         List<String> lines = Files.readAllLines(exportFilePath);
 
         // Check header
-        assertEquals("Name,Phone,Email,Address,Salary,Date of Birth,Marital Status,Occupation,Dependents,"
-                + "Insurance Package,Tags",
-                lines.get(0));
+        assertEquals(CsvExporter.CSV_HEADER, lines.get(0));
 
-        // Check number of persons exported (header + 7 typical persons)
+        // Check number of persons exported (header + number of typical persons)
         assertEquals(1 + model.getFilteredPersonList().size(), lines.size());
 
         // Check a specific person's data (e.g., the first person, Alice Pauline)
-        String expectedAliceCsv = "Alice Pauline,94351253,alice@example.com,"
-                + "\"123, Jurong West Ave 6, #08-111\",\"$5,000.00\",1999-01-01,Single,Engineer,"
-                + "0,Gold,friends";
+        Person alice = model.getFilteredPersonList().get(0);
+        String expectedAliceCsv = CsvExporter.personToCsvRow(alice);
         assertEquals(expectedAliceCsv, lines.get(1));
+    }
+
+    @Test
+    public void execute_pathIsDirectory_throwsCommandException() {
+        // 1. Use the temporary folder itself as the path, which is a directory
+        ExportCommand exportCommand = new ExportCommand(testFolder);
+
+        // 2. Assert that the command fails with the expected error message
+        String expectedMessage = ExportCommand.MESSAGE_IS_DIRECTORY;
+        assertThrows(CommandException.class, () -> exportCommand.execute(model), expectedMessage);
     }
 
     @Test

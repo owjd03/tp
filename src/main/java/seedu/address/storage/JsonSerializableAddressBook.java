@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.ReadOnlyInsuranceCatalog;
 import seedu.address.model.person.Person;
 
 /**
@@ -43,18 +44,15 @@ class JsonSerializableAddressBook {
     /**
      * Converts this address book into the model's {@code AddressBook} object.
      *
+     * @param catalog The catalog to validate packages against.
      * @throws IllegalValueException if there were any data constraints violated.
      */
-    public AddressBook toModelType() throws IllegalValueException {
+    public AddressBook toModelType(ReadOnlyInsuranceCatalog catalog) throws IllegalValueException {
         AddressBook addressBook = new AddressBook();
         for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
-            Person person = jsonAdaptedPerson.toModelType();
-            if (addressBook.hasPerson(person)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
-            }
+            Person person = jsonAdaptedPerson.toModelType(catalog);
             addressBook.addPerson(person);
         }
         return addressBook;
     }
-
 }

@@ -3,14 +3,14 @@ package seedu.address.logic.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_LIST_OF_COMMANDS;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -31,6 +31,8 @@ import seedu.address.logic.commands.ListPackageCommand;
 import seedu.address.logic.commands.SortCommand;
 import seedu.address.logic.commands.ViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.logic.parser.filter.FilterContainsPrefixParser;
+import seedu.address.logic.parser.filter.FilterPrefixParser;
 import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
@@ -93,12 +95,21 @@ public class AddressBookParserTest {
         String args = " " + CliSyntax.PREFIX_NAME + "foo" + " " + CliSyntax.PREFIX_ADDRESS + "bar";
         FilterCommand command = (FilterCommand) parser.parseCommand(FilterCommand.COMMAND_WORD + args);
 
-        Map<Prefix, String> expectedKeywords = new HashMap<>();
-        expectedKeywords.put(CliSyntax.PREFIX_NAME, "foo");
-        expectedKeywords.put(CliSyntax.PREFIX_ADDRESS, "bar");
+        List<FilterPrefixParser> expectedKeywords = new ArrayList<>();
+        FilterContainsPrefixParser nameParser =
+                new FilterContainsPrefixParser(CliSyntax.PREFIX_NAME, p -> p.getName().fullName);
+        nameParser.parse("foo");
+        expectedKeywords.add(nameParser);
+
+        FilterContainsPrefixParser addressParser =
+                new FilterContainsPrefixParser(CliSyntax.PREFIX_ADDRESS, p -> p.getAddress().value);
+        addressParser.parse("bar");
+        expectedKeywords.add(addressParser);
+
         PersonContainsKeywordsPredicate expectedPredicate = new PersonContainsKeywordsPredicate(expectedKeywords);
 
-        assertEquals(new FilterCommand(expectedPredicate), command);
+        String expectedArgs = CliSyntax.PREFIX_NAME + "foo " + CliSyntax.PREFIX_ADDRESS + "bar";
+        assertEquals(new FilterCommand(expectedPredicate, expectedArgs), command);
     }
 
     @Test
@@ -160,6 +171,7 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_unknownCommand_throwsParseException() {
-        assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("unknownCommand"));
+        assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND + MESSAGE_LIST_OF_COMMANDS, () ->
+                parser.parseCommand("unknownCommand"));
     }
 }

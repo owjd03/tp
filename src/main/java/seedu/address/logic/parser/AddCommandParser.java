@@ -36,44 +36,112 @@ import seedu.address.model.tag.Tag;
  */
 public class AddCommandParser implements Parser<AddCommand> {
 
+    private static final Prefix[] ALL_PREFIXES = {
+        PREFIX_ADDRESS, PREFIX_DATE_OF_BIRTH, PREFIX_DEPENDENTS, PREFIX_EMAIL, PREFIX_INSURANCE_PACKAGE,
+        PREFIX_MARITAL_STATUS, PREFIX_NAME, PREFIX_OCCUPATION, PREFIX_PHONE, PREFIX_SALARY, PREFIX_TAG
+    };
+
+    private static final Prefix[] MANDATORY_PREFIXES = new Prefix[] {
+        PREFIX_NAME, PREFIX_ADDRESS, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_INSURANCE_PACKAGE
+    };
+
     /**
      * Parses the given {@code String} of arguments in the context of the AddCommand
      * and returns an AddCommand object for execution.
      * @throws ParseException if the user input does not conform the expected format
      */
     public AddCommand parse(String args) throws ParseException {
-        ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS,
-                        PREFIX_SALARY, PREFIX_DATE_OF_BIRTH, PREFIX_MARITAL_STATUS,
-                                PREFIX_DEPENDENTS, PREFIX_OCCUPATION, PREFIX_INSURANCE_PACKAGE, PREFIX_TAG);
+        ArgumentMultimap argMultimap = tokenizeAndValidateArgs(args);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_ADDRESS, PREFIX_PHONE, PREFIX_EMAIL,
-                PREFIX_SALARY, PREFIX_DATE_OF_BIRTH, PREFIX_MARITAL_STATUS, PREFIX_DEPENDENTS, PREFIX_OCCUPATION,
-                PREFIX_INSURANCE_PACKAGE) || !argMultimap.getPreamble().isEmpty()) {
+        Person person = createPersonFromArgs(argMultimap);
+
+        return new AddCommand(person);
+    }
+
+    /**
+     * Tokenizes the {@code args} and validates presence of compulsory prefixes,
+     * lack of preamble and no duplicate prefixes.
+     *
+     * @param args The raw argument string.
+     * @return A validated ArgumentMultimap.
+     * @throws ParseException if validation fails.
+     */
+    private ArgumentMultimap tokenizeAndValidateArgs(String args) throws ParseException {
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, ALL_PREFIXES);
+
+        if (!arePrefixesPresent(argMultimap, MANDATORY_PREFIXES) || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS,
-                PREFIX_SALARY, PREFIX_DATE_OF_BIRTH, PREFIX_MARITAL_STATUS, PREFIX_DEPENDENTS, PREFIX_OCCUPATION,
-                PREFIX_INSURANCE_PACKAGE);
+        Prefix[] singleValuedPrefixes = Stream.of(ALL_PREFIXES)
+                .filter(prefix -> !prefix.equals(PREFIX_TAG))
+                .toArray(Prefix[]::new);
+
+        argMultimap.verifyNoDuplicatePrefixesFor(singleValuedPrefixes);
+
+        return argMultimap;
+    }
+
+    /**
+     * Creates a {@link Person} object by parsing compulsory and optional fields
+     * from the {@link ArgumentMultimap}.
+     *
+     * @param argMultimap The validated map of arguments.
+     * @return A fully constructed Person.
+     * @throws ParseException if any field parsing fails.
+     */
+    private Person createPersonFromArgs(ArgumentMultimap argMultimap) throws ParseException {
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
         Phone phone = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get());
         Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
         Address address = ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get());
-        Salary salary = ParserUtil.parseSalary(argMultimap.getValue(PREFIX_SALARY).get());
-        DateOfBirth dateOfBirth = ParserUtil.parseDateOfBirth(argMultimap.getValue(PREFIX_DATE_OF_BIRTH).get());
-        MaritalStatus maritalStatus = ParserUtil.parseMaritalStatus(argMultimap.getValue(PREFIX_MARITAL_STATUS).get());
-        Occupation occupation = ParserUtil.parseOccupation(argMultimap.getValue(PREFIX_OCCUPATION).get());
-        Dependents dependents = ParserUtil.parseDependents(
-                Integer.parseInt(argMultimap.getValue(CliSyntax.PREFIX_DEPENDENTS).get()));
         InsurancePackage insurancePackage = ParserUtil.parseInsurancePackage(argMultimap
                 .getValue(PREFIX_INSURANCE_PACKAGE).get());
+
+        Salary salary = parseOptionalSalary(argMultimap);
+        DateOfBirth dateOfBirth = parseOptionalDateOfBirth(argMultimap);
+        MaritalStatus maritalStatus = parseOptionalMaritalStatus(argMultimap);
+        Occupation occupation = parseOptionalOccupation(argMultimap);
+        Dependents numberOfDependents = parseOptionalDependents(argMultimap);
         Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
 
-        Person person = new Person(name, phone, email, address, salary, dateOfBirth, maritalStatus,
-                occupation, dependents, insurancePackage, tagList);
+        return new Person(name, phone, email, address, salary, dateOfBirth, maritalStatus,
+                occupation, numberOfDependents, insurancePackage, tagList);
+    }
 
-        return new AddCommand(person);
+    private Salary parseOptionalSalary(ArgumentMultimap argMultimap) throws ParseException {
+        if (argMultimap.getValue(PREFIX_SALARY).isPresent()) {
+            return ParserUtil.parseSalary(argMultimap.getValue(PREFIX_SALARY).get());
+        }
+        return Salary.createUnspecified();
+    }
+
+    private DateOfBirth parseOptionalDateOfBirth(ArgumentMultimap argMultimap) throws ParseException {
+        if (argMultimap.getValue(PREFIX_DATE_OF_BIRTH).isPresent()) {
+            return ParserUtil.parseDateOfBirth(argMultimap.getValue(PREFIX_DATE_OF_BIRTH).get());
+        }
+        return DateOfBirth.createUnspecified();
+    }
+
+    private MaritalStatus parseOptionalMaritalStatus(ArgumentMultimap argMultimap) throws ParseException {
+        if (argMultimap.getValue(PREFIX_MARITAL_STATUS).isPresent()) {
+            return ParserUtil.parseMaritalStatus(argMultimap.getValue(PREFIX_MARITAL_STATUS).get());
+        }
+        return MaritalStatus.createUnspecified();
+    }
+
+    private Occupation parseOptionalOccupation(ArgumentMultimap argMultimap) throws ParseException {
+        if (argMultimap.getValue(PREFIX_OCCUPATION).isPresent()) {
+            return ParserUtil.parseOccupation(argMultimap.getValue(PREFIX_OCCUPATION).get());
+        }
+        return Occupation.createUnspecified();
+    }
+
+    private Dependents parseOptionalDependents(ArgumentMultimap argMultimap) throws ParseException {
+        if (argMultimap.getValue(PREFIX_DEPENDENTS).isPresent()) {
+            return ParserUtil.parseDependents(argMultimap.getValue(PREFIX_DEPENDENTS).get());
+        }
+        return Dependents.createUnspecified();
     }
 
     /**

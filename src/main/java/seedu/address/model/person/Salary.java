@@ -4,6 +4,10 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
 import java.text.DecimalFormat;
+import java.util.logging.Logger;
+
+import seedu.address.commons.core.LogsCenter;
+
 
 /**
  * Represents a Person's salary in the address book.
@@ -12,9 +16,11 @@ import java.text.DecimalFormat;
 public class Salary {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Salaries can take any non-negative values, "
+            "Salary must be a non-negative number that contains up to 2 decimal places, "
                     + "should not be blank, "
-                    + "and should have up to 2 decimal places";
+                    + "or be declared as 'Unspecified' (case-insensitive).";
+
+    public static final String UNSPECIFIED_VALUE = "Unspecified";
 
     /*
      * For a salary to be valid, it must be non-negative.
@@ -22,9 +28,10 @@ public class Salary {
      * Users can optionally include commas as separators for every 3 digits (e.g. "1,000" or "10,000.99").
      * Leading and/or trailing whitespaces are not allowed.
      */
-    public static final String VALIDATION_REGEX = "\\d+(\\.\\d{1,2})?";
+    private static final String VALIDATION_REGEX = "\\d+(\\.\\d{1,2})?";
+    private static final Logger logger = LogsCenter.getLogger(Salary.class);
 
-    public final String value;
+    private final String value;
 
     /**
      * Constructs a {@code Salary}.
@@ -35,8 +42,29 @@ public class Salary {
     public Salary(String salary) {
         requireNonNull(salary);
         String sanitizedSalary = salary.replace(",", "");
+
         checkArgument(isValidSalary(sanitizedSalary), MESSAGE_CONSTRAINTS);
-        value = sanitizedSalary;
+
+        if (sanitizedSalary.equalsIgnoreCase(UNSPECIFIED_VALUE)) {
+            this.value = UNSPECIFIED_VALUE;
+        } else {
+            this.value = sanitizedSalary;
+        }
+    }
+
+    /**
+     * @return The raw salary value as a string.
+     */
+    public String getValue() {
+        return this.value;
+    }
+
+    /**
+     * Static factory method for creating the default "Unspecified" Salary
+     * @return A Salary object with value "Unspecified".
+     */
+    public static Salary createUnspecified() {
+        return new Salary(UNSPECIFIED_VALUE);
     }
 
     /**
@@ -44,7 +72,24 @@ public class Salary {
      */
     public static boolean isValidSalary(String test) {
         String sanitizedSalary = test.replace(",", "");
+        if (sanitizedSalary.equalsIgnoreCase(UNSPECIFIED_VALUE)) {
+            return true;
+        }
         return sanitizedSalary.matches(VALIDATION_REGEX);
+    }
+
+    /**
+     * Returns the numerical value of the salary as a double.
+     */
+    public double getNumericValue() {
+        return Double.parseDouble(this.value);
+    }
+
+    /**
+     * Returns true if the salary is unspecified.
+     */
+    public boolean isUnspecified() {
+        return this.value.equals(UNSPECIFIED_VALUE);
     }
 
     /**
@@ -54,12 +99,17 @@ public class Salary {
      */
     @Override
     public String toString() {
+        if (this.value.equals(UNSPECIFIED_VALUE)) {
+            return UNSPECIFIED_VALUE;
+        }
+
         try {
             double amount = Double.parseDouble(this.value);
             DecimalFormat formatter = new DecimalFormat("$#,##0.00");
             return formatter.format(amount);
         } catch (NumberFormatException e) {
-            return value;
+            logger.severe("Salary object in invalid state. Value: " + value);
+            throw new IllegalStateException("Salary object has an invalid numeric value.", e);
         }
     }
 

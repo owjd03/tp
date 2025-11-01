@@ -1,6 +1,13 @@
 package seedu.address.logic.parser;
 
-import seedu.address.logic.Messages;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.logging.Logger;
+
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.ExportCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
@@ -9,16 +16,47 @@ import seedu.address.logic.parser.exceptions.ParseException;
  */
 public class ExportCommandParser implements Parser<ExportCommand> {
 
+    private static final Logger logger = LogsCenter.getLogger(ExportCommandParser.class);
+
     /**
      * Parses the given {@code String} of arguments in the context of the ExportCommand
      * and returns an ExportCommand object for execution.
-     * Export command does not take any arguments for now.
+     *
+     * @throws ParseException if the user input does not conform to the expected format
      */
     public ExportCommand parse(String args) throws ParseException {
-        if (!args.trim().isEmpty()) {
-            throw new ParseException(
-                    String.format(Messages.MESSAGE_INVALID_COMMAND_FORMAT, ExportCommand.MESSAGE_USAGE));
+        String trimmedArgs = args.trim();
+        if (trimmedArgs.isEmpty()) {
+            logger.info("No file path specified, using default export path.");
+            return new ExportCommand();
         }
-        return new ExportCommand();
+
+        if (!trimmedArgs.toLowerCase().endsWith(".csv")) {
+            logger.warning("Invalid export path provided: does not end with .csv");
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ExportCommand.MESSAGE_USAGE));
+        }
+
+        try {
+            Path filePath = expandHomeDirectory(trimmedArgs);
+            logger.info("Export path parsed successfully: " + filePath);
+            return new ExportCommand(filePath);
+        } catch (InvalidPathException e) {
+            logger.warning("Invalid export path provided: " + trimmedArgs);
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ExportCommand.MESSAGE_USAGE), e);
+        }
+    }
+
+    /**
+     * Expands the tilde (~) character in a path to the user's home directory.
+     *
+     * @param path The path string to expand.
+     */
+    private Path expandHomeDirectory(String path) {
+        if (path.startsWith("~/") || path.startsWith("~\\")) {
+            String home = System.getProperty("user.home");
+            String remainingPath = path.substring(2);
+            return Paths.get(home, remainingPath);
+        }
+        return Paths.get(path);
     }
 }

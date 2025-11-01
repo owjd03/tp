@@ -66,10 +66,10 @@ public class PersonCard extends UiPart<Region> {
         address.setText("Address (a/): " + person.getAddress().value);
         email.setText("Email (e/): " + person.getEmail().value);
         salary.setText("Salary (s/): " + person.getSalary().toString());
-        dateOfBirth.setText("Date of Birth (dob/): " + person.getDateOfBirth().value);
-        maritalStatus.setText("Marital Status (ms/): " + person.getMaritalStatus().value);
-        dependents.setText("Dependents (dep/): " + person.getDependents().value);
-        occupation.setText("Occupation (occ/): " + person.getOccupation().value);
+        dateOfBirth.setText("Date of Birth (dob/): " + person.getDateOfBirth().getValue());
+        maritalStatus.setText("Marital Status (ms/): " + person.getMaritalStatus().getValue());
+        dependents.setText("Dependents (dep/): " + person.getDependents().toString());
+        occupation.setText("Occupation (occ/): " + person.getOccupation().getValue());
         insurancePackage.setText("Insurance Package (ip/): " + person.getInsurancePackage().getPackageName());
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))

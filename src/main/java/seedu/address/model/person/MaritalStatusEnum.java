@@ -8,7 +8,8 @@ public enum MaritalStatusEnum {
     SINGLE("Single"),
     MARRIED("Married"),
     DIVORCED("Divorced"),
-    WIDOWED("Widowed");
+    WIDOWED("Widowed"),
+    UNSPECIFIED("Unspecified");
 
     private final String displayValue;
 
@@ -33,7 +34,7 @@ public enum MaritalStatusEnum {
      */
     public static boolean isValidMaritalStatus(String test) {
         for (MaritalStatusEnum maritalStatus : MaritalStatusEnum.values()) {
-            if (maritalStatus.displayValue.equals(test)) {
+            if (maritalStatus.displayValue.equalsIgnoreCase(test)) {
                 return true;
             }
         }

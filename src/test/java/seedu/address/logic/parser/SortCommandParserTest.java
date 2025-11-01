@@ -28,7 +28,9 @@ public class SortCommandParserTest {
                 new SortCommand(SortField.MARITALSTATUS, SortDirection.ASCENDING));
         assertParseSuccess(parser, "occupation",
                 new SortCommand(SortField.OCCUPATION, SortDirection.ASCENDING));
-        assertParseSuccess(parser, "dependent", new SortCommand(SortField.DEPENDENT, SortDirection.ASCENDING));
+        assertParseSuccess(parser, "dependents", new SortCommand(SortField.DEPENDENTS, SortDirection.ASCENDING));
+        assertParseSuccess(parser, "insurancepackage",
+                new SortCommand(SortField.INSURANCEPACKAGE, SortDirection.ASCENDING));
 
         // Test ascending
         assertParseSuccess(parser, "name ascending", new SortCommand(SortField.NAME, SortDirection.ASCENDING));
@@ -43,8 +45,8 @@ public class SortCommandParserTest {
 
         // Test case insensitive
         assertParseSuccess(parser, "NaMe", new SortCommand(SortField.NAME, SortDirection.ASCENDING));
-        assertParseSuccess(parser, "depeNDent ascending",
-                new SortCommand(SortField.DEPENDENT, SortDirection.ASCENDING));
+        assertParseSuccess(parser, "depeNDents ascending",
+                new SortCommand(SortField.DEPENDENTS, SortDirection.ASCENDING));
         assertParseSuccess(parser, "oCCupatIon descending",
                 new SortCommand(SortField.OCCUPATION, SortDirection.DESCENDING));
 
@@ -57,12 +59,12 @@ public class SortCommandParserTest {
 
         // Test ignore extra space
         assertParseSuccess(parser, "   name  ", new SortCommand(SortField.NAME, SortDirection.ASCENDING));
-        assertParseSuccess(parser, "   dependent  ascending",
-                new SortCommand(SortField.DEPENDENT, SortDirection.ASCENDING));
+        assertParseSuccess(parser, "   dependents  ascending",
+                new SortCommand(SortField.DEPENDENTS, SortDirection.ASCENDING));
 
         // Test invalid direction text
-        assertParseSuccess(parser, "dependent invalidDirection",
-                new SortCommand(SortField.DEPENDENT, SortDirection.ASCENDING));
+        assertParseSuccess(parser, "dependents invalidDirection",
+                new SortCommand(SortField.DEPENDENTS, SortDirection.ASCENDING));
     }
 
     @Test

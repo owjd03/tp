@@ -1,0 +1,61 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":EditPackageCommand" as EditPackageCommand LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":Model" as Model MODEL_COLOR
+participant ":InsurancePackage" as InsurancePackage MODEL_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "catalog:InsuranceCatalog" as InsuranceCatalog MODEL_COLOR
+participant "packages:UniqueInsurancePackageList" as PackageList MODEL_COLOR
+end box
+
+-> EditPackageCommand : execute()
+activate EditPackageCommand
+
+EditPackageCommand -> Model : getInsuranceCatalog()
+activate Model
+Model --> EditPackageCommand : catalog
+deactivate Model
+
+EditPackageCommand -> InsuranceCatalog : findPackageByName(packageName)
+activate InsuranceCatalog
+InsuranceCatalog -> PackageList : findPackageByName(packageName)
+activate PackageList
+PackageList --> InsuranceCatalog : targetPackage
+deactivate PackageList
+InsuranceCatalog --> EditPackageCommand : targetPackage
+deactivate InsuranceCatalog
+
+EditPackageCommand -> InsurancePackage ** : create(packageName, newDescription)
+activate InsurancePackage
+InsurancePackage --> EditPackageCommand : editedInsurancePackage
+deactivate InsurancePackage
+
+EditPackageCommand -> Model : setInsurancePackage(targetPackage, editedInsurancePackage)
+activate Model
+
+Model -> InsuranceCatalog : setInsurancePackage(targetPackage, editedInsurancePackage)
+activate InsuranceCatalog
+
+InsuranceCatalog -> PackageList : setPackage(targetPackage, editedInsurancePackage)
+activate PackageList
+PackageList --> InsuranceCatalog
+deactivate PackageList
+
+InsuranceCatalog --> Model
+deactivate InsuranceCatalog
+
+Model --> EditPackageCommand
+deactivate Model
+
+<-- EditPackageCommand : CommandResult
+deactivate EditPackageCommand
+
+@enduml

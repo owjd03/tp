@@ -1,6 +1,5 @@
 package seedu.address.model.person;
 
-import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
 /**
@@ -9,9 +8,12 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Dependents {
 
-    public static final String MESSAGE_CONSTRAINTS = "Number of dependents must be a non-negative integer";
+    public static final String MESSAGE_CONSTRAINTS = "Number of dependents must be a non-negative integer "
+            + "or be declared as 'Unspecified' (case-insensitive).";
 
-    public final int value;
+    public static final int UNSPECIFIED_VALUE = -1;
+
+    private final int value;
 
     /**
      * Constructs a {@code Dependents}.
@@ -19,24 +21,52 @@ public class Dependents {
      * @param numberOfDependents A valid number of dependents.
      */
     public Dependents(int numberOfDependents) {
-        requireNonNull(numberOfDependents);
         checkArgument(isValidDependents(numberOfDependents), MESSAGE_CONSTRAINTS);
         value = numberOfDependents;
     }
 
     /**
-     * Returns true if a given integer is a valid number of dependents.
+     * @return The raw number of dependents as an int.
      */
-    public static boolean isValidDependents(int test) {
-        return test >= 0;
+    public int getValue() {
+        return this.value;
     }
 
-    public int toInt() {
-        return value;
+    /**
+     * Returns true if a given integer is a valid number of dependents
+     * or is the unspecified value (-1).
+     */
+    public static boolean isValidDependents(int test) {
+        return test >= 0 || test == UNSPECIFIED_VALUE;
+    }
+
+    /**
+     * Static factory method for creating the default "Unspecified" Dependents
+     * @return A Dependents object with value -1.
+     */
+    public static Dependents createUnspecified() {
+        return new Dependents(UNSPECIFIED_VALUE);
+    }
+
+    /**
+     * Returns the numerical value of the dependents as a double.
+     */
+    public double getNumericValue() {
+        return this.value;
+    }
+
+    /**
+     * Returns true if the dependents are unspecified.
+     */
+    public boolean isUnspecified() {
+        return this.value == UNSPECIFIED_VALUE;
     }
 
     @Override
     public String toString() {
+        if (this.value == UNSPECIFIED_VALUE) {
+            return "Unspecified";
+        }
         return String.valueOf(value);
     }
 
