@@ -97,8 +97,8 @@ public class EditCommandTest {
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
 
-        Model expectedModel =
-                new ModelManager(new AddressBook(model.getAddressBook()), model.getInsuranceCatalog(), new UserPrefs());
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), model.getInsuranceCatalog(),
+                model.getUserPrefs());
         expectedModel.setPerson(model.getFilteredPersonList().get(0), editedPerson);
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
@@ -110,7 +110,7 @@ public class EditCommandTest {
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(firstPerson).build();
         EditCommand editCommand = new EditCommand(INDEX_SECOND_PERSON, descriptor);
 
-        assertCommandFailure(editCommand, model, EditCommand.MESSAGE_DUPLICATE_PERSON);
+        assertCommandFailure(editCommand, model, AddCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
     @Test
@@ -122,7 +122,7 @@ public class EditCommandTest {
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON,
                 new EditPersonDescriptorBuilder(personInList).build());
 
-        assertCommandFailure(editCommand, model, EditCommand.MESSAGE_DUPLICATE_PERSON);
+        assertCommandFailure(editCommand, model, AddCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
     @Test
