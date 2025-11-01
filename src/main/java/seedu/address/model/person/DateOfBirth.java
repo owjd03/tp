@@ -5,6 +5,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 
 /**
@@ -47,7 +48,8 @@ public class DateOfBirth {
     }
 
     /**
-     * Static factory method for creating the default "Unspecified" DateOfBirth
+     * Static factory method for creating the default "Unspecified" DateOfBirth.
+     *
      * @return A DateOfBirth object with value "Unspecified".
      */
     public static DateOfBirth createUnspecified() {
@@ -64,8 +66,8 @@ public class DateOfBirth {
         }
         try {
             LocalDate parsedDate = LocalDate.parse(test, FORMATTER);
-            return !(parsedDate.isAfter(LocalDate.now()));
-        } catch (Exception e) {
+            return !parsedDate.isAfter(LocalDate.now());
+        } catch (DateTimeParseException e) {
             return false;
         }
     }
