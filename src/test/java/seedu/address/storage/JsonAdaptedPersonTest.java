@@ -5,6 +5,8 @@ import static seedu.address.storage.JsonAdaptedPerson.MISSING_FIELD_MESSAGE_FORM
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.BENSON;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -219,20 +221,40 @@ public class JsonAdaptedPersonTest {
         JsonAdaptedPerson person5 = new JsonAdaptedPersonBuilder().withSalary(INVALID_SALARY).build();
         assertThrows(IllegalValueException.class, Salary.MESSAGE_CONSTRAINTS, () -> person5.toModelType(VALID_CATALOG));
 
-        JsonAdaptedPerson person6 = new JsonAdaptedPersonBuilder().withDateOfBirth(INVALID_DATE_OF_BIRTH).build();
-        assertThrows(IllegalValueException.class, DateOfBirth.MESSAGE_CONSTRAINTS, () -> person6
+        JsonAdaptedPerson person6 = new JsonAdaptedPersonBuilder().withMaritalStatus(INVALID_MARITAL_STATUS).build();
+        assertThrows(IllegalValueException.class, MaritalStatus.MESSAGE_CONSTRAINTS, () -> person6
                 .toModelType(VALID_CATALOG));
 
-        JsonAdaptedPerson person7 = new JsonAdaptedPersonBuilder().withMaritalStatus(INVALID_MARITAL_STATUS).build();
-        assertThrows(IllegalValueException.class, MaritalStatus.MESSAGE_CONSTRAINTS, () -> person7
+        JsonAdaptedPerson person7 = new JsonAdaptedPersonBuilder().withOccupation(INVALID_OCCUPATION).build();
+        assertThrows(IllegalValueException.class, Occupation.MESSAGE_CONSTRAINTS, () -> person7
                 .toModelType(VALID_CATALOG));
 
-        JsonAdaptedPerson person8 = new JsonAdaptedPersonBuilder().withOccupation(INVALID_OCCUPATION).build();
-        assertThrows(IllegalValueException.class, Occupation.MESSAGE_CONSTRAINTS, () -> person8
+        JsonAdaptedPerson person8 = new JsonAdaptedPersonBuilder().withDependents(INVALID_DEPENDENTS).build();
+        assertThrows(IllegalValueException.class, Dependents.MESSAGE_CONSTRAINTS, () -> person8
+                .toModelType(VALID_CATALOG));
+    }
+
+    @Test
+    public void toModelType_invalidDateOfBirth_throwsIllegalValueException() {
+        // Invalid format
+        JsonAdaptedPerson person1 = new JsonAdaptedPersonBuilder().withDateOfBirth(INVALID_DATE_OF_BIRTH).build();
+        assertThrows(IllegalValueException.class, DateOfBirth.MESSAGE_CONSTRAINTS, () -> person1
                 .toModelType(VALID_CATALOG));
 
-        JsonAdaptedPerson person9 = new JsonAdaptedPersonBuilder().withDependents(INVALID_DEPENDENTS).build();
-        assertThrows(IllegalValueException.class, Dependents.MESSAGE_CONSTRAINTS, () -> person9
+        // Non-existent date
+        JsonAdaptedPerson person2 = new JsonAdaptedPersonBuilder().withDateOfBirth("2025-09-31").build();
+        assertThrows(IllegalValueException.class, DateOfBirth.MESSAGE_CONSTRAINTS, () -> person2
+                .toModelType(VALID_CATALOG));
+
+        // Non-leap year
+        JsonAdaptedPerson person3 = new JsonAdaptedPersonBuilder().withDateOfBirth("2023-02-29").build();
+        assertThrows(IllegalValueException.class, DateOfBirth.MESSAGE_CONSTRAINTS, () -> person3
+                .toModelType(VALID_CATALOG));
+
+        // Future date
+        String futureDate = LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        JsonAdaptedPerson person4 = new JsonAdaptedPersonBuilder().withDateOfBirth(futureDate).build();
+        assertThrows(IllegalValueException.class, DateOfBirth.MESSAGE_CONSTRAINTS, () -> person4
                 .toModelType(VALID_CATALOG));
     }
 

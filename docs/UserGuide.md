@@ -143,6 +143,8 @@ Examples:
 * After running the above command:
   ![result for `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 s/120000 dob/2001-01-01 ms/Married ip/Gold dep/2 t/friend t/colleague`](images/addSuccessful.png)
 * `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 dep/0 ip/Undecided t/wanted criminal`
+* `add n/"muthu a/l ganesan (sam)" p/92345678 e/muthu@example.com a/456 Serangoon Rd ip/Bronze s/45000` 
+* `add n/Dr. strange p/98989898 e/strange@email.com a/67 Mystic Ave ip/Silver occ/Sorcerer`
 
 ### Listing all persons : `list`
 

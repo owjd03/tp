@@ -136,6 +136,64 @@ public class ArgumentTokenizerTest {
         assertArgumentAbsent(argMultimap, hatQ);
     }
 
+    /**
+     * Tests that prefixes inside quoted strings are ignored by the tokenizer.
+     */
+    @Test
+    public void tokenize_prefixInsideQuotes_prefixIgnored() {
+        Prefix nSlash = new Prefix("n/");
+        Prefix pSlash = new Prefix("p/");
+
+        String argsString = " n/John Doe \"p/12345678\" p/98765432";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString, nSlash, pSlash);
+
+        assertPreambleEmpty(argMultimap); // assert that the first 'p/' is treated as part of the 'n/' argument value
+        assertArgumentPresent(argMultimap, nSlash, "John Doe \"p/12345678\"");
+        assertArgumentPresent(argMultimap, pSlash, "98765432");
+    }
+
+    /**
+     * Tests that multiple quoted sections within a single argument value are handled correctly.
+     */
+    @Test
+    public void tokenize_multipleQuotes_correctPrefixFound() {
+        Prefix nSlash = new Prefix("n/");
+        Prefix pSlash = new Prefix("p/");
+
+        // two quoted sections within 'n/' argument
+        String argsString = " n/\"value-p/one\" \"value p/two\" p/123";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString, nSlash, pSlash);
+
+        assertPreambleEmpty(argMultimap);
+        assertArgumentPresent(argMultimap, nSlash, "\"value-p/one\" \"value p/two\"");
+        assertArgumentPresent(argMultimap, pSlash, "123");
+
+        // quote is unclosed, causing the rest of the string to be treated as quoted,
+        // causing 'p/' to be ignored
+        argsString = " n/\"Name with p/ prefix";
+        argMultimap = ArgumentTokenizer.tokenize(argsString, nSlash, pSlash);
+
+        assertPreambleEmpty(argMultimap);
+        assertArgumentPresent(argMultimap, nSlash, "\"Name with p/ prefix");
+        assertArgumentAbsent(argMultimap, pSlash);
+    }
+
+    /**
+     * Tests that a prefix immediately following a quoted section is still recognized by the tokenizer.
+     */
+    @Test
+    public void tokenize_prefixImmediatelyAfterQuote_prefixFound() {
+        Prefix nSlash = new Prefix("n/");
+        Prefix pSlash = new Prefix("p/");
+
+        String argsString = " n/\"some quoted text\" p/12345";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString, nSlash, pSlash);
+
+        assertPreambleEmpty(argMultimap);
+        assertArgumentPresent(argMultimap, nSlash, "\"some quoted text\"");
+        assertArgumentPresent(argMultimap, pSlash, "12345");
+    }
+
     @Test
     public void equalsMethod() {
         Prefix aaa = new Prefix("aaa");

@@ -20,22 +20,57 @@ public class NameTest {
     }
 
     @Test
-    public void isValidName() {
+    public void isValidName_nullName_throwsNullPointerException() {
         // null name
         assertThrows(NullPointerException.class, () -> Name.isValidName(null));
+    }
 
-        // invalid name
-        assertFalse(Name.isValidName("")); // empty string
-        assertFalse(Name.isValidName(" ")); // spaces only
-        assertFalse(Name.isValidName("^")); // only non-alphanumeric characters
-        assertFalse(Name.isValidName("peter*")); // contains non-alphanumeric characters
+    @Test
+    public void isValidName_emptyOrBlank_returnsFalse() {
+        assertFalse(Name.isValidName(""));
+        assertTrue(Name.isValidName(" "));
+    }
 
-        // valid name
+    @Test
+    public void isValidName_validNames_returnsTrue() {
         assertTrue(Name.isValidName("peter jack")); // alphabets only
         assertTrue(Name.isValidName("12345")); // numbers only
         assertTrue(Name.isValidName("peter the 2nd")); // alphanumeric characters
         assertTrue(Name.isValidName("Capital Tan")); // with capital letters
         assertTrue(Name.isValidName("David Roger Jackson Ray Jr 2nd")); // long names
+        assertTrue(Name.isValidName("peter (peter)")); // brackets
+    }
+
+    @Test
+    public void isValidName_invalidNames_returnsFalse() {
+        assertFalse(Name.isValidName("^*!")); // contains only invalid delimiters
+        assertFalse(Name.isValidName("peter*")); // contains alphanumeric characters and invalid delimiters
+    }
+
+    @Test
+    public void isValidName_validDelimiters_returnsTrue() {
+        assertTrue(Name.isValidName("Anne-Marie")); // hyphen
+        assertTrue(Name.isValidName("D'Angelo")); // apostrophe
+        assertTrue(Name.isValidName("Dr. Strange")); // dot
+        assertTrue(Name.isValidName("Anne-Marie D'Angelo Jr.")); // multiple delimiters
+    }
+
+    @Test
+    public void isValidName_validSlashPatterns_returnsTrue() {
+        assertTrue(Name.isValidName("john s/o doe"));
+        assertTrue(Name.isValidName("JOHN S/O DOE")); // all caps
+        assertTrue(Name.isValidName("muthu A/L ganesan")); // mixed case
+        assertTrue(Name.isValidName("peter z/ Boss"));
+        assertTrue(Name.isValidName("john s/o/p doe"));
+        assertTrue(Name.isValidName("john s / o doe"));
+    }
+
+    @Test
+    public void isValidName_validUnicode_returnsTrue() {
+        assertTrue(Name.isValidName("李小龙")); // chinese
+        assertTrue(Name.isValidName("박서준")); // korean
+        assertTrue(Name.isValidName("José García")); // accented
+        assertTrue(Name.isValidName("李小龙 2nd-Gen.")); // mixed Unicode and delimiters
     }
 
     @Test

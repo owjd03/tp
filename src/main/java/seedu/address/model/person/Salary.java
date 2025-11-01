@@ -3,6 +3,7 @@ package seedu.address.model.person;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.logging.Logger;
 
@@ -104,7 +105,7 @@ public class Salary {
         }
 
         try {
-            double amount = Double.parseDouble(this.value);
+            BigDecimal amount = new BigDecimal(this.value);
             DecimalFormat formatter = new DecimalFormat("$#,##0.00");
             return formatter.format(amount);
         } catch (NumberFormatException e) {
