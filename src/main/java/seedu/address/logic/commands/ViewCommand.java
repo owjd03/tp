@@ -22,9 +22,9 @@ public class ViewCommand extends Command {
     public static final String COMMAND_WORD = "view";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Shows the full detail of a Person.\n"
-            + "Parameters: [NAME-KEYWORD] or [INDEX] (must be a positive integer)\n"
+            + "Parameters: [NAME-KEYWORD] or [i/INDEX] (must be a positive integer)\n"
             + "Example #1: " + COMMAND_WORD + " alex\n"
-            + "Example #2: " + COMMAND_WORD + " 1";
+            + "Example #2: " + COMMAND_WORD + " i/1";
 
     public static final String MESSAGE_VIEW_SUCCESS = "Here's the full detail";
     public static final String MESSAGE_NOVIEW_NAME = "There's no one with that name in the displayed list!";

@@ -18,5 +18,6 @@ public class CliSyntax {
     public static final Prefix PREFIX_DEPENDENTS = new Prefix("dep/");
     public static final Prefix PREFIX_INSURANCE_PACKAGE = new Prefix("ip/");
     public static final Prefix PREFIX_DESCRIPTION = new Prefix("d/");
+    public static final Prefix PREFIX_INDEX = new Prefix("i/");
 
 }
