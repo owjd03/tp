@@ -521,7 +521,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   
       Use case ends.
 
-**Use case: U5. Tag a client into groups**
+**Use case: U5. Tag a client**
 
 **Precondition:** 
 
@@ -533,7 +533,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 1.  FA requests to list clients
 2.  ClientCore shows a list of clients
 3.  FA requests to tag a specific client in the list.
-4.  ClientCore tag the client and group them with similar tags.
+4.  ClientCore tag the client.
 
     Use case ends.
 
@@ -548,13 +548,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 3a1. ClientCore shows an error message.
 
       Use case resumes at step 2.
-
-* 4a. The given tag is a newly created tag
-    
-    * 4a1. ClientCore tells FA that the tag is new and the
-	   tagged client is the first one in the group.
-
-      Use case ends.
 
 **Use case: U6. Sort a client based on a category**
 
