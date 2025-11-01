@@ -49,9 +49,11 @@ public class ArgumentTokenizer {
 
         int prefixPosition = findPrefixPosition(argsString, prefix.getPrefix(), 0);
         while (prefixPosition != -1) {
-            PrefixPosition extendedPrefix = new PrefixPosition(prefix, prefixPosition);
-            positions.add(extendedPrefix);
-            prefixPosition = findPrefixPosition(argsString, prefix.getPrefix(), prefixPosition);
+            if (!isInsideQuotes(argsString, prefixPosition)) {
+                PrefixPosition extendedPrefix = new PrefixPosition(prefix, prefixPosition);
+                positions.add(extendedPrefix);
+            }
+            prefixPosition = findPrefixPosition(argsString, prefix.getPrefix(), prefixPosition + 1);
         }
 
         return positions;
@@ -122,6 +124,14 @@ public class ArgumentTokenizer {
         String value = argsString.substring(valueStartPos, nextPrefixPosition.getStartPosition());
 
         return value.trim();
+    }
+
+    /**
+     * Checks if a given index in a string is inside an unclosed quote.
+     */
+    private static boolean isInsideQuotes(String argsString, int index) {
+        long quoteCount = argsString.substring(0, index).chars().filter(ch -> ch == '"').count();
+        return quoteCount % 2 != 0;
     }
 
     /**

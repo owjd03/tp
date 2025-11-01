@@ -10,14 +10,17 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Name {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Names should only contain alphanumeric characters and spaces, and it should not be blank";
+            "Names can contain letters, numbers, spaces, the special characters -'/)( and should not be blank. \n"
+                    + "If a name contains an existing prefix, enclose the name in one set of double quotes. \n"
+                    + "The same rules above apply for the name within the double quotes. \n"
+                    + "Example: n/\"Peter s/o John\"";
 
     /*
      * The first character of the address must not be a whitespace,
      * otherwise " " (a blank string) becomes a valid input.
      */
-    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} ]*";
-
+    private static final String VALIDATION_REGEX = "[\\p{L}\\p{N}\\s'\\-\\.\\(\\)/]+";
+    private static final String DELIMITERS = " -'/.()";
     public final String fullName;
 
     /**
@@ -46,18 +49,19 @@ public class Name {
             return "";
         }
 
-        // Split each word by one or more spaces
-        String[] words = name.split("\\s+");
         StringBuilder standardizedName = new StringBuilder();
+        boolean capitalizeNext = true;
 
-        for (String word : words) {
-            if (word.isEmpty()) {
-                continue;
+        for (char c : name.toLowerCase().toCharArray()) {
+            if (DELIMITERS.indexOf(c) != -1) {
+                capitalizeNext = true;
+                standardizedName.append(c);
+            } else if (capitalizeNext && Character.isLetter(c)) {
+                standardizedName.append(Character.toUpperCase(c));
+                capitalizeNext = false;
+            } else {
+                standardizedName.append(c);
             }
-
-            standardizedName.append(Character.toUpperCase(word.charAt(0)));
-            standardizedName.append(word.substring(1).toLowerCase());
-            standardizedName.append(" ");
         }
 
         return standardizedName.toString().trim();
