@@ -89,7 +89,7 @@ When executing `add` and `edit` commands, all parameters used must adhere to the
 
 **Insurance Package:**
 * Only the name of the insurance package needs to be provided. (case-insensitive)
-* The package must already exist in the address book.
+* The package must already exist in ClientCore.
 
 For the following fields, they can either follow the specified constraints or be set to "Unspecified" (case-insensitive). 
 For instance, both omitting the salary field during an `add` command or typing `s/Unspecified` in the `add` command will result in the salary being set to "Unspecified". More examples will be provided in the respective sections.
