@@ -131,6 +131,10 @@ public class ParserUtil {
         requireNonNull(maritalStatus);
         String trimmedMaritalStatus = maritalStatus.trim();
 
+        if (trimmedMaritalStatus.isEmpty()) {
+            throw new ParseException(MaritalStatus.MESSAGE_CONSTRAINTS);
+        }
+
         String normalizedStatus = Character.toUpperCase(trimmedMaritalStatus.charAt(0))
                 + trimmedMaritalStatus.substring(1).toLowerCase();
 
