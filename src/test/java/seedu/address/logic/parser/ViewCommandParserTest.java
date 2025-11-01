@@ -16,7 +16,7 @@ public class ViewCommandParserTest {
     @Test
     public void parse_validIndexSpecified_returnsViewCommand() {
         Index targetIndex = INDEX_FIRST_PERSON;
-        String userInput = targetIndex.getOneBased() + "";
+        String userInput = "i/" + targetIndex.getOneBased() + "";
         ViewCommand expectedCommand = new ViewCommand(INDEX_FIRST_PERSON);
         assertParseSuccess(parser, userInput, expectedCommand);
 
@@ -26,7 +26,7 @@ public class ViewCommandParserTest {
     public void parse_invalidIndexSpecified_throwsParseException() {
         ViewCommandParser viewCom = new ViewCommandParser();
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewCommand.MESSAGE_USAGE);
-        assertParseFailure(viewCom, "-1", expectedMessage);
+        assertParseFailure(viewCom, "i/-1", expectedMessage);
     }
 
     @Test
