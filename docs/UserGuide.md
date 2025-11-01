@@ -82,8 +82,7 @@ Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SAL
 * Each user must have a name, phone number, email, address and insurance package. 
 * All other fields are optional.
 * For any field that is not specified in the command, it will be show up as "Unspecified" in the contact's details.
-* Names will be auto-formatted with proper capitalization (e.g. "john doe" and "jOhn DoE" will both be formatted to "John Doe"). 
-* Only the name of the insurance package needs to be provided and the package must already exist in ClientCore.
+* Names will be auto-formatted with proper capitalization (e.g. "john doe" and "jOhn DoE" will both be formatted to "John Doe").
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags (including 0)
