@@ -149,20 +149,21 @@ Examples:
 
 Views persons whose names contain the given keyword or is in the given index.
 
-Format: `view NAME-KEYWORD` or `view INDEX`
+Format: `view NAME-KEYWORD` or `view i/INDEX`
 
 * The search is case-insensitive. e.g. `alex` will match `Alex`
 * The command will not work if it finds more than 1 name with given keyword.
 * The order of the keywords matter. e.g. `Alex Yo` will not match `Yo Alex` 
 * Keywords will match with any name that contains the keyword. e.g. `ale` will match `Alex` and `Bale`
+* The prefix `i/` must be specified to view based on index and followed by non-empty input.
 * The index **must be a positive integer** 1, 2, 3, …​
 * The index must be within the size of the current list that is being displayed.
 
 Examples:
 * `view Alex` opens up a new window containing the details of the contact `Alex Yeoh`.
-* `view 1` opens up a new window containing details of the first person in the list.
+* `view i/1` opens up a new window containing details of the first person in the list.
 * After running the above command:
-  ![result for `view 1`](images/viewSuccessful.png)
+  ![result for `view i/1`](images/viewSuccessful.png)
 
 ### Filtering persons: `filter`
 
