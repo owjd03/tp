@@ -104,6 +104,14 @@ public class FilterContainsPrefixParserTest {
         parser.parse("\"alice pauline\"");
         assertTrue(parser.test(ALICE));
 
+        // Input only begins with quotation mark
+        parser.parse("\"alice");
+        assertFalse(parser.test(ALICE));
+
+        // Input only ends with quotation mark
+        parser.parse("alice\"");
+        assertFalse(parser.test(ALICE));
+
         // Filter for name with prefix, enclosing input in quotation marks
         Person personPrefix = new PersonBuilder().withName("rajoo s/o rajeet").build();
         parser.parse("\"rajoo s/o\"");
