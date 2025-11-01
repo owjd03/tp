@@ -81,16 +81,6 @@ Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SAL
 
 * Each user must have a name, phone number, email, address and insurance package. 
 * All other fields are optional.
-* For any field that is not specified in the command, it will be show up as "Unspecified" in the contact's details.
-
-Name Field Special Rules:
-* Names can contain letters (from any language), numbers, spaces, and the following special characters: - ' . / ( )
-* If a name contains text that looks like another valid prefix (e.g., s/, p/, e/), it must be enclosed in double quotes.
-* Names are automatically formatted with proper capitalization (e.g., "john s/o doe" becomes "John S/O Doe", "anne-marie" becomes "Anne-Marie").
-  * To ensure consistent formatting, this logic also standardizes names with internal upper case letters to title case (e.g., "McDonald" becomes "Mcdonald").
-
-Insurance Package Special Rules:
-* Only the name of the insurance package needs to be provided and the package must already exist in the address book.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags (including 0)

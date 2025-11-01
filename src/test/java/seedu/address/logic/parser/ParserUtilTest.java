@@ -193,4 +193,28 @@ public class ParserUtilTest {
 
         assertEquals(expectedTagSet, actualTagSet);
     }
+
+    @Test
+    public void parseName_emptyQuotedValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseName("\"\""));
+    }
+
+    @Test
+    public void parseName_validQuotedValue_returnsName() throws Exception {
+        String quotedName = "\"John s/o Doe\"";
+        Name expectedName = new Name("John s/o Doe");
+        assertEquals(expectedName, ParserUtil.parseName(quotedName));
+    }
+
+    @Test
+    public void parseName_invalidValueInsideQuotes_throwsParseException() {
+        assertThrows(ParseException.class, Name.MESSAGE_CONSTRAINTS, () -> ParserUtil.parseName("\"   \""));
+    }
+
+    @Test
+    public void parseName_validQuotedValueWithWhitespace_returnsName() throws Exception {
+        String nameWithWhitespace = WHITESPACE + "\"Jane e/o Smith\"" + WHITESPACE;
+        Name expectedName = new Name("Jane e/o Smith");
+        assertEquals(expectedName, ParserUtil.parseName(nameWithWhitespace));
+    }
 }
