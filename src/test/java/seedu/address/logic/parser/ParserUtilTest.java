@@ -206,6 +206,18 @@ public class ParserUtilTest {
     }
 
     @Test
+    public void parseMaritalStatus_emptyValue_throwsParseException() {
+        assertThrows(ParseException.class, MaritalStatus.MESSAGE_CONSTRAINTS, () -> ParserUtil
+                .parseMaritalStatus(""));
+    }
+
+    @Test
+    public void parseMaritalStatus_whitespaceOnly_throwsParseException() {
+        assertThrows(ParseException.class, MaritalStatus.MESSAGE_CONSTRAINTS, () -> ParserUtil
+                .parseMaritalStatus(WHITESPACE));
+    }
+
+    @Test
     public void parseMaritalStatus_validValueWithoutWhitespace_returnsMaritalStatus() throws Exception {
         MaritalStatus expectedStatus = new MaritalStatus(VALID_MARITAL_STATUS);
         assertEquals(expectedStatus, ParserUtil.parseMaritalStatus(VALID_MARITAL_STATUS));
