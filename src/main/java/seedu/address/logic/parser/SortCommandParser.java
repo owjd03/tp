@@ -70,8 +70,11 @@ public class SortCommandParser implements Parser<SortCommand> {
         case "occupation":
             field = SortField.OCCUPATION;
             break;
-        case "dependent":
-            field = SortField.DEPENDENT;
+        case "dependents":
+            field = SortField.DEPENDENTS;
+            break;
+        case "insurancepackage":
+            field = SortField.INSURANCEPACKAGE;
             break;
         default:
             throw new ParseException(

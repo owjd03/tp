@@ -17,29 +17,30 @@ import seedu.address.model.tag.Tag;
  */
 public class Person {
 
-    // Identity fields
+    // Compulsory data fields
     private final Name name;
     private final Phone phone;
     private final Email email;
-
-    // Compulsory data fields
     private final Address address;
+    private final InsurancePackage insurancePackage;
+
+    // Optional data fields
     private final Salary salary;
     private final DateOfBirth dateOfBirth;
     private final Set<Tag> tags = new HashSet<>();
     private final Occupation occupation;
     private final MaritalStatus maritalStatus;
     private final Dependents dependents;
-    private final InsurancePackage insurancePackage;
 
     /**
      * Every compulsory field must be present and not null.
      */
-    public Person(Name name, Phone phone, Email email, Address address,
-                  Salary salary, DateOfBirth dateOfBirth, MaritalStatus maritalStatus,
-                  Occupation occupation, Dependents dependents, InsurancePackage insurancePackage, Set<Tag> tags) {
+    public Person(Name name, Phone phone, Email email, Address address, Salary salary, DateOfBirth dateOfBirth,
+                  MaritalStatus maritalStatus, Occupation occupation, Dependents dependents,
+                  InsurancePackage insurancePackage, Set<Tag> tags) {
         requireAllNonNull(name, phone, email, address, tags, salary, dateOfBirth, maritalStatus, occupation, dependents,
                 insurancePackage);
+
         this.name = name;
         this.phone = phone;
         this.email = email;

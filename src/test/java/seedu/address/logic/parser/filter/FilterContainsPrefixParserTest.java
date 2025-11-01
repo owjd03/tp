@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.testutil.TypicalPersons.ALICE;
@@ -20,60 +19,53 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
 
 
-public class FilterDescriptivePrefixParserTest {
+public class FilterContainsPrefixParserTest {
 
     private static final Function<Person, String> GET_NAME_STRING = p -> p.getName().fullName;
     private static final Function<Person, String> GET_ADDRESS_STRING = p -> p.getAddress().value;
 
     @Test
     public void constructor_nullPrefix_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new FilterDescriptivePrefixParser(null, GET_NAME_STRING));
+        assertThrows(NullPointerException.class, () -> new FilterContainsPrefixParser(null, GET_NAME_STRING));
     }
 
     @Test
     public void constructor_nullFunction_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new FilterDescriptivePrefixParser(PREFIX_NAME, null));
+        assertThrows(NullPointerException.class, () -> new FilterContainsPrefixParser(PREFIX_NAME, null));
     }
 
     @Test
     public void getPrefix_returnsCorrectPrefix() {
-        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
         assertEquals(PREFIX_NAME, parser.getPrefix());
     }
 
     @Test
-    public void parse_emptyArgs_throwsParseException() {
-        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
-        assertThrows(ParseException.class, () -> parser.parse(""),
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, "Empty keyword for: " + PREFIX_NAME));
-    }
-
-    @Test
     public void parse_nullArgs_throwsNullPointerException() {
-        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
         assertThrows(NullPointerException.class, () -> parser.parse(null));
     }
 
     @Test
     public void parse_validKeyword_success() throws ParseException {
-        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
         parser.parse("alice");
         assertTrue(parser.test(ALICE));
     }
 
     @Test
     public void parse_keywordWithMixedCase_storedAsLowerCase() throws ParseException {
-        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
         parser.parse("ALiCe");
         assertTrue(parser.test(ALICE));
     }
 
     @Test
     public void parse_whitespaceArgs_success() throws ParseException {
-        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
         parser.parse("   ");
 
-        String expected = "seedu.address.logic.parser.filter.FilterDescriptivePrefixParser{prefix=n/, keyword=   }";
+        String expected = "seedu.address.logic.parser.filter.FilterContainsPrefixParser{prefix=n/, keyword=   }";
 
         assertEquals(expected, parser.toString());
         assertFalse(parser.test(ALICE));
@@ -81,7 +73,7 @@ public class FilterDescriptivePrefixParserTest {
 
     @Test
     public void test_nameFilter() throws ParseException {
-        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
 
         // Exact match (case-insensitive contains)
         parser.parse("alice pauline");
@@ -110,7 +102,7 @@ public class FilterDescriptivePrefixParserTest {
 
     @Test
     public void test_addressFilter() throws ParseException {
-        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_ADDRESS, GET_ADDRESS_STRING);
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_ADDRESS, GET_ADDRESS_STRING);
 
         parser.parse("jurong");
         assertTrue(parser.test(ALICE));
@@ -127,26 +119,26 @@ public class FilterDescriptivePrefixParserTest {
 
     @Test
     public void test_personFieldIsNull_returnsFalse() throws ParseException {
-        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, p -> null);
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_NAME, p -> null);
         parser.parse("anykeyword");
         assertFalse(parser.test(ALICE));
     }
 
     @Test
     public void test_calledBeforeParse_throwsNullPointerException() {
-        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
         assertThrows(NullPointerException.class, () -> parser.test(ALICE));
     }
 
     @Test
     public void equals() throws ParseException {
-        FilterDescriptivePrefixParser parser1 = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser1 = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
         parser1.parse("alice");
-        FilterDescriptivePrefixParser parser2 = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser2 = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
         parser2.parse("alice");
-        FilterDescriptivePrefixParser parser3 = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser3 = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
         parser3.parse("benson");
-        FilterDescriptivePrefixParser addressParser = new FilterDescriptivePrefixParser(PREFIX_ADDRESS,
+        FilterContainsPrefixParser addressParser = new FilterContainsPrefixParser(PREFIX_ADDRESS,
                 GET_ADDRESS_STRING);
         addressParser.parse("jurong");
 
@@ -171,16 +163,16 @@ public class FilterDescriptivePrefixParserTest {
 
     @Test
     public void equals_oneParsedOneUnparsed_returnsFalse() throws ParseException {
-        FilterDescriptivePrefixParser parsedParser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parsedParser = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
         parsedParser.parse("alice");
-        FilterDescriptivePrefixParser unparsedParser = new FilterDescriptivePrefixParser(PREFIX_NAME,
+        FilterContainsPrefixParser unparsedParser = new FilterContainsPrefixParser(PREFIX_NAME,
                 GET_NAME_STRING);
         assertFalse(parsedParser.equals(unparsedParser));
     }
 
     @Test
     public void hashCode_unparsedParser_success() {
-        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
 
         assertDoesNotThrow(() -> parser.hashCode());
     }
@@ -188,11 +180,11 @@ public class FilterDescriptivePrefixParserTest {
 
     @Test
     public void hashCode_consistentWithEquals() throws ParseException {
-        FilterDescriptivePrefixParser parser1 = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser1 = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
         parser1.parse("alice");
-        FilterDescriptivePrefixParser parser2 = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser2 = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
         parser2.parse("alice");
-        FilterDescriptivePrefixParser parser3 = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser3 = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
         parser3.parse("benson");
 
         assertEquals(parser1.hashCode(), parser2.hashCode());
@@ -201,9 +193,9 @@ public class FilterDescriptivePrefixParserTest {
 
     @Test
     public void toString_returnsCorrectStringRepresentation() throws ParseException {
-        FilterDescriptivePrefixParser parser = new FilterDescriptivePrefixParser(PREFIX_NAME, GET_NAME_STRING);
+        FilterContainsPrefixParser parser = new FilterContainsPrefixParser(PREFIX_NAME, GET_NAME_STRING);
         parser.parse("alice");
-        String expected = "seedu.address.logic.parser.filter.FilterDescriptivePrefixParser{prefix=n/, keyword=alice}";
+        String expected = "seedu.address.logic.parser.filter.FilterContainsPrefixParser{prefix=n/, keyword=alice}";
         assertEquals(expected, parser.toString());
     }
 }

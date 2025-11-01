@@ -2,6 +2,8 @@ package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+import static seedu.address.logic.commands.EditCommand.MESSAGE_NOT_EDITED;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE_OF_BIRTH;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPENDENTS;
@@ -18,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.EditCommand;
@@ -30,6 +33,11 @@ import seedu.address.model.tag.Tag;
  */
 public class EditCommandParser implements Parser<EditCommand> {
 
+    private static final Prefix[] ALL_PREFIXES = {
+        PREFIX_ADDRESS, PREFIX_DATE_OF_BIRTH, PREFIX_DEPENDENTS, PREFIX_EMAIL, PREFIX_INSURANCE_PACKAGE,
+        PREFIX_MARITAL_STATUS, PREFIX_NAME, PREFIX_OCCUPATION, PREFIX_PHONE, PREFIX_SALARY, PREFIX_TAG
+    };
+
     /**
      * Parses the given {@code String} of arguments in the context of the EditCommand
      * and returns an EditCommand object for execution.
@@ -37,37 +45,40 @@ public class EditCommandParser implements Parser<EditCommand> {
      */
     public EditCommand parse(String args) throws ParseException {
         requireNonNull(args);
-        ArgumentMultimap argMultimap = tokenizeArguments(args);
-        Index index = parseIndex(argMultimap);
-        verifyNoDuplicatePrefixes(argMultimap);
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, ALL_PREFIXES);
+
+        String preamble = argMultimap.getPreamble();
+
+        if (preamble.isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
+        }
+
+        Index index;
+        try {
+            int indexInt = Integer.parseInt(preamble);
+            if (indexInt <= 0) {
+                throw new ParseException(String.format("%s\n%s",
+                        MESSAGE_INVALID_PERSON_DISPLAYED_INDEX, EditCommand.MESSAGE_USAGE));
+            }
+            index = Index.fromOneBased(indexInt);
+        } catch (NumberFormatException nfe) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
+        }
+
+        Prefix[] singleValuedPrefixes = Stream.of(ALL_PREFIXES)
+                .filter(prefix -> !prefix.equals(PREFIX_TAG))
+                .toArray(Prefix[]::new);
+
+        argMultimap.verifyNoDuplicatePrefixesFor(singleValuedPrefixes);
 
         EditPersonDescriptor editPersonDescriptor = buildEditPersonDescriptor(argMultimap);
 
         if (!editPersonDescriptor.isAnyFieldEdited()) {
-            throw new ParseException(EditCommand.MESSAGE_NOT_EDITED);
+            throw new ParseException(String.format("%s\n%s", MESSAGE_NOT_EDITED,
+                    EditCommand.MESSAGE_USAGE));
         }
 
         return new EditCommand(index, editPersonDescriptor);
-    }
-
-    private ArgumentMultimap tokenizeArguments(String args) {
-        return ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS,
-                PREFIX_SALARY, PREFIX_DATE_OF_BIRTH, PREFIX_MARITAL_STATUS, PREFIX_DEPENDENTS,
-                PREFIX_OCCUPATION, PREFIX_INSURANCE_PACKAGE, PREFIX_TAG);
-    }
-
-    private Index parseIndex(ArgumentMultimap argMultimap) throws ParseException {
-        try {
-            return ParserUtil.parseIndex(argMultimap.getPreamble());
-        } catch (ParseException pe) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE), pe);
-        }
-    }
-
-    private void verifyNoDuplicatePrefixes(ArgumentMultimap argMultimap) throws ParseException {
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS,
-                PREFIX_SALARY, PREFIX_DATE_OF_BIRTH, PREFIX_MARITAL_STATUS, PREFIX_DEPENDENTS,
-                PREFIX_OCCUPATION, PREFIX_INSURANCE_PACKAGE);
     }
 
     private EditPersonDescriptor buildEditPersonDescriptor(ArgumentMultimap argMultimap) throws ParseException {

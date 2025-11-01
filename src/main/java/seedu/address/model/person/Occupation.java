@@ -9,7 +9,8 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Occupation {
 
-    public static final String MESSAGE_CONSTRAINTS = "Occupation cannot be left empty";
+    public static final String MESSAGE_CONSTRAINTS = "Occupation must be non-empty "
+            + "or be declared as 'Unspecified' (case-insensitive).";
 
     /*
      * The first character of the occupation must not be a whitespace,
@@ -19,7 +20,7 @@ public class Occupation {
 
     public static final String UNSPECIFIED_VALUE = "Unspecified";
 
-    public final String value;
+    private final String value;
 
     /**
      * Constructs an {@code Occupation}.
@@ -28,13 +29,20 @@ public class Occupation {
      */
     public Occupation(String occupation) {
         requireNonNull(occupation);
+        checkArgument(isValidOccupation(occupation), MESSAGE_CONSTRAINTS);
 
-        if (occupation.equals(UNSPECIFIED_VALUE)) {
+        if (occupation.equalsIgnoreCase(UNSPECIFIED_VALUE)) {
             this.value = UNSPECIFIED_VALUE;
         } else {
-            checkArgument(isValidOccupation(occupation), MESSAGE_CONSTRAINTS);
             value = occupation;
         }
+    }
+
+    /**
+     * @return The raw occupation value as a string.
+     */
+    public String getValue() {
+        return this.value;
     }
 
     /**

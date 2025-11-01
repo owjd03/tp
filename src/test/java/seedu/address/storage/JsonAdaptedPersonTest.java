@@ -17,13 +17,161 @@ import seedu.address.model.InsuranceCatalog;
 import seedu.address.model.ReadOnlyInsuranceCatalog;
 import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.DateOfBirth;
+import seedu.address.model.person.Dependents;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.MaritalStatus;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Occupation;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Salary;
 import seedu.address.model.util.SampleDataUtil;
 
 public class JsonAdaptedPersonTest {
+    /**
+     * A builder for {@code JsonAdaptedPerson} to be used in tests.
+     */
+    private static class JsonAdaptedPersonBuilder {
+        private static final String DEFAULT_NAME = BENSON.getName().toString();
+        private static final String DEFAULT_PHONE = BENSON.getPhone().toString();
+        private static final String DEFAULT_EMAIL = BENSON.getEmail().toString();
+        private static final String DEFAULT_ADDRESS = BENSON.getAddress().toString();
+        private static final String DEFAULT_SALARY = BENSON.getSalary().toString();
+        private static final String DEFAULT_DATE_OF_BIRTH = BENSON.getDateOfBirth().toString();
+        private static final String DEFAULT_MARITAL_STATUS = BENSON.getMaritalStatus().toString();
+        private static final String DEFAULT_OCCUPATION = BENSON.getOccupation().toString();
+        private static final int DEFAULT_DEPENDENTS = BENSON.getDependents().getValue();
+        private static final String DEFAULT_INSURANCE_PACKAGE = BENSON.getInsurancePackage().toString();
+        private static final List<JsonAdaptedTag> DEFAULT_TAGS = BENSON.getTags().stream().map(JsonAdaptedTag::new)
+                .collect(Collectors.toList());
+
+        private String name;
+        private String phone;
+        private String email;
+        private String address;
+        private String salary;
+        private String dateOfBirth;
+        private String maritalStatus;
+        private String occupation;
+        private int dependents;
+        private String insurancePackage;
+        private List<JsonAdaptedTag> tags;
+
+        /**
+         * Creates a {@code JsonAdaptedPersonBuilder} with default valid details.
+         */
+        public JsonAdaptedPersonBuilder() {
+            name = DEFAULT_NAME;
+            phone = DEFAULT_PHONE;
+            email = DEFAULT_EMAIL;
+            address = DEFAULT_ADDRESS;
+            salary = DEFAULT_SALARY;
+            dateOfBirth = DEFAULT_DATE_OF_BIRTH;
+            maritalStatus = DEFAULT_MARITAL_STATUS;
+            occupation = DEFAULT_OCCUPATION;
+            dependents = DEFAULT_DEPENDENTS;
+            insurancePackage = DEFAULT_INSURANCE_PACKAGE;
+            tags = DEFAULT_TAGS;
+        }
+
+        /**
+         * Sets the {@code name} of the {@code JsonAdaptedPerson}
+         */
+        public JsonAdaptedPersonBuilder withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        /**
+         * Sets the {@code phone} of the {@code JsonAdaptedPerson}
+         */
+        public JsonAdaptedPersonBuilder withPhone(String phone) {
+            this.phone = phone;
+            return this;
+        }
+
+        /**
+         * Sets the {@code email} of the {@code JsonAdaptedPerson}
+         */
+        public JsonAdaptedPersonBuilder withEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        /**
+         * Sets the {@code address} of the {@code JsonAdaptedPerson}
+         */
+        public JsonAdaptedPersonBuilder withAddress(String address) {
+            this.address = address;
+            return this;
+        }
+
+        /**
+         * Sets the {@code salary} of the {@code JsonAdaptedPerson}
+         */
+        public JsonAdaptedPersonBuilder withSalary(String salary) {
+            this.salary = salary;
+            return this;
+        }
+
+        /**
+         * Sets the {@code dateOfBirth} of the {@code JsonAdaptedPerson}
+         */
+        public JsonAdaptedPersonBuilder withDateOfBirth(String dateOfBirth) {
+            this.dateOfBirth = dateOfBirth;
+            return this;
+        }
+
+        /**
+         * Sets the {@code maritalStatus} of the {@code JsonAdaptedPerson}
+         */
+        public JsonAdaptedPersonBuilder withMaritalStatus(String maritalStatus) {
+            this.maritalStatus = maritalStatus;
+            return this;
+        }
+
+        /**
+         * Sets the {@code occupation} of the {@code JsonAdaptedPerson}
+         */
+        public JsonAdaptedPersonBuilder withOccupation(String occupation) {
+            this.occupation = occupation;
+            return this;
+        }
+
+        /**
+         * Sets the {@code dependents} of the {@code JsonAdaptedPerson}
+         */
+        public JsonAdaptedPersonBuilder withDependents(int dependents) {
+            this.dependents = dependents;
+            return this;
+        }
+
+        /**
+         * Sets the {@code insurancePackage} of the {@code JsonAdaptedPerson}
+         */
+        public JsonAdaptedPersonBuilder withInsurancePackage(String insurancePackage) {
+            this.insurancePackage = insurancePackage;
+            return this;
+        }
+
+        /**
+         * Sets the {@code tags} of the {@code JsonAdaptedPerson}
+         */
+        public JsonAdaptedPersonBuilder withTags(List<JsonAdaptedTag> tags) {
+            this.tags = tags;
+            return this;
+        }
+
+        /**
+         * Builds the JsonAdaptedPerson
+         */
+        public JsonAdaptedPerson build() {
+            return new JsonAdaptedPerson(name, phone, email, address, salary, dateOfBirth, maritalStatus, occupation,
+                    dependents, insurancePackage, tags);
+        }
+    }
+
     private static final String INVALID_NAME = "R@chel";
     private static final String INVALID_PHONE = "+651234";
     private static final String INVALID_ADDRESS = " ";
@@ -36,19 +184,7 @@ public class JsonAdaptedPersonTest {
     private static final String INVALID_INSURANCE_PACKAGE = "Diamond";
     private static final String INVALID_TAG = "#friend";
 
-    private static final String VALID_NAME = BENSON.getName().toString();
-    private static final String VALID_PHONE = BENSON.getPhone().toString();
-    private static final String VALID_EMAIL = BENSON.getEmail().toString();
-    private static final String VALID_ADDRESS = BENSON.getAddress().toString();
-    private static final String VALID_SALARY = BENSON.getSalary().toString();
-    private static final String VALID_DATE_OF_BIRTH = BENSON.getDateOfBirth().toString();
-    private static final String VALID_MARITAL_STATUS = BENSON.getMaritalStatus().toString();
-    private static final String VALID_OCCUPATION = BENSON.getOccupation().toString();
-    private static final int VALID_DEPENDENTS = BENSON.getDependents().toInt();
-    private static final String VALID_INSURANCE_PACKAGE = BENSON.getInsurancePackage().toString();
-    private static final List<JsonAdaptedTag> VALID_TAGS = BENSON.getTags().stream()
-            .map(JsonAdaptedTag::new)
-            .collect(Collectors.toList());
+    private static final List<JsonAdaptedTag> VALID_TAGS = BENSON.getTags().stream().map(JsonAdaptedTag::new).toList();
     private static final ReadOnlyInsuranceCatalog VALID_CATALOG = SampleDataUtil.getSampleInsuranceCatalog();
 
     /**
@@ -66,191 +202,89 @@ public class JsonAdaptedPersonTest {
     }
 
     @Test
-    public void toModelType_invalidName_throwsIllegalValueException() {
-        JsonAdaptedPerson person =
-                new JsonAdaptedPerson(INVALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_SALARY,
-                        VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                        VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = Name.MESSAGE_CONSTRAINTS;
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
+    public void toModelType_invalidFields_throwsIllegalValueException() {
+        JsonAdaptedPerson person1 = new JsonAdaptedPersonBuilder().withName(INVALID_NAME).build();
+        assertThrows(IllegalValueException.class, Name.MESSAGE_CONSTRAINTS, () -> person1.toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person2 = new JsonAdaptedPersonBuilder().withPhone(INVALID_PHONE).build();
+        assertThrows(IllegalValueException.class, Phone.MESSAGE_CONSTRAINTS, () -> person2.toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person3 = new JsonAdaptedPersonBuilder().withEmail(INVALID_EMAIL).build();
+        assertThrows(IllegalValueException.class, Email.MESSAGE_CONSTRAINTS, () -> person3.toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person4 = new JsonAdaptedPersonBuilder().withAddress(INVALID_ADDRESS).build();
+        assertThrows(IllegalValueException.class, Address.MESSAGE_CONSTRAINTS, () -> person4
+                .toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person5 = new JsonAdaptedPersonBuilder().withSalary(INVALID_SALARY).build();
+        assertThrows(IllegalValueException.class, Salary.MESSAGE_CONSTRAINTS, () -> person5.toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person6 = new JsonAdaptedPersonBuilder().withDateOfBirth(INVALID_DATE_OF_BIRTH).build();
+        assertThrows(IllegalValueException.class, DateOfBirth.MESSAGE_CONSTRAINTS, () -> person6
+                .toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person7 = new JsonAdaptedPersonBuilder().withMaritalStatus(INVALID_MARITAL_STATUS).build();
+        assertThrows(IllegalValueException.class, MaritalStatus.MESSAGE_CONSTRAINTS, () -> person7
+                .toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person8 = new JsonAdaptedPersonBuilder().withOccupation(INVALID_OCCUPATION).build();
+        assertThrows(IllegalValueException.class, Occupation.MESSAGE_CONSTRAINTS, () -> person8
+                .toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person9 = new JsonAdaptedPersonBuilder().withDependents(INVALID_DEPENDENTS).build();
+        assertThrows(IllegalValueException.class, Dependents.MESSAGE_CONSTRAINTS, () -> person9
+                .toModelType(VALID_CATALOG));
     }
 
     @Test
-    public void toModelType_nullName_throwsIllegalValueException() {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(null, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
-                VALID_SALARY, VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, Name.class.getSimpleName());
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
+    public void toModelType_nullFields_throwsIllegalValueException() {
+        JsonAdaptedPerson person1 = new JsonAdaptedPersonBuilder().withName(null).build();
+        String expectedMsg1 = String.format(MISSING_FIELD_MESSAGE_FORMAT, Name.class.getSimpleName());
+        assertThrows(IllegalValueException.class, expectedMsg1, () -> person1.toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person2 = new JsonAdaptedPersonBuilder().withPhone(null).build();
+        String expectedMsg2 = String.format(MISSING_FIELD_MESSAGE_FORMAT, Phone.class.getSimpleName());
+        assertThrows(IllegalValueException.class, expectedMsg2, () -> person2.toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person3 = new JsonAdaptedPersonBuilder().withEmail(null).build();
+        String expectedMsg3 = String.format(MISSING_FIELD_MESSAGE_FORMAT, Email.class.getSimpleName());
+        assertThrows(IllegalValueException.class, expectedMsg3, () -> person3.toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person4 = new JsonAdaptedPersonBuilder().withAddress(null).build();
+        String expectedMsg4 = String.format(MISSING_FIELD_MESSAGE_FORMAT, Address.class.getSimpleName());
+        assertThrows(IllegalValueException.class, expectedMsg4, () -> person4.toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person5 = new JsonAdaptedPersonBuilder().withSalary(null).build();
+        String expectedMsg5 = String.format(MISSING_FIELD_MESSAGE_FORMAT, Salary.class.getSimpleName());
+        assertThrows(IllegalValueException.class, expectedMsg5, () -> person5.toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person6 = new JsonAdaptedPersonBuilder().withDateOfBirth(null).build();
+        String expectedMsg6 = String.format(MISSING_FIELD_MESSAGE_FORMAT, DateOfBirth.class.getSimpleName());
+        assertThrows(IllegalValueException.class, expectedMsg6, () -> person6.toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person7 = new JsonAdaptedPersonBuilder().withMaritalStatus(null).build();
+        String expectedMsg7 = String.format(MISSING_FIELD_MESSAGE_FORMAT, MaritalStatus.class.getSimpleName());
+        assertThrows(IllegalValueException.class, expectedMsg7, () -> person7.toModelType(VALID_CATALOG));
+
+        JsonAdaptedPerson person8 = new JsonAdaptedPersonBuilder().withOccupation(null).build();
+        String expectedMsg8 = String.format(MISSING_FIELD_MESSAGE_FORMAT, Occupation.class.getSimpleName());
+        assertThrows(IllegalValueException.class, expectedMsg8, () -> person8.toModelType(VALID_CATALOG));
     }
 
     @Test
-    public void toModelType_invalidPhone_throwsIllegalValueException() {
-        JsonAdaptedPerson person =
-                new JsonAdaptedPerson(VALID_NAME, INVALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_SALARY,
-                        VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                        VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = Phone.MESSAGE_CONSTRAINTS;
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_nullPhone_throwsIllegalValueException() {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, null, VALID_EMAIL, VALID_ADDRESS,
-                VALID_SALARY, VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, Phone.class.getSimpleName());
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_invalidEmail_throwsIllegalValueException() {
-        JsonAdaptedPerson person =
-                new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, INVALID_EMAIL, VALID_ADDRESS, VALID_SALARY,
-                        VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                        VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = Email.MESSAGE_CONSTRAINTS;
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_nullEmail_throwsIllegalValueException() {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, null, VALID_ADDRESS,
-                VALID_SALARY, VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, Email.class.getSimpleName());
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_invalidAddress_throwsIllegalValueException() {
-        JsonAdaptedPerson person =
-                new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, INVALID_ADDRESS, VALID_SALARY,
-                        VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                        VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = Address.MESSAGE_CONSTRAINTS;
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_nullAddress_throwsIllegalValueException() {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, null,
-                VALID_SALARY, VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, Address.class.getSimpleName());
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_nullSalary_throwsIllegalValueException() {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
-                null, VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, "Salary");
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_invalidSalary_throwsIllegalValueException() {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
-                INVALID_SALARY, VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = "Salaries can take any non-negative values, should not be blank, "
-                + "and should have up to 2 decimal places";
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_nullDateOfBirth_throwsIllegalValueException() {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
-                VALID_SALARY, null, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, "DateOfBirth");
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_invalidDateOfBirth_throwsIllegalValueException() {
-        JsonAdaptedPerson person =
-                new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_SALARY,
-                        INVALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                        VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = "Date of birth must be a valid date in the format yyyy-MM-dd and not in the future";
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_nullMaritalStatus_throwsIllegalValueException() {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
-                VALID_SALARY, VALID_DATE_OF_BIRTH, null, VALID_OCCUPATION, VALID_DEPENDENTS,
-                VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, "MaritalStatus");
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_invalidMaritalStatus_throwsIllegalValueException() {
-        JsonAdaptedPerson person =
-                new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_SALARY,
-                        VALID_DATE_OF_BIRTH, INVALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                        VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = "Marital status must be one of the predefined constants: Single, Married, Divorced,"
-                + " Widowed";
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_nullOccupation_throwsIllegalValueException() {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
-                VALID_SALARY, VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, null, VALID_DEPENDENTS,
-                VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, "Occupation");
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_invalidOccupation_throwsIllegalValueException() {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
-                VALID_SALARY, VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, INVALID_OCCUPATION, VALID_DEPENDENTS,
-                VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = "Occupation cannot be left empty";
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_invalidDependents_throwsIllegalValueException() {
-        JsonAdaptedPerson person =
-                new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_SALARY,
-                        VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION,
-                        INVALID_DEPENDENTS, VALID_INSURANCE_PACKAGE, VALID_TAGS);
-        String expectedMessage = "Number of dependents must be a non-negative integer";
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(VALID_CATALOG));
-    }
-
-    @Test
-    public void toModelType_nullInsurancePackage_throwsIllegalValueException() throws IllegalValueException {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
-                VALID_SALARY, VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                null, VALID_TAGS);
-
+    public void toModelType_nullInsurancePackage_defaultsToUndecided() throws IllegalValueException {
+        JsonAdaptedPerson person = new JsonAdaptedPersonBuilder().withInsurancePackage(null).build();
         InsurancePackage expectedPackage = VALID_CATALOG.getUndecidedPackage();
-
         Person modelPerson = person.toModelType(VALID_CATALOG);
-
         assertEquals(expectedPackage, modelPerson.getInsurancePackage());
     }
 
     @Test
-    public void toModelType_invalidInsurancePackage_throwsIllegalValueException() throws IllegalValueException {
-        JsonAdaptedPerson person =
-                new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_SALARY,
-                        VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                        INVALID_INSURANCE_PACKAGE, VALID_TAGS);
-
+    public void toModelType_invalidInsurancePackage_defaultsToUndecided() throws IllegalValueException {
+        JsonAdaptedPerson person = new JsonAdaptedPersonBuilder().withInsurancePackage(INVALID_INSURANCE_PACKAGE)
+                .build();
         InsurancePackage expectedPackage = VALID_CATALOG.getUndecidedPackage();
-
         Person modelPerson = person.toModelType(VALID_CATALOG);
-
         assertEquals(expectedPackage, modelPerson.getInsurancePackage());
     }
 
@@ -258,10 +292,7 @@ public class JsonAdaptedPersonTest {
     public void toModelType_invalidTags_throwsIllegalValueException() {
         List<JsonAdaptedTag> invalidTags = new ArrayList<>(VALID_TAGS);
         invalidTags.add(new JsonAdaptedTag(INVALID_TAG));
-        JsonAdaptedPerson person =
-                new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_SALARY,
-                        VALID_DATE_OF_BIRTH, VALID_MARITAL_STATUS, VALID_OCCUPATION, VALID_DEPENDENTS,
-                        VALID_INSURANCE_PACKAGE, invalidTags);
+        JsonAdaptedPerson person = new JsonAdaptedPersonBuilder().withTags(invalidTags).build();
         assertThrows(IllegalValueException.class, () -> person.toModelType(VALID_CATALOG));
     }
 

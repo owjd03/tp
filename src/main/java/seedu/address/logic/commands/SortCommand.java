@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.Comparator;
+import java.util.function.Function;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.Model;
@@ -15,7 +16,7 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.Salary;
 
 /**
- * Sorts all persons in the address book in alphabetical order.
+ * Sorts all persons in the address book by specified field and direction.
  */
 public class SortCommand extends Command {
 
@@ -23,7 +24,8 @@ public class SortCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Sorts all persons by the specific field.\n"
             + "Parameters: FIELD [DIRECTION]"
-            + "FIELD: name, phone, email, address, salary, dateofbirth, maritalstatus, occupation, dependent\n"
+            + "FIELD: name, phone, email, address, salary, dateofbirth, "
+            + "maritalstatus, occupation, dependents, insurancepackage\n"
             + "DIRECTION: ascending, descending\n"
             + "Example: " + COMMAND_WORD + " name descending";
     public static final String MESSAGE_SUCCESS = "Sorted all persons by ";
@@ -32,6 +34,8 @@ public class SortCommand extends Command {
     private final SortDirection sortDirection;
 
     /**
+     * Creates a SortCommand to sort persons by the specified field and direction
+     *
      * @param sortField of the selected sort criteria
      * @param sortDirection of the selected sort criteria
      */
@@ -48,37 +52,25 @@ public class SortCommand extends Command {
         Comparator<Person> comparator = createComparator(sortField, sortDirection);
         model.sortPersonList(comparator);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+
         String directionText = sortDirection.toString().toLowerCase();
         String message = MESSAGE_SUCCESS + sortField + " in " + directionText + " order";
         return new CommandResult(message);
     }
 
     /**
-     * Helper method to check if a Person's sorted field is "Unspecified".
+     * Creates a comparator for sorting persons based on a particular field and direction
+     * and returns the comparator
      *
-     * @param person The person to check.
-     * @param sortField The field being sorted.
-     * @return true if the person's value for that field is "Unspecified" or -1, false otherwise.
+     * @param sortField the field is sorted by NAME, PHONE, EMAIL, ADDRESS, SALARY,
+     *                  DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENTS, INSURANCEPACKAGE
+     * @param sortDirection the direction is sorted by ASCENDING OR DESCENDING
+     * @return comparator that compares two persons based on the provided field and direction
      */
-    private static boolean isPersonUnspecified(Person person, SortField sortField) {
-        switch(sortField) {
-        case SALARY:
-            return person.getSalary().value.equals(Salary.UNSPECIFIED_VALUE);
-        case DATEOFBIRTH:
-            return person.getDateOfBirth().value.equals(DateOfBirth.UNSPECIFIED_VALUE);
-        case MARITALSTATUS:
-            return person.getMaritalStatus().value.equals(MaritalStatus.UNSPECIFIED_VALUE);
-        case OCCUPATION:
-            return person.getOccupation().value.equals(Occupation.UNSPECIFIED_VALUE);
-        case DEPENDENT:
-            return person.getDependents().value == Dependents.UNSPECIFIED_VALUE;
-        case NAME:
-        case PHONE:
-        case EMAIL:
-        case ADDRESS:
-        default:
-            return false;
-        }
+    private static Comparator<Person> createComparator(SortField sortField, SortDirection sortDirection) {
+        Comparator<Person> baseComparator = createBaseComparator(sortField);
+        Comparator<Person> directedComparator = applyDirection(baseComparator, sortDirection);
+        return handleUnspecifiedValues(directedComparator, sortField);
     }
 
     /**
@@ -86,63 +78,80 @@ public class SortCommand extends Command {
      * and returns the comparator
      *
      * @param sortField the field is sorted by NAME, PHONE, EMAIL, ADDRESS, SALARY,
-     *                  DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENT
-     * @param sortDirection the direction is sorted by ASCENDING OR DESCENDING
-     * @return comparator that compares two persons based on the provided field and direction
-     * @throws AssertionError if an invalid field is provided
-     **/
-    private static Comparator<Person> createComparator(SortField sortField, SortDirection sortDirection) {
-        Comparator<Person> baseComparator;
-
+     *                  DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENTS, INSURANCEPACKAGE
+     * @return base comparator that compares two persons based on the provided field and direction
+     */
+    private static Comparator<Person> createBaseComparator(SortField sortField) {
         switch (sortField) {
         case NAME:
-            baseComparator = (person1, person2) ->
-                    person1.getName().fullName.compareToIgnoreCase(person2.getName().fullName);
-            break;
+            return createStringComparator(person -> person.getName().fullName);
         case PHONE:
-            baseComparator = (person1, person2) ->
-                    person1.getPhone().value.compareToIgnoreCase(person2.getPhone().value);
-            break;
+            return createStringComparator(person -> person.getPhone().value);
         case EMAIL:
-            baseComparator = (person1, person2) ->
-                    person1.getEmail().value.compareToIgnoreCase(person2.getEmail().value);
-            break;
+            return createStringComparator(person -> person.getEmail().value);
         case ADDRESS:
-            baseComparator = (person1, person2) ->
-                    person1.getAddress().value.compareToIgnoreCase(person2.getAddress().value);
-            break;
+            return createStringComparator(person -> person.getAddress().value);
         case SALARY:
-            baseComparator = Comparator.comparingDouble(person -> Double.parseDouble(person.getSalary().value));
-            break;
+            return createNumericComparator(person -> Double.parseDouble(person.getSalary().getValue()));
         case DATEOFBIRTH:
-            baseComparator = (person1, person2) ->
-                    person1.getDateOfBirth().value.compareToIgnoreCase(person2.getDateOfBirth().value);
-            break;
+            return createStringComparator(person -> person.getDateOfBirth().getValue());
         case MARITALSTATUS:
-            baseComparator = (person1, person2) ->
-                    person1.getMaritalStatus().value.compareToIgnoreCase(person2.getMaritalStatus().value);
-            break;
+            return createStringComparator(person -> person.getMaritalStatus().getValue());
         case OCCUPATION:
-            baseComparator = (person1, person2) ->
-                    person1.getOccupation().value.compareToIgnoreCase(person2.getOccupation().value);
-            break;
-        case DEPENDENT:
-            baseComparator = Comparator.comparingInt(person -> person.getDependents().value);
-            break;
+            return createStringComparator(person -> person.getOccupation().getValue());
+        case DEPENDENTS:
+            return Comparator.comparingInt(person -> person.getDependents().getValue());
+        case INSURANCEPACKAGE:
+            return createStringComparator(person -> person.getInsurancePackage().getPackageName());
         default:
-            throw new AssertionError("Invalid sort field" + sortField);
+            throw new AssertionError("Invalid sort field: " + sortField);
         }
+    }
 
-        Comparator<Person> directedComparator;
+    /**
+     * Creates a string comparator using the provided mapper function.
+     *
+     * @param mapper function that gets a string value from a Person for comparison
+     * @return string comparator that compares two persons based on the provided field and direction
+     */
+    private static Comparator<Person> createStringComparator(Function<Person, String> mapper) {
+        return (person1, person2) -> mapper.apply(person1).compareToIgnoreCase(mapper.apply(person2));
+    }
+
+    /**
+     * Creates a numeric comparator using the provided mapper function.
+     *
+     * @param mapper function that gets a double value from a Person for comparison
+     * @return numeric comparator that compares two persons based on the provided field and direction
+     */
+    private static Comparator<Person> createNumericComparator(Function<Person, Double> mapper) {
+        return Comparator.comparing(mapper);
+    }
+
+    /**
+     * Applies the sort direction to the base comparator.
+     *
+     * @param baseComparator base comparator that compares two persons based on provided field
+     * @param sortDirection the direction is sorted by ASCENDING OR DESCENDING
+     * @return comparator with the specified direction applied
+     */
+    private static Comparator<Person> applyDirection(Comparator<Person> baseComparator, SortDirection sortDirection) {
         if (sortDirection == SortDirection.DESCENDING) {
-            directedComparator = baseComparator.reversed();
-        } else {
-            directedComparator = baseComparator;
+            return baseComparator.reversed();
         }
+        return baseComparator;
+    }
 
-        // "Unspecified" values are always sorted to the bottom
-        // regardless of sort direction. This applies to optional fields: Salary, DateOfBirth,
-        // MaritalStatus, Occupation, and Dependents (which uses -1 as its unspecified value).
+    /**
+     * Wraps the comparator to handle unspecified values by placing them at the bottom.
+     *
+     * @param directedComparator direction comparator that compares two persons based on provided field and direction
+     * @param sortField the field is sorted by NAME, PHONE, EMAIL, ADDRESS, SALARY,
+     *                       DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENTS, INSURANCEPACKAGE
+     * @return comparator that accounts for Unspecified or -1 values
+     */
+    private static Comparator<Person> handleUnspecifiedValues(Comparator<Person> directedComparator,
+                                                              SortField sortField) {
         return (p1, p2) -> {
             boolean p1Unspecified = isPersonUnspecified(p1, sortField);
             boolean p2Unspecified = isPersonUnspecified(p2, sortField);
@@ -161,6 +170,35 @@ public class SortCommand extends Command {
                 return directedComparator.compare(p1, p2);
             }
         };
+    }
+
+    /**
+     * Helper method to check if a Person's sorted field is "Unspecified".
+     *
+     * @param person The person to check.
+     * @param sortField The field being sorted.
+     * @return true if the person's value for that field is "Unspecified" or -1, false otherwise.
+     */
+    private static boolean isPersonUnspecified(Person person, SortField sortField) {
+        switch(sortField) {
+        case SALARY:
+            return person.getSalary().getValue().equals(Salary.UNSPECIFIED_VALUE);
+        case DATEOFBIRTH:
+            return person.getDateOfBirth().getValue().equals(DateOfBirth.UNSPECIFIED_VALUE);
+        case MARITALSTATUS:
+            return person.getMaritalStatus().getValue().equals(MaritalStatus.UNSPECIFIED_VALUE);
+        case OCCUPATION:
+            return person.getOccupation().getValue().equals(Occupation.UNSPECIFIED_VALUE);
+        case DEPENDENTS:
+            return person.getDependents().getValue() == Dependents.UNSPECIFIED_VALUE;
+        case NAME:
+        case PHONE:
+        case EMAIL:
+        case ADDRESS:
+        case INSURANCEPACKAGE:
+        default:
+            return false;
+        }
     }
 
     @Override
@@ -182,7 +220,7 @@ public class SortCommand extends Command {
      * Represents the available fields to sort by
      **/
     public enum SortField {
-        NAME, PHONE, EMAIL, ADDRESS, SALARY, DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENT
+        NAME, PHONE, EMAIL, ADDRESS, SALARY, DATEOFBIRTH, MARITALSTATUS, OCCUPATION, DEPENDENTS, INSURANCEPACKAGE;
     }
 
     /**

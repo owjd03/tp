@@ -198,18 +198,18 @@ public class SortCommandTest {
 
     @Test
     public void execute_sortByDependentAscending_success() {
-        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.DEPENDENT + " in ascending order";
-        SortCommand command = new SortCommand(SortField.DEPENDENT, SortDirection.ASCENDING);
-        new SortCommand(SortField.DEPENDENT, SortDirection.ASCENDING).execute(expectedModel);
+        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.DEPENDENTS + " in ascending order";
+        SortCommand command = new SortCommand(SortField.DEPENDENTS, SortDirection.ASCENDING);
+        new SortCommand(SortField.DEPENDENTS, SortDirection.ASCENDING).execute(expectedModel);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(ALICE, model.getFilteredPersonList().get(0));
     }
 
     @Test
     public void execute_sortByDependentDescending_success() {
-        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.DEPENDENT + " in descending order";
-        SortCommand command = new SortCommand(SortField.DEPENDENT, SortDirection.DESCENDING);
-        new SortCommand(SortField.DEPENDENT, SortDirection.DESCENDING).execute(expectedModel);
+        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.DEPENDENTS + " in descending order";
+        SortCommand command = new SortCommand(SortField.DEPENDENTS, SortDirection.DESCENDING);
+        new SortCommand(SortField.DEPENDENTS, SortDirection.DESCENDING).execute(expectedModel);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(FIONA, model.getFilteredPersonList().get(0));
     }
@@ -224,6 +224,25 @@ public class SortCommandTest {
 
         assertCommandSuccess(command, emptyModel, expectedMessage, expectedEmptyModel);
         assertEquals(0, emptyModel.getFilteredPersonList().size());
+    }
+
+    @Test
+    public void execute_sortByInsurancePackageAscending_success() {
+        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.INSURANCEPACKAGE + " in ascending order";
+        SortCommand command = new SortCommand(SortField.INSURANCEPACKAGE, SortDirection.ASCENDING);
+        new SortCommand(SortField.INSURANCEPACKAGE, SortDirection.ASCENDING).execute(expectedModel);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(CARL, model.getFilteredPersonList().get(0));
+        assertEquals(FIONA, model.getFilteredPersonList().get(1));
+    }
+
+    @Test
+    public void execute_sortByInsurancePackageDescending_success() {
+        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.INSURANCEPACKAGE + " in descending order";
+        SortCommand command = new SortCommand(SortField.INSURANCEPACKAGE, SortDirection.DESCENDING);
+        new SortCommand(SortField.INSURANCEPACKAGE, SortDirection.DESCENDING).execute(expectedModel);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(GEORGE, model.getFilteredPersonList().get(0));
     }
 
     //Tests for test model with unspecified persons
@@ -317,9 +336,9 @@ public class SortCommandTest {
         Model testModel = createModelWithUnspecifiedPersons();
         Model expectedModel = createModelWithUnspecifiedPersons();
 
-        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.DEPENDENT + " in ascending order";
-        SortCommand command = new SortCommand(SortField.DEPENDENT, SortDirection.ASCENDING);
-        new SortCommand(SortField.DEPENDENT, SortDirection.ASCENDING).execute(expectedModel);
+        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.DEPENDENTS + " in ascending order";
+        SortCommand command = new SortCommand(SortField.DEPENDENTS, SortDirection.ASCENDING);
+        new SortCommand(SortField.DEPENDENTS, SortDirection.ASCENDING).execute(expectedModel);
 
         assertCommandSuccess(command, testModel, expectedMessage, expectedModel);
         List<Person> sortedList = testModel.getFilteredPersonList();
@@ -331,9 +350,9 @@ public class SortCommandTest {
         Model testModel = createModelWithUnspecifiedPersons();
         Model expectedModel = createModelWithUnspecifiedPersons();
 
-        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.DEPENDENT + " in descending order";
-        SortCommand command = new SortCommand(SortField.DEPENDENT, SortDirection.DESCENDING);
-        new SortCommand(SortField.DEPENDENT, SortDirection.DESCENDING).execute(expectedModel);
+        String expectedMessage = SortCommand.MESSAGE_SUCCESS + SortField.DEPENDENTS + " in descending order";
+        SortCommand command = new SortCommand(SortField.DEPENDENTS, SortDirection.DESCENDING);
+        new SortCommand(SortField.DEPENDENTS, SortDirection.DESCENDING).execute(expectedModel);
 
         assertCommandSuccess(command, testModel, expectedMessage, expectedModel);
         List<Person> sortedList = testModel.getFilteredPersonList();

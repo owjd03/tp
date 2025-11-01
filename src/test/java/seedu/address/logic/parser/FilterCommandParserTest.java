@@ -8,29 +8,36 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
-import static seedu.address.logic.parser.filter.FilterNumericalPrefixParser.MESSAGE_INVALID_NUMERICAL_FORMAT;
+import static seedu.address.logic.parser.FilterCommandParser.MESSAGE_MISSING_KEYWORDS;
+import static seedu.address.logic.parser.filter.FilterComparisonPrefixParser.MESSAGE_DEPENDENTS_MUST_BE_INTEGER;
+import static seedu.address.logic.parser.filter.FilterComparisonPrefixParser.MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY;
+import static seedu.address.logic.parser.filter.FilterComparisonPrefixParser.MESSAGE_INVALID_NUMBER_FOR_OPERATOR;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.logic.parser.filter.FilterDescriptivePrefixParser;
-import seedu.address.logic.parser.filter.FilterMultiplePrefixParser;
-import seedu.address.logic.parser.filter.FilterNumericalPrefixParser;
+import seedu.address.logic.parser.filter.FilterComparisonPrefixParser;
+import seedu.address.logic.parser.filter.FilterContainsPrefixParser;
 import seedu.address.logic.parser.filter.FilterPrefixParser;
+import seedu.address.logic.parser.filter.FilterTagParser;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonContainsKeywordsPredicate;
 
+/**
+ * Contains unit tests for {@code FilterCommandParser}.
+ */
 public class FilterCommandParserTest {
 
     private static final Function<Person, Double> GET_SALARY_DOUBLE =
             p -> p.getSalary().getNumericValue();
     private static final Function<Person, Double> GET_DEPENDENTS_DOUBLE =
-            p -> (double) p.getDependents().getNumericValue();
+            p -> p.getDependents().getNumericValue();
     private static final Function<Person, Boolean> IS_SALARY_UNSPECIFIED =
             p -> p.getSalary().isUnspecified();
     private static final Function<Person, Boolean> IS_DEPENDENTS_UNSPECIFIED =
@@ -57,15 +64,19 @@ public class FilterCommandParserTest {
     public void parse_emptyKeyword_throwsParseException() {
         // Prefix present but no keyword
         assertParseFailure(parser, " " + PREFIX_NAME + " ",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, "Empty keyword for: " + PREFIX_NAME));
+                String.format(MESSAGE_MISSING_KEYWORDS, "prefix", PREFIX_NAME));
 
         // Multiple prefixes, one with empty keyword
         assertParseFailure(parser, " " + PREFIX_NAME + "Alice " + PREFIX_ADDRESS + " ",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, "Empty keyword for: " + PREFIX_ADDRESS));
+                String.format(MESSAGE_MISSING_KEYWORDS, "prefix", PREFIX_ADDRESS));
+
+        // Multiple prefixes, both with empty keywords
+        assertParseFailure(parser, " " + PREFIX_NAME + " " + PREFIX_ADDRESS + " ",
+                String.format(MESSAGE_MISSING_KEYWORDS, "prefixes", PREFIX_NAME + ", " + PREFIX_ADDRESS));
 
         // Tag prefix with empty keyword
         assertParseFailure(parser, " " + PREFIX_TAG + " ",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, "Empty keyword for: " + PREFIX_TAG));
+                String.format(MESSAGE_MISSING_KEYWORDS, "prefix", PREFIX_TAG));
     }
 
     @Test
@@ -87,128 +98,130 @@ public class FilterCommandParserTest {
     @Test
     public void parse_validDescriptiveArgs_returnsFilterCommand() throws ParseException {
         // Single keyword
-        List<FilterPrefixParser> parsers = new ArrayList<>();
-        FilterDescriptivePrefixParser nameParser =
-                new FilterDescriptivePrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        nameParser.parse("Alpha");
-        parsers.add(nameParser);
-        FilterCommand expectedCommand = new FilterCommand(new PersonContainsKeywordsPredicate(parsers));
-        assertParseSuccess(parser, " " + PREFIX_NAME + "Alpha", expectedCommand);
+        String userInput1 = " " + PREFIX_NAME + "Alpha";
+        FilterCommand expectedCommand1 = createExpectedFilterCommand(userInput1,
+                createNameContainsParser("alpha"));
+        assertParseSuccess(parser, userInput1, expectedCommand1);
 
         // Multiple keywords
-        parsers.clear();
-        nameParser = new FilterDescriptivePrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        nameParser.parse("Alpha");
-        parsers.add(nameParser);
-        FilterDescriptivePrefixParser addressParser =
-                new FilterDescriptivePrefixParser(PREFIX_ADDRESS, p -> p.getAddress().value);
-        addressParser.parse("Beta");
-        parsers.add(addressParser);
-        expectedCommand = new FilterCommand(new PersonContainsKeywordsPredicate(parsers));
-        assertParseSuccess(parser, " " + PREFIX_NAME + "Alpha " + PREFIX_ADDRESS + "Beta", expectedCommand);
+        String userInput2 = " " + PREFIX_NAME + "Alpha " + PREFIX_ADDRESS + "Beta";
+        FilterCommand expectedCommand2 = createExpectedFilterCommand(userInput2,
+                createNameContainsParser("alpha"),
+                createAddressContainsParser("beta"));
+        assertParseSuccess(parser, userInput2, expectedCommand2);
 
         // Multi-word keyword
-        parsers.clear();
-        addressParser = new FilterDescriptivePrefixParser(PREFIX_ADDRESS, p -> p.getAddress().value);
-        addressParser.parse("Kent Ridge");
-        parsers.add(addressParser);
-        expectedCommand = new FilterCommand(new PersonContainsKeywordsPredicate(parsers));
-        assertParseSuccess(parser, " " + PREFIX_ADDRESS + "Kent Ridge", expectedCommand);
+        String userInput3 = " " + PREFIX_ADDRESS + "Kent Ridge";
+        FilterCommand expectedCommand3 = createExpectedFilterCommand(userInput3,
+                createAddressContainsParser("kent ridge"));
+        assertParseSuccess(parser, userInput3, expectedCommand3);
     }
 
     @Test
     public void parse_validTagArgs_returnsFilterCommand() throws ParseException {
         // Single tag
-        List<FilterPrefixParser> parsers = new ArrayList<>();
-        FilterMultiplePrefixParser tagParser = new FilterMultiplePrefixParser(PREFIX_TAG);
-        tagParser.parse("friend");
-        parsers.add(tagParser);
-        FilterCommand expectedCommand = new FilterCommand(new PersonContainsKeywordsPredicate(parsers));
-        assertParseSuccess(parser, " " + PREFIX_TAG + "friend", expectedCommand);
+        String userInput1 = " " + PREFIX_TAG + "friend";
+        FilterCommand expectedCommand1 = createExpectedFilterCommand(userInput1,
+                createTagParser("friend"));
+        assertParseSuccess(parser, userInput1, expectedCommand1);
 
         // Multiple tags
-        parsers.clear();
-        tagParser = new FilterMultiplePrefixParser(PREFIX_TAG);
-        tagParser.parse("friend");
-        tagParser.parse("colleague");
-        parsers.add(tagParser);
-        expectedCommand = new FilterCommand(new PersonContainsKeywordsPredicate(parsers));
-        assertParseSuccess(parser, " " + PREFIX_TAG + "friend " + PREFIX_TAG + "colleague", expectedCommand);
+        String userInput2 = " " + PREFIX_TAG + "friend " + PREFIX_TAG + "colleague";
+        FilterCommand expectedCommand2 = createExpectedFilterCommand(userInput2,
+                createTagParser("friend", "colleague"));
+        assertParseSuccess(parser, userInput2, expectedCommand2);
 
-        // Duplicate tags - should be treated as one
-        parsers.clear();
-        tagParser = new FilterMultiplePrefixParser(PREFIX_TAG);
-        tagParser.parse("friend");
-        tagParser.parse("friend");
-        parsers.add(tagParser);
-        // We build the expected command with only one "friend" tag to confirm duplicate is handled
-        List<FilterPrefixParser> expectedParsers = new ArrayList<>();
-        FilterMultiplePrefixParser expectedTagParser = new FilterMultiplePrefixParser(PREFIX_TAG);
-        expectedTagParser.parse("friend");
-        expectedParsers.add(expectedTagParser);
-        expectedCommand = new FilterCommand(new PersonContainsKeywordsPredicate(expectedParsers));
-        assertParseSuccess(parser, " " + PREFIX_TAG + "friend " + PREFIX_TAG + "friend", expectedCommand);
+        // Duplicate tags
+        String userInput3 = " " + PREFIX_TAG + "friend " + PREFIX_TAG + "FRIEND";
+        FilterCommand expectedCommand3 = createExpectedFilterCommand("t/friend",
+                createTagParser("friend"));
+        assertParseSuccess(parser, userInput3, expectedCommand3);
     }
 
     @Test
     public void parse_validNumericalArgs_returnsFilterCommand() throws ParseException {
         // Single numerical keyword (equals)
-        List<FilterPrefixParser> parsers = new ArrayList<>();
-        FilterNumericalPrefixParser salaryParser =
-                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
-        salaryParser.parse("50000");
-        parsers.add(salaryParser);
-        FilterCommand expectedCommand = new FilterCommand(new PersonContainsKeywordsPredicate(parsers));
-        assertParseSuccess(parser, " " + PREFIX_SALARY + "50000", expectedCommand);
+        String userInput1 = " " + PREFIX_SALARY + "50000";
+        FilterCommand expectedCommand1 = createExpectedFilterCommand(userInput1,
+                createSalaryComparisonParser("50000"));
+        assertParseSuccess(parser, userInput1, expectedCommand1);
 
         // Numerical with operator
-        parsers.clear();
-        FilterNumericalPrefixParser depParser =
-                new FilterNumericalPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
-        depParser.parse(">=2");
-        parsers.add(depParser);
-        expectedCommand = new FilterCommand(new PersonContainsKeywordsPredicate(parsers));
-        assertParseSuccess(parser, " " + PREFIX_DEPENDENTS + ">=2", expectedCommand);
+        String userInput2 = " " + PREFIX_DEPENDENTS + ">=2";
+        FilterCommand expectedCommand2 = createExpectedFilterCommand(userInput2,
+                createDependentsComparisonParser(">=2"));
+        assertParseSuccess(parser, userInput2, expectedCommand2);
     }
 
     @Test
     public void parse_invalidNumericalArgs_throwsParseException() {
-        // Invalid value
-        assertParseFailure(parser, " " + PREFIX_SALARY + "50e10", MESSAGE_INVALID_NUMERICAL_FORMAT);
-        assertParseFailure(parser, " " + PREFIX_SALARY + ".12", MESSAGE_INVALID_NUMERICAL_FORMAT);
+        // Invalid value format for salary
+        assertParseFailure(parser, " " + PREFIX_SALARY + "=50e10",
+                String.format(MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY, "50e10"));
+        assertParseFailure(parser, " " + PREFIX_SALARY + ">.12",
+                String.format(MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY, ".12"));
 
         // Invalid operator
-        assertParseFailure(parser, " " + PREFIX_SALARY + ">>500", MESSAGE_INVALID_NUMERICAL_FORMAT);
+        assertParseFailure(parser, " " + PREFIX_SALARY + ">>500",
+                String.format(MESSAGE_INVALID_NUMBER_FOR_OPERATOR, ">500"));
 
         // Decimal value for dependents
-        assertParseFailure(parser,
-                " " + PREFIX_DEPENDENTS + "2.5",
-                "Dependents value must be an integer and cannot be a decimal.");
+        assertParseFailure(parser, " " + PREFIX_DEPENDENTS + "=2.5", MESSAGE_DEPENDENTS_MUST_BE_INTEGER);
     }
 
     @Test
     public void parse_validMixedArgs_returnsFilterCommand() throws ParseException {
-        List<FilterPrefixParser> parsers = new ArrayList<>();
-
-        // Descriptive
-        FilterDescriptivePrefixParser nameParser =
-                new FilterDescriptivePrefixParser(PREFIX_NAME, p -> p.getName().fullName);
-        nameParser.parse("Alice");
-        parsers.add(nameParser);
-
-        // Numerical
-        FilterNumericalPrefixParser salaryParser =
-                new FilterNumericalPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
-        salaryParser.parse("<120000");
-        parsers.add(salaryParser);
-
-        // Multiple
-        FilterMultiplePrefixParser tagParser = new FilterMultiplePrefixParser(PREFIX_TAG);
-        tagParser.parse("friend");
-        parsers.add(tagParser);
-
-        FilterCommand expectedCommand = new FilterCommand(new PersonContainsKeywordsPredicate(parsers));
         String userInput = " " + PREFIX_NAME + "Alice " + PREFIX_SALARY + "<120000 " + PREFIX_TAG + "friend";
+        FilterCommand expectedCommand = createExpectedFilterCommand(userInput,
+                createNameContainsParser("alice"),
+                createSalaryComparisonParser("<120000"),
+                createTagParser("friend"));
         assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    //----- Helper Methods -----
+
+    /**
+     * Creates an expected {@code FilterCommand} with the given user input and an array of {@code FilterPrefixParser}.
+     */
+    private FilterCommand createExpectedFilterCommand(String userInput, FilterPrefixParser... parsers) {
+        List<FilterPrefixParser> parserList = Arrays.stream(parsers).collect(Collectors.toList());
+        return new FilterCommand(new PersonContainsKeywordsPredicate(parserList), userInput.trim().toLowerCase());
+    }
+
+    private FilterContainsPrefixParser createNameContainsParser(String keyword) throws ParseException {
+        FilterContainsPrefixParser parser =
+                new FilterContainsPrefixParser(PREFIX_NAME, p -> p.getName().toString());
+        parser.parse(keyword);
+        return parser;
+    }
+
+    private FilterContainsPrefixParser createAddressContainsParser(String keyword) throws ParseException {
+        FilterContainsPrefixParser parser =
+                new FilterContainsPrefixParser(PREFIX_ADDRESS, p -> p.getAddress().toString());
+        parser.parse(keyword);
+        return parser;
+    }
+
+    private FilterComparisonPrefixParser createSalaryComparisonParser(String keyword) throws ParseException {
+        FilterComparisonPrefixParser parser = new FilterComparisonPrefixParser(
+                PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
+        parser.parse(keyword);
+        return parser;
+    }
+
+    private FilterComparisonPrefixParser createDependentsComparisonParser(String keyword) throws ParseException {
+        FilterComparisonPrefixParser parser = new FilterComparisonPrefixParser(
+                PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
+        parser.parse(keyword);
+        return parser;
+    }
+
+    private FilterTagParser createTagParser(String... keywords) throws ParseException {
+        FilterTagParser parser = new FilterTagParser(PREFIX_TAG);
+        for (String keyword : keywords) {
+            parser.parse(keyword);
+        }
+        return parser;
     }
 }

@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_LIST_OF_COMMANDS;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 
 import java.util.logging.Logger;
@@ -98,20 +99,20 @@ public class AddressBookParser {
             return new ViewCommandParser().parse(arguments);
 
         case AddPackageCommand.COMMAND_WORD:
-            return new AddPackageCommandParser().parse(arguments);
+            return new PackageCommandParser().parseAddPackage(arguments);
 
         case ListPackageCommand.COMMAND_WORD:
             return new ListPackageCommand();
 
         case EditPackageCommand.COMMAND_WORD:
-            return new EditPackageCommandParser().parse(arguments);
+            return new PackageCommandParser().parseEditPackage(arguments);
 
         case DeletePackageCommand.COMMAND_WORD:
-            return new DeletePackageCommandParser().parse(arguments);
+            return new PackageCommandParser().parseDeletePackage(arguments);
 
         default:
             logger.finer("This user input caused a ParseException: " + userInput);
-            throw new ParseException(MESSAGE_UNKNOWN_COMMAND);
+            throw new ParseException(MESSAGE_UNKNOWN_COMMAND + MESSAGE_LIST_OF_COMMANDS);
         }
     }
 

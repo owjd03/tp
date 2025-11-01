@@ -5,6 +5,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 
 /**
  * Represents a Person's date of birth in the address book.
@@ -12,14 +13,15 @@ import java.time.format.DateTimeFormatter;
  */
 public class DateOfBirth {
 
-    public static final String MESSAGE_CONSTRAINTS = "Date of birth must be a valid date in the format yyyy-MM-dd "
-            + "and not in the future";
+    public static final String MESSAGE_CONSTRAINTS = "Date of birth must be a valid date in the format yyyy-MM-dd, "
+            + "be a past or present date, "
+            + "or be declared as 'Unspecified' (case-insensitive).";
 
     public static final String UNSPECIFIED_VALUE = "Unspecified";
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-    public final String value;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd")
+            .withResolverStyle(ResolverStyle.STRICT);
+    private final String value;
 
     /**
      * Constructs a {@code DateOfBirth}.
@@ -28,13 +30,20 @@ public class DateOfBirth {
      */
     public DateOfBirth(String dateOfBirth) {
         requireNonNull(dateOfBirth);
+        checkArgument(isValidDateOfBirth(dateOfBirth), MESSAGE_CONSTRAINTS);
 
-        if (dateOfBirth.equals(UNSPECIFIED_VALUE)) {
+        if (dateOfBirth.equalsIgnoreCase(UNSPECIFIED_VALUE)) {
             this.value = UNSPECIFIED_VALUE;
         } else {
-            checkArgument(isValidDateOfBirth(dateOfBirth), MESSAGE_CONSTRAINTS);
             value = dateOfBirth;
         }
+    }
+
+    /**
+     * @return The raw date of birth value as a string.
+     */
+    public String getValue() {
+        return this.value;
     }
 
     /**
@@ -50,7 +59,7 @@ public class DateOfBirth {
      * Returns true if a given string is a valid date of birth.
      */
     public static boolean isValidDateOfBirth(String test) {
-        if (test.equals(UNSPECIFIED_VALUE)) {
+        if (test.equalsIgnoreCase(UNSPECIFIED_VALUE)) {
             return true;
         }
         try {

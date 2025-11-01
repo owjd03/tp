@@ -18,9 +18,8 @@ public interface FilterPrefixParser {
 
     /**
      * Parses the string args associated with the prefix.
-     * Implementations should validate the input and store the parsed args.
      *
-     * @param args The trimmed string args for the prefix.
+     * @param args The trimmed string args for the prefix. Guaranteed to be non-empty.
      * @throws ParseException If the args is invalid for this prefix type.
      */
     void parse(String args) throws ParseException;
@@ -32,4 +31,13 @@ public interface FilterPrefixParser {
      * @return true if the person matches, false otherwise.
      */
     boolean test(Person person);
+
+    /**
+     * Returns a string representation of the filter arguments this parser holds, formatted for display.
+     * The format should be the prefix followed by the keyword(s). For parsers that handle
+     * multiple values for the same prefix (like tags), each value should be individually prefixed.
+     *
+     * @return A formatted string representing the filter arguments for this parser.
+     */
+    String getArg();
 }

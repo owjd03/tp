@@ -3,7 +3,7 @@ layout: page
 title: User Guide
 ---
 
-ClientCore is a **comprehensive desktop application for financial advisors to manage their clients efficiently**. It is optimized for tech-savvy financial advisors who need to handle a large number of client profiles, enabling them to reduce administrative work and focus on delivering personalised financial advice.
+ClientCore is a **comprehensive desktop application for financial advisors to manage their clients efficiently**. It is optimized for tech-savvy financial advisors who need to handle a large number of detailed client profiles, enabling them to reduce administrative work and focus on delivering personalized financial advice.
 
 * Table of Contents
 {:toc}
@@ -28,7 +28,7 @@ ClientCore is a **comprehensive desktop application for financial advisors to ma
 
    * `list` : Lists all contacts.
 
-   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
+   * `add n/John Doe p/98765432 e/johnd@example.com a/123 John St ip/Gold` : Adds a contact named `John Doe` to the Address Book.
 
    * `delete 3` : Deletes the 3rd contact shown in the current list.
 
@@ -79,13 +79,21 @@ Adds a person to the address book.
 
 Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`
 
+* Each user must have a name, phone number, email, address and insurance package. 
+* All other fields are optional.
+* For any field that is not specified in the command, it will be show up as "Unspecified" in the contact's details.
+* Names will be auto-formatted with proper capitalization (e.g. "john doe" and "jOhn DoE" will both be formatted to "John Doe"). 
+* Only the name of the insurance package needs to be provided and the package must already exist in the address book.
+
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags (including 0)
 </div>
 
 Examples:
-* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 s/120000 dob/2001-01-01 ms/Married dep/2 occ/Engineer ip/Gold`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 dep/0 ip/Undecided t/criminal`
+* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 s/120000 dob/2001-01-01 ms/Married ip/Gold dep/2 t/friend t/colleague`
+* After running the above command:
+  ![result for `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 s/120000 dob/2001-01-01 ms/Married ip/Gold dep/2 t/friend t/colleague`](images/addSuccessful.png)
+* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 dep/0 ip/Undecided t/wanted criminal`
 
 ### Listing all persons : `list`
 
@@ -97,20 +105,26 @@ Format: `list`
 
 Edits an existing person in the address book.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`
+Format: `edit INDEX n/NAME p/PHONE e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`
 
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
-* At least one of the optional fields must be provided.
-* Existing values will be updated to the input values.
-* When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.
-* You can remove all the person’s tags by typing `t/` without
-    specifying any tags after it.
+* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** e.g. 1, 2, 3, …​
+* At least one field to edit must be provided.
+* Existing values in each provided field will be updated to the input values.
+* Optional fields (i.e. Salary, Date of Birth, Marital Status, Number of Dependents, Occupation) can be set to "Unspecified" (This is case-insensitive; Both "unspecified" and "UNSPECIFIED" will show up as "Unspecified" in the contact's details).
+* When editing tags, the existing tags of the person will be removed i.e. adding of tags is not cumulative.
+* You can remove all the person’s tags by typing `t/` without specifying any tags after it.
 
 Examples:
-*  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
-*  `edit 3 a/John street, block 321, #01-01 s/150000` Edits the address and salary of the 3rd person to be `John street, block 321, #01-01` and `150000` respectively.
-*  `edit 4 ip/Silver dep/0` Edits the insurance package and number of dependents of the 4th person to be `Silver` and `0` respectively.
-*  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
+*  `edit 1 p/91234567 e/johndoe@newemail.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@newemail.com` respectively. 
+*  After running the above command:
+   ![result for `edit 1 p/91234567 e/johndoe@newemail.com`](images/editSuccessful.png)
+* `edit 1 s/unspecified dob/UNSPECified` Edits the salary and date of birth of the 1st person to be `Unspecified`.
+*  After running the above command:
+   ![result for `edit 1 s/unspecified dob/UNSPECified`](images/editToUnspecified.png) 
+* `edit 3 a/John street, block 321, #01-01 s/150000` Edits the address and salary of the 3rd person to be `John street, block 321, #01-01` and `$150,000` respectively.
+* `edit 4 ip/Silver dep/0` Edits the insurance package and number of dependents of the 4th person to be `Silver` and `0` respectively.
+* `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
+
 
 ### Locating persons by name: `find`
 
@@ -128,13 +142,14 @@ Format: `find KEYWORD [MORE_KEYWORDS]`
 Examples:
 * `find John` returns `john` and `John Doe`
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
-  ![result for 'find alex david'](images/findAlexDavidResult.png)
+* After running the above command:
+  ![result for `find alex david`](images/findAlexDavidResult.png)
 
 ### Viewing persons details: `view`
 
-Views persons whose names contains the given keyword or is in the given index.
+Views persons whose names contain the given keyword or is in the given index.
 
-Format: `view [NAME-KEYWORD]` `view [INDEX]`
+Format: `view NAME-KEYWORD` or `view INDEX`
 
 * The search is case-insensitive. e.g. `alex` will match `Alex`
 * The command will not work if it finds more than 1 name with given keyword.
@@ -144,65 +159,78 @@ Format: `view [NAME-KEYWORD]` `view [INDEX]`
 * The index must be within the size of the current list that is being displayed.
 
 Examples:
-* `view Alex` opens up a new window containing `Alex Yeoh` details.
+* `view Alex` opens up a new window containing the details of the contact `Alex Yeoh`.
 * `view 1` opens up a new window containing details of the first person in the list.
+* After running the above command:
+  ![result for `view 1`](images/viewSuccessful.png)
 
 ### Filtering persons: `filter`
 
-Quickly finds contacts in your list who match specific criteria.
-You can search by keywords for text fields or use numerical comparisons for `Salary` and `Dependents`.
+Finds contacts matching **all** the provided criteria. You must provide at least one prefix.
 
 Format: `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`
+<br>
 
-* Provide at least one prefix to start filtering.
-* The filter will only show people who match **all** the criteria you provide.
+**Filtering by Keyword (Default)**
 
-##### Filtering by Keyword (for most fields)
+By default, the filter performs a case-insensitive "**contains**" search for all fields.
 
-For fields like `Name`, `Address`, and `Occupation`, the filter performs a case-insensitive "**contains**" search.
-You only need to type a part of the word.
+* `filter n/jo` will match `Josh` or `Joseph`.
+* `filter dob/-10-` will match any date of birth in October (e.g. `2000-10-20`).
+* **Tags:** You can provide multiple `t/` prefixes. `filter t/friend t/rich` finds contacts who are tagged as **both** a `friend` **AND** `rich`.
 
-* **Rule:** The filter is case-insensitive and matches partial words.
-  * `filter n/jo` will match `Josh` or `Joseph`.
-* **Multiple tags:** You can provide multiple `t/` prefixes. A contact must have all the specified tags to be shown.
-  * `filter t/fiend t/rich` finds contacts who are tagged as both a `friend` **AND** `rich`.
+<div markdown="span" class="alert alert-primary">:bulb: **Tip:**
+The filter is case-insensitive and matches partial words.<br>
+A valid query for impossible data (e.g., `filter dob/abc`) will return 0 results, not show an error.
+</div>
+<br>
 
-##### Filtering by Number (s/ for Salary and dep/ for Number of Dependents)
+**Filtering by Number (s/Salary and dep/Dependents)**
 
-These fields have special rules for handling numbers and finding unspecified values.
+These fields have two modes:
 
-* **To find an exact number:** Just type the number.
-  * `filter s/5000` finds people with a salary of exactly 5000.
-  * `filter dep/2` finds people with exactly 2 dependents.
-* **To make a comparison:** Use the operators `>`, `>=`, `<`, `<=`.
-  * `filter s/>=60000` finds salaries greater than or equal to 60000.
-  * `filter dep/<3` finds people with less than 3 dependents (0, 1 or 2).
-* **To find unspecified values: ** Use the keyword **unspecified**.
-  * `filter s/unspecified` finds all people whose salary has not been specified. You can also use partial keywords like `s/uns`.
+1. **Contains Search (Default):** If no operator (`>`, `>=`, `<`, `<=`, `=`) is used, it defaults to the same case-insensitive "contains" search used for keywords.
+    * `filter s/50` matches salaries containing "50" (like `1500` or `5000`).
+    * `filter s/unspecified` (or `filter s/uns`) finds contacts with an unspecified salary.
+2. **Comparison Search (Using Operators):** Use operators (`>`, `>=`, `<`, `<=`, `=`) for a strict numerical comparison.
+   * `filter s/>=60000` finds salaries greater than or equal to `60000`.
+   * `filter dep/=2` finds people with **exactly** 2 dependents.
+   * **Rules**
+     * You must provide a valid number after the operator. The provided number cannot be negative.
+     * `dep/` must be a whole number (e.g. `2`).
+     * `s/` can have up to two decimal places (e.g. `5000.50`).
+<br>
 
-Common Examples:
+Examples:
 * `filter n/josh a/kent ridge` displays all contacts whose name contains `josh` **AND** whose address contains `kent ridge`.
-* `filter s/3000.1 dep/2` displays all contacts whose salary is exactly 3000.10 **AND** have exactly 2 dependents.
-* `filter s/unspecified dep/>=1` displays all contacts with an unspecified salary **AND** have 1 or more dependents.
+* `filter s/500 dep/1` displays all contacts whose salary contains `500` **AND** dependents count contains `1`.
+* After running the above command:
+  ![result for `filter s/500 dep/1`](images/filterSalary500Dep1.png)
+* `filter s/>3000 dep/<1` displays all contacts with a salary greater than `3000` **AND** have `0` dependents.
+* After running the above command:
+* ![result for `filter s/>3000 dep/<1`](images/filterSalaryGreaterThan3000DepLessThan1.png)
 
 Invalid Usages:
 * `filter` (at least one prefix must be provided)
 * `filter some random text` (parameters must start with a prefix like `n/` or `s/`)
 * `filter n/` (a keyword must be provided after the prefix)
 * `filter n/josh n/david` (duplicate prefixes are not allowed, except for `t/`)
+* `filter s/>` (missing a number after the operator)
+* `filter s/>abc` (must be a valid number after the operator)
 * `filter s/>=50k` (invalid number format, use `50000` instead)
 * `filter dep/>2.5` (dependents must be a whole number)
+* `filter s/=5000.123` (salary comparison allows up to two decimal places)
 
 ### Sorting persons: `sort`
 
 Sorts the list of persons by the specified field in specified order.
 
-Format: `sort FIELD DIRECTION`
+Format: `sort FIELD [DIRECTION]`
 
-* The `FIELD` must be one of the following: `name`, `phone`, `email`, `address`, `salary`, `dateofbirth`, `maritalstatus`, `occupation` or `dependent`
+* The `FIELD` must be one of the following: `name`, `phone`, `email`, `address`, `salary`, `dateofbirth`, `maritalstatus`, `occupation`, `dependents` or `insurancepackage`
 * The `DIRECTION` must be one of the following: `ascending` or `descending`. If not specified, defaults to `ascending`
 * The sort is case-insensitive for text fields (e.g., `name`, `email`, `address`, `maritalstatus`, `occupation`)
-* Numerical fields (`salary`, `dependent`) are sorted numerically
+* Numerical fields (`salary`, `dependents`) are sorted numerically
 * Date fields (`dateofbirth`) are sorted chronologically
 * The entire list will be sorted and displayed in the main window
 * Invalid direction parameters are ignored and will default to ascending
@@ -213,18 +241,32 @@ Examples:
 * `sort name ascending` sorts all persons alphabetically by name from A to Z
 * `sort name descending` sorts all persons alphabetically by name from Z to A
 * `sort salary` sorts all persons by salary from lowest to highest (ascending by default)
-* `sort dependent descending` sort all persons by dependent from highest to lowest
+* After running the above command:
+  ![result for `sort salary ascending`](images/sortSalaryAscending.png)
+* `sort dependents descending` sort all persons by dependents from highest to lowest
 * `sort dateofbirth` sorts all persons by date of birth from oldest to youngest
 
 ### Exporting all persons: `export`
 
-Exports all contacts from the address book into a single CSV (Comma-Separated Values) file. This is useful for creating backups 
+Exports all contact details from the address book into a single CSV (Comma-Separated Values) file. This is useful for creating backups
 for external safekeeping or for importing contacts into other applications like spreadsheet software (e.g. Microsoft Excel).
 
-Format: `export`
+Format: `export [FILE_PATH]`
 
-* After running the command, a file named  `addressbook.csv` will be created in the `data` folder.
-* **Caution**: If an `addressbook.csv` file already exists in the `data` folder, it will be **overwritten** with the current data from the address book. 
+* **Default Export:** Using `export` with no specified filepath will export the address book data to the default filepath data/addressbook.csv.
+* **Specific Path Export:** Using `export FILE_PATH` will export the address book data to the specified filepath.
+  If you specify a file path where the directories do not yet exist, the command will automatically create any necessary parent directories before creating the file.
+* **Overwriting Files:** Doing the export command to the same filepath will overwrite the existing file with the new data.
+  E.g. If a data/addressbook.csv file already exists, using `export` again will overwrite the existing file and replace it with a new data/addressbook.csv.
+
+Examples:
+* `export` exports the contact details in addressbook.json to the default filepath data/addressbook.csv.
+* `export ~/Downloads/mycontacts.csv` exports the contact details to a file named mycontacts.csv under the Downloads directory.
+
+Invalid Usages:
+* `export ~/Downloads/addressbook` (the filepath must end with .csv)
+* `export ~/Directory/` (must specify a file name, not just directory path)
+* `export data/<addressbook>.csv` (filepath cannot contain characters that are not allowed by your operating system)
 
 ### Deleting a person : `delete`
 
@@ -242,61 +284,63 @@ Examples:
 
 ### Adding an insurance package: `addp`
 
-Adds an new custom insurance package in the address book.
+Adds a new custom insurance package in the address book.
 
-Format: `addp [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
+Format: `addp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION`
 
 * Creates a new insurance package with the specified `PACKAGE_NAME` and `PACKAGE_DESCRIPTION`
-* The `i/` (package name) and `d/` (package description) fields are **both mandatory**.
+* The `ip/` (package name) and `d/` (package description) fields are **both mandatory**.
 * Package names are automatically formatted with proper capitalization (e.g., "premium package" becomes "Premium Package").
 * Package names cannot be empty after removing whitespace
 * You can set an empty description by typing `d/` followed by a space (e.g., `d/ `).
 * Duplicate package names are not allowed (case-insensitive check).
 
 Examples:
-* `addp i/Premium Package d/Our top-tier insurance with comprehensive coverage and benefits.` Adds a "Premium Package" with the specified description.
-* `addp i/basic plan d/Essential coverage at an affordable price point.` Adds a "Basic Plan" (auto-formatted) with the description.
-* `addp i/Student Package d/` Adds a "Student Package" with an empty description.
+* `addp ip/Premium Package d/Our top-tier insurance with comprehensive coverage and benefits.` Adds a "Premium Package" with the specified description.
+* After running the above command:
+    ![result for `addp ip/Premium Package d/Our top-tier insurance with comprehensive coverage and benefits.`](images/addPackageSuccessful.png)
+* `addp ip/basic plan d/Essential coverage at an affordable price point.` Adds a "Basic Plan" (auto-formatted) with the description.
+* `addp ip/Student Package d/` Adds a "Student Package" with an empty description.
 
 ### Editing an insurance package: `editp`
 
-Edits an existing insurance package in the address book.
+Edits an existing insurance package's description in the address book.
 
-Format: `editp [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
+Format: `editp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION`
 
 * Finds the insurance package specified by `PACKAGE_NAME`. The search is case-insensitive.
 * Updates the description of the found package to the `NEW_DESCRIPTION`.
-* The `i/` (package name) and `d/` (new description) fields are **both mandatory**.
+* The `ip/` (package name) and `d/` (new description) fields are **both mandatory**.
 * The package name itself cannot be changed.
 * You can set an empty description by typing `d/` followed by a space (e.g., `d/ `).
 
 Examples:
-* `editp i/Gold d/New description.` Edits the description of "Gold" package to be `New description.`
-* `editp i/Basic Plan d/ ` Edits the description of "Basic Plan" to be empty.
+* `editp ip/Gold d/New description.` Edits the description of "Gold" package to be `New description.`
+* After running the above command:
+    ![result for `editp ip/Gold d/New description.`](images/editPackageSuccessful.png)
+* `editp ip/Basic Plan d/ ` Edits the description of "Basic Plan" to be empty.
 
 ### Deleting an insurance package: `deletep`
 
-Deletes an existing insurance package in the address book. The insurance package to be deleted
-cannot be one of the 4 default ones (Gold, Silver, Bronze, Undecided) and must not have a client 
-currently using it. 
+Deletes an existing insurance package in the address book, provided it is not the default package and not in use by any client.
 
-Format: `deletep [i/PACKAGE_NAME]`
+Format: `deletep ip/PACKAGE_NAME`
 
 * Finds the insurance package specified by `PACKAGE_NAME`. The search is case-insensitive.
-* If the found package is one of the 4 default packages, an error message will be displayed and deletion will not occur.  
+* If the found package is the default package (Undecided), an error message will be displayed and deletion will not occur.  
 * If the found package has at least one client currently using, an error message will be displayed and deletion will not occur.
 
 Examples:
-* `deletep i/PackageToBeDeleted` Deletes the insurance package named "PackageToBeDeleted".
-* `deletep i/Gold` Displays an error message as default packages cannot be deleted. 
+* `deletep ip/Gold` Deletes the insurance package named "Gold".
+* `deletep ip/Undecided` Displays an error message as the default package cannot be deleted. 
 
 ### Listing existing insurance packages: `listp`
 
 Shows all existing insurance package in the address book.
 
-![list package message](images/listPackage.png)
-
 Format: `listp`
+
+![result for `listp`](images/listPackage.png)
 
 ### Clearing all entries : `clear`
 
@@ -322,11 +366,6 @@ AddressBook data are saved automatically as a JSON file `[JAR file location]/dat
 If your changes to the data file makes its format invalid, AddressBook will discard all data and start with an empty data file at the next run. Hence, it is recommended to take a backup of the file before editing it.<br>
 Furthermore, certain edits can cause the AddressBook to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </div>
-
-### Archiving data files `[coming in v2.0]`
-
-_Details coming soon ..._
-
 --------------------------------------------------------------------------------------------------------------------
 
 ## FAQ
@@ -347,18 +386,18 @@ _Details coming soon ..._
 
 Action | Format, Examples
 --------|------------------
-**Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS s/SALARY dob/DATE_OF_BIRTH ms/MARITAL_STATUS dep/NUMBER_OF_DEPENDENTS occ/OCCUPATION ip/INSURANCE_PACKAGE [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 s/5000 dob/1993-02-02 ms/Married dep/3 occ/Artist ip/Bronze t/friend t/colleague`
+**Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​` <br> e.g. `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 ip/Silver s/5000 dob/1993-02-02 ms/Married dep/3 occ/Artist ip/Bronze t/my first client`
 **Clear** | `clear`
-**Delete** | `delete INDEX`<br> e.g., `delete 3`
-**Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com s/>=5000`
-**Export** | `export`
-**Filter** | `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g., `filter n/James Lee e/jameslee`
-**Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
+**Delete** | `delete INDEX`<br> e.g. `delete 3`
+**Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [ip/INSURANCE_PACKAGE] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g. `edit 2 n/James Lee e/jameslee@example.com s/5000 dep/Unspecified t/friend`
+**Export** | `export [FILE_PATH]` <br> e.g. `export ~/Downloads/addressbook.csv`
+**Filter** | `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g. `filter n/James Lee e/jameslee`
+**Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g. `find James Jake`
 **View** | `view NAME-KEYWORD` `view INDEX` <br> e.g. `view Alex` `view 1`
 **List** | `list`
 **Help** | `help`
-**Sort** | `sort FIELD`<br> e.g., `sort name`, `sort salary`
+**Sort** | `sort FIELD [DIRECTION]`<br> e.g. `sort name`, `sort salary`
 **List Package** | `listp`
-**Add Package** | `addp [i/PACKAGE_NAME] [d/NEW_PACKAGE_DESCRIPTION]`
-**Edit Package** | `editp [i/PACKAGE_NAME] [d/EDITED_PACKAGE_DESCRIPTION]`
-**Delete Package** | `deletep [i/PACKAGE_NAME] `
+**Add Package** | `addp ip/PACKAGE_NAME d/PACKAGE_DESCRIPTION` <br> e.g. `addp ip/Premium Package d/Our best package.`
+**Edit Package** | `editp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION` <br> e.g. `editp ip/Gold d/Updated description.`
+**Delete Package** | `deletep ip/PACKAGE_NAME` <br> e.g. `deletep ip/Gold`
