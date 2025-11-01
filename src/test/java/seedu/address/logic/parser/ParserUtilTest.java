@@ -9,15 +9,24 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.InsuranceCatalog;
+import seedu.address.model.insurance.InsurancePackage;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.DateOfBirth;
+import seedu.address.model.person.Dependents;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.MaritalStatus;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Occupation;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Salary;
 import seedu.address.model.tag.Tag;
 
 public class ParserUtilTest {
@@ -25,16 +34,41 @@ public class ParserUtilTest {
     private static final String INVALID_PHONE = "+651234";
     private static final String INVALID_ADDRESS = " ";
     private static final String INVALID_EMAIL = "example.com";
+    private static final String INVALID_MARITAL_STATUS = "Engaged";
+    private static final String INVALID_DOB_FORMAT = "31-12-1990";
+    private static final String INVALID_DOB_FUTURE = "3000-01-01";
+    private static final String INVALID_SALARY = "-100";
+    private static final String INVALID_OCCUPATION = " ";
     private static final String INVALID_TAG = "#friend";
+    private static final String INVALID_DEPENDENTS_NEGATIVE = "-1";
+    private static final String INVALID_DEPENDENTS_NON_INTEGER = "1.5";
+    private static final String INVALID_IP = "";
 
     private static final String VALID_NAME = "Rachel Walker";
     private static final String VALID_PHONE = "123456";
     private static final String VALID_ADDRESS = "123 Main Street #0505";
     private static final String VALID_EMAIL = "rachel@example.com";
+    private static final String VALID_MARITAL_STATUS = "Married";
+    private static final String VALID_MARITAL_STATUS_CASING = "dIvOrCeD";
+    private static final String VALID_SALARY_INTEGER = "5000";
+    private static final String VALID_SALARY_DECIMAL = "12345.67";
+    private static final String VALID_OCCUPATION = "Engineer";
+    private static final String VALID_DOB = "1990-12-31";
+    private static final String VALID_DEPENDENTS_ZERO = "0";
+    private static final String VALID_DEPENDENTS_FIVE = "5";
     private static final String VALID_TAG_1 = "friend";
     private static final String VALID_TAG_2 = "neighbour";
+    private static final String VALID_IP = "Undecided";
+    private static final String VALID_IP_DESCRIPTION = "No package selected";
 
     private static final String WHITESPACE = " \t\r\n";
+
+    @BeforeEach
+    public void setUpCatalog() {
+        InsurancePackage validPackage = new InsurancePackage(VALID_IP, VALID_IP_DESCRIPTION);
+        InsuranceCatalog catalog = new InsuranceCatalog();
+        catalog.setInsurancePackages(List.of(validPackage));
+    }
 
     @Test
     public void parseIndex_invalidInput_throwsParseException() {
@@ -146,6 +180,102 @@ public class ParserUtilTest {
         String emailWithWhitespace = WHITESPACE + VALID_EMAIL + WHITESPACE;
         Email expectedEmail = new Email(VALID_EMAIL);
         assertEquals(expectedEmail, ParserUtil.parseEmail(emailWithWhitespace));
+    }
+
+    @Test
+    public void parseSalary_invalidValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseSalary(INVALID_SALARY));
+    }
+
+    @Test
+    public void parseSalary_validInteger_returnsSalary() throws Exception {
+        Salary expectedSalary = new Salary(VALID_SALARY_INTEGER);
+        assertEquals(expectedSalary, ParserUtil.parseSalary(VALID_SALARY_INTEGER));
+    }
+
+    @Test
+    public void parseSalary_validDecimal_returnsSalary() throws Exception {
+        Salary expectedSalary = new Salary(VALID_SALARY_DECIMAL);
+        assertEquals(expectedSalary, ParserUtil.parseSalary(VALID_SALARY_DECIMAL));
+    }
+
+    @Test
+    public void parseMaritalStatus_invalidValue_throwsParseException() {
+        assertThrows(ParseException.class, MaritalStatus.MESSAGE_CONSTRAINTS, () -> ParserUtil
+                .parseMaritalStatus(INVALID_MARITAL_STATUS));
+    }
+
+    @Test
+    public void parseMaritalStatus_validValueWithoutWhitespace_returnsMaritalStatus() throws Exception {
+        MaritalStatus expectedStatus = new MaritalStatus(VALID_MARITAL_STATUS);
+        assertEquals(expectedStatus, ParserUtil.parseMaritalStatus(VALID_MARITAL_STATUS));
+    }
+
+    @Test
+    public void parseMaritalStatus_validValueWithWhitespaceAndCasing_returnsNormalizedMaritalStatus() throws Exception {
+        MaritalStatus expectedStatus = new MaritalStatus("Divorced");
+        String statusWithWhitespace = WHITESPACE + VALID_MARITAL_STATUS_CASING + WHITESPACE;
+        assertEquals(expectedStatus, ParserUtil.parseMaritalStatus(statusWithWhitespace));
+    }
+
+    @Test
+    public void parseDateOfBirth_invalidFormat_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseDateOfBirth(INVALID_DOB_FORMAT));
+    }
+
+    @Test
+    public void parseDateOfBirth_invalidFutureDate_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseDateOfBirth(INVALID_DOB_FUTURE));
+    }
+
+    @Test
+    public void parseDateOfBirth_validValue_returnsDateOfBirth() throws Exception {
+        DateOfBirth expectedDob = new DateOfBirth(VALID_DOB);
+        assertEquals(expectedDob, ParserUtil.parseDateOfBirth(VALID_DOB));
+    }
+
+    @Test
+    public void parseOccupation_invalidValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseOccupation(INVALID_OCCUPATION));
+    }
+
+    @Test
+    public void parseOccupation_validValue_returnsOccupation() throws Exception {
+        Occupation expectedOccupation = new Occupation(VALID_OCCUPATION);
+        assertEquals(expectedOccupation, ParserUtil.parseOccupation(VALID_OCCUPATION));
+    }
+
+    @Test
+    public void parseDependents_invalidNegativeValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseDependents(INVALID_DEPENDENTS_NEGATIVE));
+    }
+
+    @Test
+    public void parseDependents_invalidNonInteger_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseDependents(INVALID_DEPENDENTS_NON_INTEGER));
+    }
+
+    @Test
+    public void parseDependents_validZero_returnsDependents() throws Exception {
+        Dependents expectedDep = new Dependents(Integer.parseInt(VALID_DEPENDENTS_ZERO));
+        assertEquals(expectedDep, ParserUtil.parseDependents(VALID_DEPENDENTS_ZERO));
+    }
+
+    @Test
+    public void parseDependents_validFive_returnsDependents() throws Exception {
+        Dependents expectedDep = new Dependents(Integer.parseInt(VALID_DEPENDENTS_FIVE));
+        assertEquals(expectedDep, ParserUtil.parseDependents(VALID_DEPENDENTS_FIVE));
+    }
+
+    @Test
+    public void parseInsurancePackage_invalidValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseInsurancePackage(INVALID_IP));
+    }
+
+    @Test
+    public void parseInsurancePackage_validValue_returnsInsurancePackage() throws Exception {
+        InsurancePackage expectedIp = new InsurancePackage(VALID_IP, VALID_IP_DESCRIPTION);
+        assertEquals(expectedIp, ParserUtil.parseInsurancePackage(VALID_IP));
     }
 
     @Test
