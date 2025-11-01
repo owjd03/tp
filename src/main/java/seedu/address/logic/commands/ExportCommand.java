@@ -25,10 +25,10 @@ public class ExportCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Exports the address book to a CSV file."
             + "You can specify a valid file path and it must end with .csv. "
-            + "If no file path is specified, it will be saved to data/addressbook.csv.\n"
+            + "If no file path is specified, it will be saved to data/clientcore.csv.\n"
             + "Parameters: FILE_PATH\n"
-            + "Example (Windows): " + COMMAND_WORD + " C:\\Users\\User\\Downloads\\addressbook.csv\n"
-            + "Example (macOS/Linux): " + COMMAND_WORD + " ~/Downloads/addressbook.csv";
+            + "Example (Windows): " + COMMAND_WORD + " C:\\Users\\User\\Downloads\\clientcore.csv\n"
+            + "Example (macOS/Linux): " + COMMAND_WORD + " ~/Downloads/clientcore.csv";
 
     public static final String MESSAGE_SUCCESS = "Address book has been exported to %1$s";
     public static final String MESSAGE_EXPORT_FAILURE = "Error occurred during exporting: %1$s";
@@ -43,8 +43,8 @@ public class ExportCommand extends Command {
      * Creates an ExportCommand to export the address book to the default location.
      */
     public ExportCommand() {
-        // Default export path is data/addressbook.csv
-        this.filePath = Paths.get("data", "addressbook.csv");
+        // Default export path is data/clientcore.csv
+        this.filePath = Paths.get("data", "clientcore.csv");
     }
 
     /**
