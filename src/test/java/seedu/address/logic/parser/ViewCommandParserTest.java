@@ -30,6 +30,13 @@ public class ViewCommandParserTest {
     }
 
     @Test
+    public void parse_invalidStringSpecifiedForIndex_throwsParseException() {
+        ViewCommandParser viewCom = new ViewCommandParser();
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewCommand.MESSAGE_USAGE);
+        assertParseFailure(viewCom, "i/abc", expectedMessage);
+    }
+
+    @Test
     public void parse_validKeywordSpecified_returnsViewCommand() {
         String userInput = "alice";
         ViewCommand expectedCommand = new ViewCommand("alice");
