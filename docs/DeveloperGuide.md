@@ -182,7 +182,7 @@ Its `test(Person)` method iterates through this list, calling the `test` method 
 individual parser. It returns `true` only if the person object passes the test for **all** the provided 
 criteria, thus achieving the **"AND"** logic.
 
-<img src="images/PersonContainsKeywordsPredicateClassDiagram.png" width="550" />
+![Class diagram of `PersonContainsKeywordsPredicate`](images/PersonContainsKeywordsPredicateClassDiagram.png)
 
 **Design Considerations:**
 

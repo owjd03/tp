@@ -1,5 +1,7 @@
 @startuml
 !include style.puml
+skinparam ArrowFontStyle plain
+skinparam defaultFontSize 18
 
 box Parse Filter Logic LOGIC_COLOR_T1
 participant ":FilterCommandParser" as FilterCommandParser LOGIC_COLOR
@@ -51,6 +53,4 @@ activate PersonContainsKeywordsPredicate
 
 PersonContainsKeywordsPredicate --> FilterCommandParser : predicate
 deactivate PersonContainsKeywordsPredicate
-
-FilterCommandParser -> : Create new FilterCommand
 @enduml
