@@ -10,8 +10,8 @@ public class Dependents {
 
     public static final int MAX_DEPENDENTS = 100;
 
-    public static final String MESSAGE_CONSTRAINTS = "Number of dependents must be a non-negative integer between 0 "
-            + "and " + MAX_DEPENDENTS + " inclusive or be declared as 'Unspecified' (case-insensitive).";
+    public static final String MESSAGE_CONSTRAINTS = "Number of dependents must be a non-negative integer from 0 "
+            + "to " + MAX_DEPENDENTS + " inclusive or be declared as 'Unspecified' (case-insensitive).";
 
     public static final int UNSPECIFIED_VALUE = -1;
 
