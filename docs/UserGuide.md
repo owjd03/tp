@@ -155,7 +155,7 @@ Format: `view NAME-KEYWORD` or `view i/INDEX`
 * The command will not work if it finds more than 1 name with given keyword.
 * The order of the keywords matter. e.g. `Alex Yo` will not match `Yo Alex` 
 * Keywords will match with any name that contains the keyword. e.g. `ale` will match `Alex` and `Bale`
-* The prefix `i/` must be specified to view based on index and followed by non-empty input.
+* The prefix `i/` must be specified to view based on index and followed by an index. 
 * The index **must be a positive integer** 1, 2, 3, …​
 * The index must be within the size of the current list that is being displayed.
 
