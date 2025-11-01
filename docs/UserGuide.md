@@ -204,11 +204,14 @@ Views persons whose names contain the given keyword or is in the given index.
 
 Format: `view NAME-KEYWORD` or `view i/INDEX`
 
+* The prefix `i/` must be specified at the start (after `view` command) to view by index.
+  Otherwise, it will be inferred as a NAME-KEYWORD input.
+* Only one type of input can be inferred at a time. e.g. `view Alex i/1` is accepted as NAME-KEYWORD, 
+  while `view i/1` is accepted as INDEX
 * The search is case-insensitive. e.g. `alex` will match `Alex`
 * The command will not work if it finds more than 1 name with given keyword.
 * The order of the keywords matter. e.g. `Alex Yo` will not match `Yo Alex` 
 * Keywords will match with any name that contains the keyword. e.g. `ale` will match `Alex` and `Bale`
-* The prefix `i/` must be specified to view based on index and followed by an index. 
 * The index **must be a positive integer** 1, 2, 3, …​
 * The index must be within the size of the current list that is being displayed.
 
