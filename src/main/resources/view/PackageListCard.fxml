@@ -19,12 +19,12 @@
                 <Insets bottom="5" left="15" right="5" top="5" />
             </padding>
             <HBox alignment="CENTER_LEFT" spacing="0.5">
-                <Label fx:id="name" styleClass="cell_big_label" text="\$first">
+                <Label fx:id="name" styleClass="cell_big_label" text="\$first" wrapText="true">
                <font>
                   <Font size="20.0" />
                </font></Label>
             </HBox>
-            <Label fx:id="description" styleClass="cell_small_label" text="\$description" />
+            <Label fx:id="description" styleClass="cell_small_label" text="\$description" wrapText="true" />
         </VBox>
       <rowConstraints>
          <RowConstraints />
