@@ -120,10 +120,24 @@ public class ViewWindow extends UiPart<Stage> {
     }
 
     /**
+     * Returns true if the view window is currently being minimized.
+     */
+    public boolean isMinimized() {
+        return getRoot().isIconified();
+    }
+
+    /**
      * Hides the view window.
      */
     public void hide() {
         getRoot().hide();
+    }
+
+    /**
+     * Unminimize the view window
+     */
+    public void unminimize() {
+        getRoot().setIconified(false);
     }
 
     /**

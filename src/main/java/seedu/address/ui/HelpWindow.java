@@ -76,10 +76,24 @@ public class HelpWindow extends UiPart<Stage> {
     }
 
     /**
+     * Returns true if the help window is currently being minimized.
+     */
+    public boolean isMinimized() {
+        return getRoot().isIconified();
+    }
+
+    /**
      * Hides the help window.
      */
     public void hide() {
         getRoot().hide();
+    }
+
+    /**
+     * Unminimize the help window
+     */
+    public void unminimize() {
+        getRoot().setIconified(false);
     }
 
     /**
