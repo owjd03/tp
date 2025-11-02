@@ -33,8 +33,6 @@ public class FilterComparisonPrefixParser implements FilterPrefixParser {
 
     public static final String MESSAGE_MISSING_VALUE_AFTER_OPERATOR =
             "Missing number after operator '%s' for prefix %s.";
-    public static final String MESSAGE_INVALID_NUMBER_FOR_OPERATOR =
-            "Invalid number for comparison: '%s'. A valid number is required after an operator.";
     public static final String MESSAGE_DEPENDENTS_MUST_BE_INTEGER =
             "Dependents value cannot be negative, "
                     + "must be a whole number (e.g., '2') and cannot be a decimal (e.g., '2.5').";
@@ -124,8 +122,9 @@ public class FilterComparisonPrefixParser implements FilterPrefixParser {
         try {
             valueToCompare = new BigDecimal(value);
         } catch (NumberFormatException e) {
-            String errorMessage = String.format(MESSAGE_INVALID_NUMBER_FOR_OPERATOR, value);
-            throw new ParseException(errorMessage);
+            // This should never happen
+            logger.warning("Error occurred trying to convert value into BigDecimal: " + value);
+            throw new ParseException("Unexpected parser error");
         }
 
         switch (operator) {

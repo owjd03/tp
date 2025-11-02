@@ -142,7 +142,8 @@ public class FilterComparisonPrefixParserTest {
     @Test
     public void parse_invalidNumberForOperator_throwsParseException() {
         FilterComparisonPrefixParser parser = createSalaryTestParser();
-        String expectedMessage = String.format(FilterComparisonPrefixParser.MESSAGE_INVALID_NUMBER_FOR_OPERATOR, "abc");
+        String expectedMessage =
+                String.format(FilterComparisonPrefixParser.MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY, "abc");
         assertThrows(ParseException.class, () -> parser.parse(">= abc"), expectedMessage);
     }
 
