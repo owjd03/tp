@@ -55,7 +55,7 @@ ClientCore is a **comprehensive desktop application for financial advisors to ma
 * Items with `…`​ after them can be used multiple times including zero times.<br>
   e.g. `[t/TAG]…​` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
 
-* Parameters can be in any order.<br>
+* Parameters can be in any order except for the `Sort Command`.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 
 * Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>
@@ -90,6 +90,8 @@ When executing `add` and `edit` commands, all parameters used must adhere to the
 **Insurance Package:**
 * Only the name of the insurance package needs to be provided. (case-insensitive)
 * The package must already exist in the address book.
+<br>
+<br>
 
 For the following fields, they can either follow the specified constraints or be set to "Unspecified" (case-insensitive). 
 For instance, both omitting the salary field during an `add` command or typing `s/Unspecified` in the `add` command will result in the salary being set to "Unspecified". More examples will be provided in the respective sections.
@@ -278,14 +280,36 @@ Invalid Usages:
 ### Sorting persons: `sort`
 
 Sorts the list of persons by the specified field in specified order.
+Unlike other commands, the parameters have to follow the specific order and cannot be used interchangeably<br>
+e.g. The sort command specifies `sort FIELD [DIRECTION]`, thus `sort [DIRECTION] FIELD` is not acceptable.
 
 Format: `sort FIELD [DIRECTION]`
 
-* The `FIELD` must be one of the following: `name`, `phone`, `email`, `address`, `salary`, `dateofbirth`, `maritalstatus`, `occupation`, `dependents` or `insurancepackage`
+* The `FIELD` must be one of the following: `name`, `phone`, `email`, `address`, `salary`, `dateofbirth`, 
+`maritalstatus`, `occupation`, `dependents` or `insurancepackage`
 * The `DIRECTION` must be one of the following: `ascending` or `descending`. If not specified, defaults to `ascending`
+<br>
+<br>
 * The sort is case-insensitive for text fields (e.g., `name`, `email`, `address`, `maritalstatus`, `occupation`)
 * Numerical fields (`salary`, `dependents`) are sorted numerically
-* Date fields (`dateofbirth`) are sorted chronologically
+* Date fields (`dateofbirth`) are sorted from earliest dateofbirth to latest dateofbirth for ascending 
+and latest dateofbirth to earliest dateofbirth for descending.<br>
+e.g. when sorted by ascending direction, A person born in 1999-05-30 will be sorted above a person born in 2001-03-20.
+* For text fields that contain numbers, letters, and special characters (e.g., `name`, `address`, `occupation`, `email`), the sorting follows a standard character order used by computers:
+    * Most special characters and punctuation marks (like `!`, `#`, `$`, `-`, `.`, `/`) come before numbers
+    * Numbers (`0` to `9`) come next
+    * Some special characters (like `@` in email addresses, or `:` in addresses) come after numbers
+    * Letters (from A to Z, in any language) come last
+* The same order applies in reverse when sorting in `descending` order.
+<br>
+<br>
+<div markdown="span" class="alert alert-info">
+**:information_source: Additional Information:**<br>
+This ordering follows the Unicode standard, which is the system computers use to sort and display characters from different languages. 
+The exact position of each special character depends on its Unicode value. <br>
+For example, when sorting by address, `:456 Main St` will come after `123 Main St` but before `ABC Street`.
+</div>
+
 * The entire list will be sorted and displayed in the main window
 * Invalid direction parameters are ignored and will default to ascending
 * Extra parameters after the direction will be ignored
