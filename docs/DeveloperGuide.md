@@ -751,7 +751,109 @@ testers are expected to do more *exploratory* testing.
    1. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
 
-1. _{ more test cases …​ }_
+1. Shutdown
+    1. Prerequisites: Application is running with some data.
+    1. Test case: `exit`<br>
+       Expected: Application closes immediately. All data is saved.
+
+### Adding a person
+
+1. Adding a person with all fields
+    1. Prerequisites: List all persons using the `list` command.
+    1. Test case: `add n/John Doe p/98765432 e/johndoe@example.com a/123 Main St ip/Gold s/50000 dob/1990-01-15 ms/Married dep/2 occ/Engineer t/friend`<br>
+       Expected: New person added. Name appears with proper capitalization. All fields are displayed correctly.
+
+1. Adding a person with only compulsory fields
+    1. Prerequisites: List all persons using the `list` command.
+    1. Test case: `add n/Jane Smith p/87654321 e/janesmith@example.com a/456 Oak Ave ip/Silver`<br>
+       Expected: Person added successfully. Optional fields show as "Unspecified".
+
+### Editing a person
+
+1. Editing multiple fields
+    1. Prerequisites: List all persons using the `list` command.
+    1. Test case: `edit 1 p/91234567 e/newemail@example.com s/60000`<br>
+       Expected: First person's phone, email, and salary are updated. Other fields remain unchanged.
+
+1. Setting fields to "Unspecified"
+    1. Prerequisites: List all persons using the `list` command.
+    1. Test case: `edit 1 s/Unspecified dob/Unspecified`<br>
+       Expected: Salary and date of birth are set to "Unspecified".
+
+### Finding persons
+
+1. Finding by keyword
+    1. Prerequisites: Multiple persons in the list.
+    1. Test case: `find alice`<br>
+       Expected: All persons with "alice" in their name are shown (case-insensitive).
+
+### Filtering persons
+
+1. Filtering by single field
+    1. Prerequisites: Multiple persons in the list.
+    1. Test case: `filter n/john`<br>
+       Expected: Only persons whose names contain "john" are shown.
+
+1. Filtering with numerical comparison
+    1. Prerequisites: Multiple persons in the list.
+    1. Test case: `filter s/>5000 dep/<=2`<br>
+       Expected: Only persons with salary greater than 5000 AND dependents 2 or less are shown.
+
+### Sorting persons
+
+1. Sorting by name
+    1. Prerequisites: Multiple persons in the list.
+    1. Test case: `sort name ascending`<br>
+       Expected: Persons are sorted alphabetically by name (A to Z).
+
+1. Sorting with "Unspecified" values
+    1. Prerequisites: Some persons have "Unspecified" values.
+    1. Test case: `sort occupation`<br>
+       Expected: Persons with "Unspecified" occupation appear at the bottom of the list.
+
+### Viewing a person
+
+1. Viewing by index
+    1. Prerequisites: List all persons using the `list` command.
+    1. Test case: `view i/1`<br>
+       Expected: A new window opens showing full details of the first person.
+
+1. Viewing by name
+    1. Prerequisites: List all persons using the `list` command and a person named "Alex Yeoh" in the list.
+    1. Test case: `view Alex`<br>
+       Expected: A new window opens showing full details of "Alex Yeoh".
+
+### Exporting data
+
+1. Exporting to default location
+    1. Prerequisites: Multiple persons in the list.
+    1. Test case: `export`<br>
+       Expected: Success message shown. File created at `data/clientcore.csv`.
+
+### Adding an insurance package
+
+1. Adding a package
+    1. Test case: `addp ip/Premium Package d/Our top-tier insurance plan`<br>
+       Expected: Success message shown. Package name is auto-formatted. Package appears in package list.
+
+### Editing an insurance package
+
+1. Editing package description
+    1. Prerequisites: A package named "Premium Package" exists.
+    1. Test case: `editp ip/Premium Package d/Updated description`<br>
+       Expected: Success message shown. Package description is updated.
+
+### Deleting an insurance package
+
+1. Attempting to delete default package
+    1. Test case: `deletep ip/Undecided`<br>
+       Expected: Error message shown indicating the default package cannot be deleted.
+
+1. Deleting an unused package
+    1. Prerequisites: A "Silver" package exists that is not assigned to any client.
+    1. Test case: `deletep ip/Silver`<br>
+       Expected: Success message shown. Package removed from the list.
+
 
 ### Deleting a person
 
@@ -768,12 +870,19 @@ testers are expected to do more *exploratory* testing.
    1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
       Expected: Similar to previous.
 
-1. _{ more test cases …​ }_
+### Listing insurance packages
+
+1. Viewing all packages
+    1. Test case: `listp`<br>
+       Expected: A new window opens displaying all insurance packages with their names and descriptions.
 
 ### Saving data
 
-1. Dealing with missing/corrupted data files
+1. Automatic saving after commands
+    1. Prerequisites: Application is running.
+    1. Test case: Add a person, then close and reopen the application.<br>
+       Expected: The newly added person persists after reopening.
 
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
-
-1. _{ more test cases …​ }_
+1. Dealing with missing data files
+    1. Test case: Delete or rename `data/addressbook.json` and `data/insurancecatalog.json`, then launch the application.<br>
+       Expected: Application launches with empty data. New data files are created in "data" folder.
