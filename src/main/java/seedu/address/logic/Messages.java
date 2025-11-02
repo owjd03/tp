@@ -25,8 +25,8 @@ public class Messages {
     public static final String MESSAGE_INVALID_PACKAGE =
             "The insurance package specified does not exist in the address book.";
     public static final String MESSAGE_LIST_OF_COMMANDS =
-            "\nList of all existing commands: [add] [edit] [delete] [list] [clear] [filter] [sort] [view] [export] "
-            + "[addp] [editp] [deletep] [listp] [help] [exit]";
+            "\nList of all existing commands: [help] [add] [list] [edit] [find] [view] [filter] [sort] [export] "
+            + "[delete] [addp] [editp] [deletep] [listp] [clear] [exit]";
 
     /**
      * Returns an error message indicating the duplicate prefixes.
