@@ -232,10 +232,14 @@ By default, the filter performs a case-insensitive "**contains**" search for all
 * `filter n/jo` will match `Josh` or `Joseph`.
 * `filter dob/-10-` will match any date of birth in October (e.g. `2000-10-20`).
 * **Tags:** You can provide multiple `t/` prefixes. `filter t/friend t/rich` finds contacts who are tagged as **both** a `friend` **AND** `rich`.
+* **Names with slashes:** If a name contains text that looks like a filter prefix (e.g. `s/o`), you **must** enclose the name in quotes.
+  * **Correct:** `filter n/"rajoo s/o rajeet"`.
+  * **Incorrect:** `filter n/rajoo s/o rajeet` (This incorrectly searches for a salary of `o rajeet`).
+  * **No problem (Start with the prefix):** `filter n/s/o rajeet`.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 The filter is case-insensitive and matches partial words.<br>
-A valid query for impossible data (e.g., `filter dob/abc`) will return 0 results, not show an error.
+A valid query for impossible data (e.g. `filter dob/abc` or `filter dob/1990--12) will return 0 results, not show an error.
 </div>
 <br>
 
@@ -244,7 +248,9 @@ A valid query for impossible data (e.g., `filter dob/abc`) will return 0 results
 These fields have two modes:
 
 1. **Contains Search (Default):** If no operator (`>`, `>=`, `<`, `<=`, `=`) is used, it defaults to the same case-insensitive "contains" search used for keywords.
-    * `filter s/50` matches salaries containing "50" (like `1500` or `5000`).
+    * The search works on the fully formatted value (e.g. `$3,000.00`) as well as the raw number.
+    * `filter s/3000` will match `$3,000.00` and `$30,000.00`.
+    * `filter s/$3` will match `$3,000.00` but **not** `$13,000.00`.
     * `filter s/unspecified` (or `filter s/uns`) finds contacts with an unspecified salary.
 2. **Comparison Search (Using Operators):** Use operators (`>`, `>=`, `<`, `<=`, `=`) for a strict numerical comparison.
    * `filter s/>=60000` finds salaries greater than or equal to `60000`.
@@ -253,6 +259,7 @@ These fields have two modes:
      * You must provide a valid number after the operator. The provided number cannot be negative.
      * `dep/` must be a whole number (e.g. `2`).
      * `s/` can have up to two decimal places (e.g. `5000.50`).
+     * **Symbols (like `$` or `,`) are strictly not allowed** for comparison searches.
 <br>
 
 Examples:
@@ -266,14 +273,11 @@ Examples:
 
 Invalid Usages:
 * `filter` (at least one prefix must be provided)
-* `filter some random text` (parameters must start with a prefix like `n/` or `s/`)
 * `filter n/` (a keyword must be provided after the prefix)
 * `filter n/josh n/david` (duplicate prefixes are not allowed, except for `t/`)
-* `filter s/>` (missing a number after the operator)
-* `filter s/>abc` (must be a valid number after the operator)
 * `filter s/>=50k` (invalid number format, use `50000` instead)
+* `filter s/=$5,000` (No symbols in comparison searches)
 * `filter dep/>2.5` (dependents must be a whole number)
-* `filter s/=5000.123` (salary comparison allows up to two decimal places)
 
 ### Sorting persons: `sort`
 
