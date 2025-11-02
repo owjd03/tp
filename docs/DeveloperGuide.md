@@ -356,7 +356,7 @@ The sequence diagram below illustrates the interactions within the system when e
 
 * **Alternative:** Allow deletion of the target package, and automatically set the package to "Undecided" for all affected clients.
     * **Pros:** More convenient for the user, as it automates the process of un-assigning the package.
-    * **Cons:** This "cascading delete" logic is significantly more complex to implement and would need significant 
+    * **Cons:** This "cascading delete" logic is a lot more complex to implement and would need significant 
     safety fallbacks in case of unexpected events, such as an application crash during the execution of the command.
 
 --------------------------------------------------------------------------------------------------------------------
