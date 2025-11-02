@@ -239,7 +239,7 @@ By default, the filter performs a case-insensitive "**contains**" search for all
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 The filter is case-insensitive and matches partial words.<br>
-A valid query for impossible data (e.g. `filter dob/abc` or `filter dob/1990--12) will return 0 results, not show an error.
+A valid query for impossible data (e.g. `filter dob/abc` or `filter dob/1990--12`) will return 0 results, not show an error.
 </div>
 <br>
 
@@ -249,8 +249,8 @@ These fields have two modes:
 
 1. **Contains Search (Default):** If no operator (`>`, `>=`, `<`, `<=`, `=`) is used, it defaults to the same case-insensitive "contains" search used for keywords.
     * The search works on the fully formatted value (e.g. `$3,000.00`) as well as the raw number.
-    * `filter s/3000` will match `$3,000.00` and `$30,000.00`.
-    * `filter s/$3` will match `$3,000.00` but **not** `$13,000.00`.
+    * `filter s/3000` will match `$3,000.00` and `$13,000.00`.
+    * `filter s/$3,0` will match `$3,000.00` but **not** `$13,000.00`.
     * `filter s/unspecified` (or `filter s/uns`) finds contacts with an unspecified salary.
 2. **Comparison Search (Using Operators):** Use operators (`>`, `>=`, `<`, `<=`, `=`) for a strict numerical comparison.
    * `filter s/>=60000` finds salaries greater than or equal to `60000`.
@@ -259,17 +259,20 @@ These fields have two modes:
      * You must provide a valid number after the operator. The provided number cannot be negative.
      * `dep/` must be a whole number (e.g. `2`).
      * `s/` can have up to two decimal places (e.g. `5000.50`).
-     * **Symbols (like `$` or `,`) are strictly not allowed** for comparison searches.
+
+<div markdown="span" class="alert alert-primary">:bulb: **Tip:**
+Symbols like `$` or `,` are strictly not allowed for comparison searches.
+</div>
 <br>
 
 Examples:
 * `filter n/josh a/kent ridge` displays all contacts whose name contains `josh` **AND** whose address contains `kent ridge`.
 * `filter s/500 dep/1` displays all contacts whose salary contains `500` **AND** dependents count contains `1`.
 * After running the above command:
-  ![result for `filter s/500 dep/1`](images/filterSalary500Dep1.png)
+![result for `filter s/500 dep/1`](images/filterSalary500Dep1.png)
 * `filter s/>3000 dep/<1` displays all contacts with a salary greater than `3000` **AND** have `0` dependents.
 * After running the above command:
-* ![result for `filter s/>3000 dep/<1`](images/filterSalaryGreaterThan3000DepLessThan1.png)
+![result for `filter s/>3000 dep/<1`](images/filterSalaryGreaterThan3000DepLessThan1.png)
 
 Invalid Usages:
 * `filter` (at least one prefix must be provided)
