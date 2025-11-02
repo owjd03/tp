@@ -149,7 +149,9 @@ public class MainWindow extends UiPart<Stage> {
      */
     @FXML
     public void handleHelp() {
-        if (!helpWindow.isShowing()) {
+        if (helpWindow.isMinimized()) {
+            helpWindow.unminimize();
+        } else if (!helpWindow.isShowing()) {
             helpWindow.show();
         } else {
             helpWindow.focus();
@@ -162,7 +164,9 @@ public class MainWindow extends UiPart<Stage> {
     @FXML
     public void handleView(Person personToView) {
         viewWindow.setPerson(personToView);
-        if (!viewWindow.isShowing()) {
+        if (viewWindow.isMinimized()) {
+            viewWindow.unminimize();
+        } else if (!viewWindow.isShowing()) {
             viewWindow.show();
         } else {
             viewWindow.focus();
@@ -174,7 +178,9 @@ public class MainWindow extends UiPart<Stage> {
      */
     @FXML
     public void handlePackage() {
-        if (!packageWindow.isShowing()) {
+        if (packageWindow.isMinimized()) {
+            packageWindow.unminimize();
+        } else if (!packageWindow.isShowing()) {
             packageWindow.show();
         } else {
             packageWindow.focus();

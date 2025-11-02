@@ -101,10 +101,24 @@ public class PackageWindow extends UiPart<Stage> {
     }
 
     /**
+     * Returns true if the package window is currently being minimized.
+     */
+    public boolean isMinimized() {
+        return getRoot().isIconified();
+    }
+
+    /**
      * Hides the package window.
      */
     public void hide() {
         getRoot().hide();
+    }
+
+    /**
+     * Unminimize the package window
+     */
+    public void unminimize() {
+        getRoot().setIconified(false);
     }
 
     /**
