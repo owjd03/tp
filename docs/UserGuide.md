@@ -346,7 +346,7 @@ Format: `addp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION`
 * The `ip/` (package name) and `d/` (package description) fields are **both mandatory**.
 * Package names are automatically formatted with proper capitalization (e.g., "premium package" becomes "Premium Package").
 * Package names cannot be empty after removing whitespace
-* You can set an empty description by typing `d/` followed by a space (e.g., `d/ `).
+* You can set an empty description by typing `d/` with nothing after it (e.g., `d/`). A trailing space is optional and will be ignored.
 * Duplicate package names are not allowed (case-insensitive check).
 
 Examples:
@@ -366,7 +366,7 @@ Format: `editp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION`
 * Updates the description of the found package to the `NEW_DESCRIPTION`.
 * The `ip/` (package name) and `d/` (new description) fields are **both mandatory**.
 * The package name itself cannot be changed.
-* You can set an empty description by typing `d/` followed by a space (e.g., `d/ `).
+* You can set an empty description by typing `d/` with nothing after it (e.g., `d/`). A trailing space is optional and will be ignored.
 
 Examples:
 * `editp ip/Gold d/New description.` Edits the description of "Gold" package to be `New description.`
