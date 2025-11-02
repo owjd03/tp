@@ -15,11 +15,11 @@ ClientCore is a **comprehensive desktop application for financial advisors to ma
 1. Ensure you have Java `17` or above installed in your Computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the latest `.jar` file from [here](https://github.com/se-edu/addressbook-level3/releases).
+1. Download the latest `.jar` file from [here](https://github.com/AY2526S1-CS2103T-T15-3/tp/releases).
 
-1. Copy the file to the folder you want to use as the _home folder_ for your AddressBook.
+1. Copy the file to the folder you want to use as the _home folder_ for your ClientCore.
 
-1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar addressbook.jar` command to run the application.<br>
+1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar clientcore.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
    ![Ui](images/Ui.png)
 
@@ -28,7 +28,7 @@ ClientCore is a **comprehensive desktop application for financial advisors to ma
 
    * `list` : Lists all contacts.
 
-   * `add n/John Doe p/98765432 e/johnd@example.com a/123 John St ip/Gold` : Adds a contact named `John Doe` to the Address Book.
+   * `add n/John Doe p/98765432 e/johnd@example.com a/123 John St ip/Gold` : Adds a contact named `John Doe` to ClientCore.
 
    * `delete 3` : Deletes the 3rd contact shown in the current list.
 
@@ -89,9 +89,10 @@ When executing `add` and `edit` commands, all parameters used must adhere to the
 
 **Insurance Package:**
 * Only the name of the insurance package needs to be provided. (case-insensitive)
-* The package must already exist in the address book.
+* The package must already exist in ClientCore.
 <br>
 <br>
+
 
 For the following fields, they can either follow the specified constraints or be set to "Unspecified" (case-insensitive). 
 For instance, both omitting the salary field during an `add` command or typing `s/Unspecified` in the `add` command will result in the salary being set to "Unspecified". More examples will be provided in the respective sections.
@@ -127,7 +128,7 @@ Format: `help`
 
 ### Adding a person: `add`
 
-Adds a person to the address book.
+Adds a person to ClientCore.
 
 Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`
 
@@ -150,13 +151,13 @@ Examples:
 
 ### Listing all persons : `list`
 
-Shows a list of all persons in the address book.
+Shows a list of all persons in ClientCore.
 
 Format: `list`
 
 ### Editing a person : `edit`
 
-Edits an existing person in the address book. At least one field to edit must be provided.
+Edits an existing person in ClientCore. At least one field to edit must be provided.
 
 Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [ip/INSURANCE_PACKAGE] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`
 
@@ -206,11 +207,14 @@ Views persons whose names contain the given keyword or is in the given index.
 
 Format: `view NAME-KEYWORD` or `view i/INDEX`
 
+* The prefix `i/` must be specified at the start (after `view` command) to view by index.
+  Otherwise, it will be inferred as a NAME-KEYWORD input.
+* Only one type of input can be inferred at a time. e.g. `view Alex i/1` is accepted as NAME-KEYWORD, 
+  while `view i/1` is accepted as INDEX
 * The search is case-insensitive. e.g. `alex` will match `Alex`
 * The command will not work if it finds more than 1 name with given keyword.
 * The order of the keywords matter. e.g. `Alex Yo` will not match `Yo Alex` 
 * Keywords will match with any name that contains the keyword. e.g. `ale` will match `Alex` and `Bale`
-* The prefix `i/` must be specified to view based on index and followed by an index. 
 * The index **must be a positive integer** 1, 2, 3, …​
 * The index must be within the size of the current list that is being displayed.
 
@@ -326,29 +330,29 @@ Examples:
 
 ### Exporting all persons: `export`
 
-Exports all contact details from the address book into a single CSV (Comma-Separated Values) file. This is useful for creating backups
+Exports all contact details from the ClientCore into a single CSV (Comma-Separated Values) file. This is useful for creating backups
 for external safekeeping or for importing contacts into other applications like spreadsheet software (e.g. Microsoft Excel).
 
 Format: `export [FILE_PATH]`
 
-* **Default Export:** Using `export` with no specified filepath will export the address book data to the default filepath data/addressbook.csv.
-* **Specific Path Export:** Using `export FILE_PATH` will export the address book data to the specified filepath.
+* **Default Export:** Using `export` with no specified filepath will export the ClientCore data to the default filepath data/clientcore.csv.
+* **Specific Path Export:** Using `export FILE_PATH` will export the ClientCore data to the specified filepath.
   If you specify a file path where the directories do not yet exist, the command will automatically create any necessary parent directories before creating the file.
 * **Overwriting Files:** Doing the export command to the same filepath will overwrite the existing file with the new data.
-  E.g. If a data/addressbook.csv file already exists, using `export` again will overwrite the existing file and replace it with a new data/addressbook.csv.
+  E.g. If a data/clientcore.csv file already exists, using `export` again will overwrite the existing file and replace it with a new data/clientcore.csv.
 
 Examples:
-* `export` exports the contact details in addressbook.json to the default filepath data/addressbook.csv.
+* `export` exports the contact details in addressbook.json to the default filepath data/clientcore.csv.
 * `export ~/Downloads/mycontacts.csv` exports the contact details to a file named mycontacts.csv under the Downloads directory.
 
 Invalid Usages:
-* `export ~/Downloads/addressbook` (the filepath must end with .csv)
+* `export ~/Downloads/clientcore` (the filepath must end with .csv)
 * `export ~/Directory/` (must specify a file name, not just directory path)
-* `export data/<addressbook>.csv` (filepath cannot contain characters that are not allowed by your operating system)
+* `export data/<clientcore>.csv` (filepath cannot contain characters that are not allowed by your operating system)
 
 ### Deleting a person : `delete`
 
-Deletes the specified person from the address book.
+Deletes the specified person from ClientCore.
 
 Format: `delete INDEX`
 
@@ -357,12 +361,12 @@ Format: `delete INDEX`
 * The index **must be a positive integer** 1, 2, 3, …​
 
 Examples:
-* `list` followed by `delete 2` deletes the 2nd person in the address book.
+* `list` followed by `delete 2` deletes the 2nd person in ClientCore.
 * `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
 
 ### Adding an insurance package: `addp`
 
-Adds a new custom insurance package in the address book.
+Adds a new custom insurance package in ClientCore.
 
 Format: `addp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION`
 
@@ -382,7 +386,7 @@ Examples:
 
 ### Editing an insurance package: `editp`
 
-Edits an existing insurance package's description in the address book.
+Edits an existing insurance package's description in ClientCore.
 
 Format: `editp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION`
 
@@ -400,7 +404,7 @@ Examples:
 
 ### Deleting an insurance package: `deletep`
 
-Deletes an existing insurance package in the address book, provided it is not the default package and not in use by any client.
+Deletes an existing insurance package in ClientCore, provided it is not the default package and not in use by any client.
 
 Format: `deletep ip/PACKAGE_NAME`
 
@@ -414,7 +418,7 @@ Examples:
 
 ### Listing existing insurance packages: `listp`
 
-Shows all existing insurance package in the address book.
+Shows all existing insurance package in ClientCore.
 
 Format: `listp`
 
@@ -422,7 +426,7 @@ Format: `listp`
 
 ### Clearing all entries : `clear`
 
-Clears all entries from the address book.
+Clears all entries from ClientCore.
 
 Format: `clear`
 
@@ -434,22 +438,22 @@ Format: `exit`
 
 ### Saving the data
 
-AddressBook data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
+ClientCore data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
 
 ### Editing the data file
 
-AddressBook data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
+ClientCore data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
-If your changes to the data file makes its format invalid, AddressBook will discard all data and start with an empty data file at the next run. Hence, it is recommended to take a backup of the file before editing it.<br>
-Furthermore, certain edits can cause the AddressBook to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
+If your changes to the data file makes its format invalid, ClientCore will discard all data and start with an empty data file at the next run. Hence, it is recommended to take a backup of the file before editing it.<br>
+Furthermore, certain edits can cause ClientCore to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </div>
 --------------------------------------------------------------------------------------------------------------------
 
 ## FAQ
 
 **Q**: How do I transfer my data to another Computer?<br>
-**A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous AddressBook home folder.
+**A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous ClientCore home folder.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -468,7 +472,7 @@ Action | Format, Examples
 **Clear** | `clear`
 **Delete** | `delete INDEX`<br> e.g. `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [ip/INSURANCE_PACKAGE] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [t/TAG]…​`<br> e.g. `edit 2 n/James Lee e/jameslee@example.com s/5000 dep/Unspecified t/friend`
-**Export** | `export [FILE_PATH]` <br> e.g. `export ~/Downloads/addressbook.csv`
+**Export** | `export [FILE_PATH]` <br> e.g. `export ~/Downloads/clientcore.csv`
 **Filter** | `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`<br> e.g. `filter n/James Lee e/jameslee`
 **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g. `find James Jake`
 **View** | `view NAME-KEYWORD` `view INDEX` <br> e.g. `view Alex` `view 1`
