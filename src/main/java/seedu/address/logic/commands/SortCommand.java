@@ -22,8 +22,8 @@ public class SortCommand extends Command {
 
     public static final String COMMAND_WORD = "sort";
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Sorts all persons by the specific field.\n"
-            + "Parameters: FIELD [DIRECTION]"
+            + ": Sorts the list of persons by the specified field in specified order.\n"
+            + "Parameters: FIELD [DIRECTION]\n"
             + "FIELD: name, phone, email, address, salary, dateofbirth, "
             + "maritalstatus, occupation, dependents, insurancepackage\n"
             + "DIRECTION: ascending, descending\n"
