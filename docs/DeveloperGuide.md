@@ -944,13 +944,17 @@ testers are expected to do more *exploratory* testing.
 
 ## **Appendix: Effort**
 ### Difficulty level
+* This project was of **medium** difficulty overall.
 
 ### Challenges faced
-
-### Effort required
+* The most challenging features were the `Filter` and `Sort` commands due to the need to handle various data types (strings, numbers, dates) and implement complex comparison logic.
+* Furthermore, adding and editing new categories required handling of a large number of edge cases to ensure data integrity and user-friendly error messages.
 
 ### Achievements
-
+* Added more categories for financial advisors to evaluate clients on, including date of birth, salary, occupation, and number of dependents.
+* Developed a robust insurance package management system that allows financial advisors to add, edit, and delete insurance packages of their clients.
+* Successfully implemented advanced filtering and sorting capabilities that enhance user experience.
+* Created export functionality to back up client data in CSV format.
 
 ## **Appendix: Planned Enhancements**
 ### Filter: 
