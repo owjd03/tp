@@ -11,6 +11,7 @@ title: Developer Guide
 
 * Salary.java, line 31, regex for validating salary adapted from https://stackoverflow.com/questions/50524080/regex-with-maximum-2-digits-after-the-decimal-point.
 * Occupation.java, line 19, regex for validating non-blank strings adapted from https://stackoverflow.com/questions/13750716/what-does-regular-expression-s-s-do.
+* Name.java, line 29, regex for validating names adapted from https://stackoverflow.com/questions/6493954/how-to-properly-write-regex-for-unicode-first-name-in-java.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -962,11 +963,12 @@ Hence, we seek to implement other type of comparators, such as Collator to ensur
 
 E.g. Planned sort enhancements allows for sorting of Chinese names to be done in pinyin order and Japanese names to be done in kana order, followed by Kanji.
 
-### Larger character set for name validation: 
-Currently, we only accept English, Chinese, Korean and Spanish characters. The new validation rule will be updated to accept characters from a much wider range of global language scripts. Specifically, characters defined by the Unicode Consortium as part of major worldwide languages. 
-
-Sample input: `add n/செல்வி ராணி p/12345678 ...`<br>
-Sample output: `New person added: செல்வி ராணி Phone: 12345678 ...`
+### Using prefixes as part of insurance package name or description:
+Currently, the use of prefixes (e.g., ip/, d/) is restricted to command syntax only and cannot be part of the actual insurance package name or description.
+In future iterations, we plan to enhance the parser to allow the inclusion of these prefixes within the insurance package name or description by implementing an escape mechanism.
+This will enable users to create more descriptive and meaningful package names and descriptions without being limited by the command syntax.
+Sample input: `addp ip/Gold ip/Health d/Includes ip/ and d/ prefixes`<br>
+Sample output: `... Insurance Package added: Name: [Gold Health], Description: [Includes ip/ and d/ prefixes]`
 
 ### Edit individual tags: 
 We will update the current mechanism for editing tags to allow users to modify a tag directly without affecting other tags assigned to the client, giving them more control over adding or deleting individual tags. This will be achieved via a new sub-command or flag under the edit command.
