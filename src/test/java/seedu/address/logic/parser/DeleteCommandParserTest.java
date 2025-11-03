@@ -27,7 +27,7 @@ public class DeleteCommandParserTest {
 
     @Test
     public void parse_invalidArgs_throwsParseException() {
-        String expectedError = String.format("%s\n\n%s",
+        String expectedError = String.format("%s\n%s",
                 MESSAGE_INVALID_INDEX, DeleteCommand.MESSAGE_USAGE);
 
         assertParseFailure(parser, "a", expectedError);

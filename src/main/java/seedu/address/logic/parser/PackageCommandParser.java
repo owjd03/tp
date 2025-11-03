@@ -52,6 +52,7 @@ public class PackageCommandParser {
     /**
      * Parses the given {@code String} of arguments in the context of the EditPackageCommand
      * and returns an EditPackageCommand object for execution.
+     *
      * @throws ParseException if the user input does not conform the expected format
      */
     public static EditPackageCommand parseEditPackage(String args) throws ParseException {
@@ -67,6 +68,7 @@ public class PackageCommandParser {
     /**
      * Parses the given {@code String} of arguments in the context of the DeletePackageCommand
      * and returns a DeletePackageCommand object for execution.
+     *
      * @throws ParseException if the user input does not conform the expected format
      */
     public static DeletePackageCommand parseDeletePackage(String args) throws ParseException {
