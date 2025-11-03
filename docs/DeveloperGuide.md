@@ -994,8 +994,7 @@ We plan to improve this by allowing the deletion to proceed and automatically re
 `Find` implementation currently search for persons by doing exact matching keywords, e.g. `find alex david` will only list out people with name that has `alex` or `david` but not `alexa` which contains alex as a substring of its name. 
 In future iteration, we will update this method of matching such that it will match to any name that contains the given keyword, just like how `view` name matching works.
 
-Sample input:  `find alex david`
-
+Sample input:  `find alex david` <br>
 Sample output: a list of people whose name contains `alex` or `david` e.g. `alex` `david` `alexa` `alexandra`
 
 ### InsurancePackage: 
@@ -1012,15 +1011,14 @@ Sample input: `add n/"Insurance \"Sales\" Agent" p/123...`<br>
 Sample output: `New person added: Insurance "Sales" Agent Phone: 123...`
 
 ### Set maximum character limits for address/occupation/salary/name fields: 
-This is to improve data quality and maintain system stability. Excluding whitespaces, the proposed limits are: Name (50 chars), Occupation (50 chars), Salary (15 chars), and Address (200 chars). Users who attempt to exceed the limit will receive an immediate validation error.
+This is to improve data quality and maintain system stability. Excluding whitespaces, the proposed limits are: Name (50 chars), Occupation (50 chars), Salary (15 chars), Address (200 chars), and Tags (200 chars). Users who attempt to exceed the limit will receive an immediate validation error.
 
 Sample input: `edit 1 a/123ssssssss... (201 characters)`<br>
 Sample output: `Error: Address cannot exceed 200 characters.`
 
 ### Add support for multi-screen detection
-Currently, ClientCore does not support multi-screen detection as mentioned in the `UserGuide#KnownIssues`.
-In future iteration, we will develop the app window to detect any multi-screen existence and readjust its position once it detects the app window is off-screen.
+Currently, ClientCore does not support multi-screen detection as mentioned in `UserGuide#KnownIssues`.
+In future iterations, we will develop the ability for the app window to detect multi-screen existence and re-adjust its position once it detects that the app window is off-screen.
 
-Current outcome: `The app will remember its last position and stuck to it regardless if the screen, its currently in, is on or not.`
-
-Expected outcome: `The app detects its current position is off-screen and readjust itself to the centre of main screen.`
+Current outcome: The app remembers the window's latest position and sticks to it regardless if the screen its currently on is open or not.<br>
+Improved outcome: The app detects that the window's current position is off-screen, and will re-adjust itself to the centre of the screen.
