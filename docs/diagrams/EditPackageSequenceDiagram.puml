@@ -2,60 +2,62 @@
 !include style.puml
 skinparam ArrowFontStyle plain
 
-box Logic LOGIC_COLOR_T1
-participant ":EditPackageCommand" as EditPackageCommand LOGIC_COLOR
+box Logic #C8C8FA
+participant ":EditPackageCommand" as EditPackageCommand #3333C4
 end box
 
-box Model MODEL_COLOR_T1
-participant ":Model" as Model MODEL_COLOR
-participant ":InsurancePackage" as InsurancePackage MODEL_COLOR
+box Model #F97181
+participant ":Model" as Model #9D0012
+participant ":InsuranceCatalog" as InsuranceCatalog #9D0012
+participant ":UniqueInsurancePackageList" as UniqueInsurancePackageList #9D0012
 end box
 
-box Model MODEL_COLOR_T1
-participant "catalog:InsuranceCatalog" as InsuranceCatalog MODEL_COLOR
-participant "packages:UniqueInsurancePackageList" as PackageList MODEL_COLOR
-end box
-
--> EditPackageCommand : execute()
+[-> EditPackageCommand : execute(model)
 activate EditPackageCommand
 
-EditPackageCommand -> Model : getInsuranceCatalog()
+EditPackageCommand -> Model : getCatalog()
 activate Model
 Model --> EditPackageCommand : catalog
 deactivate Model
 
-EditPackageCommand -> InsuranceCatalog : findPackageByName(packageName)
+EditPackageCommand -> InsuranceCatalog : getPackageList()
 activate InsuranceCatalog
-InsuranceCatalog -> PackageList : findPackageByName(packageName)
-activate PackageList
-PackageList --> InsuranceCatalog : targetPackage
-deactivate PackageList
-InsuranceCatalog --> EditPackageCommand : targetPackage
+InsuranceCatalog --> EditPackageCommand : packageList
 deactivate InsuranceCatalog
 
-EditPackageCommand -> InsurancePackage ** : create(packageName, newDescription)
-activate InsurancePackage
-InsurancePackage --> EditPackageCommand : editedInsurancePackage
-deactivate InsurancePackage
+EditPackageCommand -> UniqueInsurancePackageList : findPackageByName(name)
+activate UniqueInsurancePackageList
 
-EditPackageCommand -> Model : setInsurancePackage(targetPackage, editedInsurancePackage)
-activate Model
+UniqueInsurancePackageList --> EditPackageCommand : targetP
+deactivate UniqueInsurancePackageList
 
-Model -> InsuranceCatalog : setInsurancePackage(targetPackage, editedInsurancePackage)
-activate InsuranceCatalog
+alt targetP == null
+    <-- EditPackageCommand : CommandException
+else targetP != null
+    EditPackageCommand -> "editedP:InsurancePackage" ** #00008B : create(name, newDescription)
+    activate "editedP:InsurancePackage"
+    "editedP:InsurancePackage" --> EditPackageCommand : editedP
+    deactivate "editedP:InsurancePackage"
 
-InsuranceCatalog -> PackageList : setPackage(targetPackage, editedInsurancePackage)
-activate PackageList
-PackageList --> InsuranceCatalog
-deactivate PackageList
+    EditPackageCommand -> Model : setInsurancePackage(targetP, editedP)
+        activate Model
 
-InsuranceCatalog --> Model
-deactivate InsuranceCatalog
+        Model -> InsuranceCatalog : setInsurancePackage(targetP, editedP)
+        activate InsuranceCatalog
 
-Model --> EditPackageCommand
-deactivate Model
+        InsuranceCatalog -> UniqueInsurancePackageList : setInsurancePackage(targetP, editedP)
+        activate UniqueInsurancePackageList
 
-<-- EditPackageCommand : CommandResult
-deactivate EditPackageCommand
+        UniqueInsurancePackageList --> InsuranceCatalog
+        deactivate UniqueInsurancePackageList
 
+        InsuranceCatalog --> Model
+        deactivate InsuranceCatalog
+
+        Model --> EditPackageCommand
+        deactivate Model
+
+    <-- EditPackageCommand : CommandResult
+    deactivate EditPackageCommand
+end
 @enduml

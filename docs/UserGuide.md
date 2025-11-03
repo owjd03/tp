@@ -182,11 +182,13 @@ Tag Specific Behaviour:
 
 Examples:
 *  `edit 1 p/91234567 e/johndoe@newemail.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@newemail.com` respectively. 
-*  After running the above command:
-      ![result for `edit 1 p/91234567 e/johndoe@newemail.com`](images/editSuccessful.png)
-* `edit 1 s/unspecified dob/UNSPECified` Edits the salary and date of birth of the 1st person to be `Unspecified`.
-*  After running the above command:
-      ![result for `edit 1 s/unspecified dob/UNSPECified`](images/editToUnspecified.png) 
+   After running the above command:
+
+   ![result for `edit 1 p/91234567 e/johndoe@newemail.com`](images/editSuccessful.png)
+*  `edit 1 s/unspecified dob/UNSPECified` Edits the salary and date of birth of the 1st person to be `Unspecified`.
+   After running the above command:
+
+   ![result for `edit 1 s/unspecified dob/UNSPECified`](images/editToUnspecified.png) 
 * `edit 3 a/John street, block 321, #01-01 s/150000` Edits the address and salary of the 3rd person to be `John street, block 321, #01-01` and `$150,000` respectively.
 * `edit 4 ip/Silver dep/0` Edits the insurance package and number of dependents of the 4th person to be `Silver` and `0` respectively.
 * `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
@@ -423,7 +425,7 @@ Examples:
 * `editp ip/Gold d/New description.` Edits the description of "Gold" package to be `New description.`
 * After running the above command:
     ![result for `editp ip/Gold d/New description.`](images/editPackageSuccessful.png)
-* `editp ip/Basic Plan d/ ` Edits the description of "Basic Plan" to be empty.
+* `editp ip/Basic Plan d/` Edits the description of "Basic Plan" to be empty.
 
 ### Deleting an insurance package: `deletep`
 

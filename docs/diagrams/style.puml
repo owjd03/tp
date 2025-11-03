@@ -65,6 +65,7 @@ skinparam Sequence {
 
 skinparam Participant {
     FontColor #FFFFFF
+    BackGroundColor #000000
     Padding 20
 }
 
