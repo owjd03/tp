@@ -48,11 +48,11 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     private static final Function<Person, String> GET_OCCUPATION = p -> p.getOccupation().toString();
     private static final Function<Person, String> GET_PHONE = p -> p.getPhone().toString();
 
-    private static final Function<Person, Double> GET_DEPENDENTS = p -> p.getDependents().getNumericValue();
+    private static final Function<Person, String> GET_DEPENDENTS = p -> p.getDependents().toString();
     private static final Function<Person, Boolean> IS_DEPENDENTS_UNSPECIFIED =
             p -> p.getDependents().isUnspecified();
 
-    private static final Function<Person, Double> GET_SALARY = p -> p.getSalary().getNumericValue();
+    private static final Function<Person, String> GET_SALARY = p -> p.getSalary().toString();
     private static final Function<Person, Boolean> IS_SALARY_UNSPECIFIED = p -> p.getSalary().isUnspecified();
 
     /**
@@ -188,7 +188,7 @@ public class FilterCommandParser implements Parser<FilterCommand> {
      */
     private void addComparisonPrefixParserIfPresent(ArgumentMultimap argMultimap,
                                                   Prefix prefix,
-                                                  Function<Person, Double> getPersonField,
+                                                  Function<Person, String> getPersonField,
                                                   Function<Person, Boolean> isPersonFieldUnspecified,
                                                   List<FilterPrefixParser> filterPrefixParsers) throws ParseException {
         if (!argMultimap.getValue(prefix).isPresent()) {

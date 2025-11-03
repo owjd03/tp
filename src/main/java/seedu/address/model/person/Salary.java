@@ -80,13 +80,6 @@ public class Salary {
     }
 
     /**
-     * Returns the numerical value of the salary as a double.
-     */
-    public double getNumericValue() {
-        return Double.parseDouble(this.value);
-    }
-
-    /**
      * Returns true if the salary is unspecified.
      */
     public boolean isUnspecified() {

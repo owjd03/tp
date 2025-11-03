@@ -11,7 +11,6 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 import static seedu.address.logic.parser.FilterCommandParser.MESSAGE_MISSING_KEYWORDS;
 import static seedu.address.logic.parser.filter.FilterComparisonPrefixParser.MESSAGE_DEPENDENTS_MUST_BE_INTEGER;
 import static seedu.address.logic.parser.filter.FilterComparisonPrefixParser.MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY;
-import static seedu.address.logic.parser.filter.FilterComparisonPrefixParser.MESSAGE_INVALID_NUMBER_FOR_OPERATOR;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,10 +33,10 @@ import seedu.address.model.person.PersonContainsKeywordsPredicate;
  */
 public class FilterCommandParserTest {
 
-    private static final Function<Person, Double> GET_SALARY_DOUBLE =
-            p -> p.getSalary().getNumericValue();
-    private static final Function<Person, Double> GET_DEPENDENTS_DOUBLE =
-            p -> p.getDependents().getNumericValue();
+    private static final Function<Person, String> GET_SALARY =
+            p -> p.getSalary().toString();
+    private static final Function<Person, String> GET_DEPENDENTS =
+            p -> p.getDependents().toString();
     private static final Function<Person, Boolean> IS_SALARY_UNSPECIFIED =
             p -> p.getSalary().isUnspecified();
     private static final Function<Person, Boolean> IS_DEPENDENTS_UNSPECIFIED =
@@ -163,7 +162,7 @@ public class FilterCommandParserTest {
 
         // Invalid operator
         assertParseFailure(parser, " " + PREFIX_SALARY + ">>500",
-                String.format(MESSAGE_INVALID_NUMBER_FOR_OPERATOR, ">500"));
+                String.format(MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY, ">500"));
 
         // Decimal value for dependents
         assertParseFailure(parser, " " + PREFIX_DEPENDENTS + "=2.5", MESSAGE_DEPENDENTS_MUST_BE_INTEGER);
@@ -205,14 +204,14 @@ public class FilterCommandParserTest {
 
     private FilterComparisonPrefixParser createSalaryComparisonParser(String keyword) throws ParseException {
         FilterComparisonPrefixParser parser = new FilterComparisonPrefixParser(
-                PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
+                PREFIX_SALARY, GET_SALARY, IS_SALARY_UNSPECIFIED);
         parser.parse(keyword);
         return parser;
     }
 
     private FilterComparisonPrefixParser createDependentsComparisonParser(String keyword) throws ParseException {
         FilterComparisonPrefixParser parser = new FilterComparisonPrefixParser(
-                PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
+                PREFIX_DEPENDENTS, GET_DEPENDENTS, IS_DEPENDENTS_UNSPECIFIED);
         parser.parse(keyword);
         return parser;
     }

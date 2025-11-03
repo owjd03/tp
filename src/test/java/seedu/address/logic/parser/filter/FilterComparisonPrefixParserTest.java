@@ -19,10 +19,10 @@ import seedu.address.testutil.PersonBuilder;
 
 public class FilterComparisonPrefixParserTest {
 
-    private static final Function<Person, Double> GET_SALARY_DOUBLE =
-            p -> p.getSalary().getNumericValue();
-    private static final Function<Person, Double> GET_DEPENDENTS_DOUBLE =
-            p -> p.getDependents().getNumericValue();
+    private static final Function<Person, String> GET_SALARY =
+            p -> p.getSalary().toString();
+    private static final Function<Person, String> GET_DEPENDENTS =
+            p -> p.getDependents().toString();
     private static final Function<Person, Boolean> IS_SALARY_UNSPECIFIED =
             p -> p.getSalary().isUnspecified();
     private static final Function<Person, Boolean> IS_DEPENDENTS_UNSPECIFIED =
@@ -32,7 +32,7 @@ public class FilterComparisonPrefixParserTest {
     @Test
     public void constructor_nullPrefix_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () ->
-                new FilterComparisonPrefixParser(null, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED));
+                new FilterComparisonPrefixParser(null, GET_SALARY, IS_SALARY_UNSPECIFIED));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class FilterComparisonPrefixParserTest {
         assertThrows(NullPointerException.class, () ->
                 new FilterComparisonPrefixParser(PREFIX_SALARY, null, IS_SALARY_UNSPECIFIED));
         assertThrows(NullPointerException.class, () ->
-                new FilterComparisonPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, null));
+                new FilterComparisonPrefixParser(PREFIX_SALARY, GET_SALARY, null));
     }
 
     //----- GetPrefix Tests -----
@@ -142,7 +142,8 @@ public class FilterComparisonPrefixParserTest {
     @Test
     public void parse_invalidNumberForOperator_throwsParseException() {
         FilterComparisonPrefixParser parser = createSalaryTestParser();
-        String expectedMessage = String.format(FilterComparisonPrefixParser.MESSAGE_INVALID_NUMBER_FOR_OPERATOR, "abc");
+        String expectedMessage =
+                String.format(FilterComparisonPrefixParser.MESSAGE_INVALID_NUMBER_FORMAT_FOR_SALARY, "abc");
         assertThrows(ParseException.class, () -> parser.parse(">= abc"), expectedMessage);
     }
 
@@ -257,11 +258,11 @@ public class FilterComparisonPrefixParserTest {
 
     //----- Helper Methods -----
     private FilterComparisonPrefixParser createSalaryTestParser() {
-        return new FilterComparisonPrefixParser(PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
+        return new FilterComparisonPrefixParser(PREFIX_SALARY, GET_SALARY, IS_SALARY_UNSPECIFIED);
     }
 
     private FilterComparisonPrefixParser createDependentsTestParser() {
-        return new FilterComparisonPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
+        return new FilterComparisonPrefixParser(PREFIX_DEPENDENTS, GET_DEPENDENTS, IS_DEPENDENTS_UNSPECIFIED);
     }
 
     private void assertSalaryComparison(String input, String personSalary, boolean expected) throws ParseException {
