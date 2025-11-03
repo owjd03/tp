@@ -160,6 +160,38 @@ public class ParserUtilTest {
     }
 
     @Test
+    public void parseAddress_emptyQuotedValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseAddress("\"\""));
+    }
+
+    @Test
+    public void parseAddress_whitespaceQuotedValue_throwsParseException() {
+        assertThrows(ParseException.class, Address.MESSAGE_CONSTRAINTS, () -> ParserUtil.parseAddress("\"   \""));
+    }
+
+    @Test
+    public void parseAddress_validQuotedValueWithoutWhitespace_returnsAddress() throws Exception {
+        String quotedAddress = "\"123 Main St a/Unit\"";
+        Address expectedAddress = new Address("123 Main St a/Unit");
+        assertEquals(expectedAddress, ParserUtil.parseAddress(quotedAddress));
+    }
+
+    @Test
+    public void parseAddress_validQuotedValueWithInternalWhitespace_returnsAddressWithInternalWhitespace()
+            throws Exception {
+        String quotedAddress = "\"  456 S/O Road  \"";
+        Address expectedAddress = new Address("456 S/O Road");
+        assertEquals(expectedAddress, ParserUtil.parseAddress(quotedAddress));
+    }
+
+    @Test
+    public void parseAddress_validQuotedValueWithExternalWhitespace_returnsAddress() throws Exception {
+        String addressWithWhitespace = WHITESPACE + "\"789 p/Lane\"" + WHITESPACE;
+        Address expectedAddress = new Address("789 p/Lane");
+        assertEquals(expectedAddress, ParserUtil.parseAddress(addressWithWhitespace));
+    }
+
+    @Test
     public void parseEmail_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> ParserUtil.parseEmail((String) null));
     }
@@ -197,6 +229,20 @@ public class ParserUtilTest {
     public void parseSalary_validDecimal_returnsSalary() throws Exception {
         Salary expectedSalary = new Salary(VALID_SALARY_DECIMAL);
         assertEquals(expectedSalary, ParserUtil.parseSalary(VALID_SALARY_DECIMAL));
+    }
+
+    @Test
+    public void parseSalary_validCommas_returnsNormalizedSalary() throws Exception {
+        Salary expectedSalary = new Salary("1000000.50");
+        assertEquals(expectedSalary, ParserUtil.parseSalary("1,000,000.50"));
+
+        Salary expectedSalaryIncorrect = new Salary("1234567");
+        assertEquals(expectedSalaryIncorrect, ParserUtil.parseSalary("1,234,56,7"));
+    }
+
+    @Test
+    public void parseSalary_invalidPrecision_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseSalary("123.456"));
     }
 
     @Test
@@ -247,6 +293,17 @@ public class ParserUtilTest {
     }
 
     @Test
+    public void parseDateOfBirth_validLeapYear_returnsDateOfBirth() throws Exception {
+        DateOfBirth expectedDob = new DateOfBirth("2020-02-29");
+        assertEquals(expectedDob, ParserUtil.parseDateOfBirth("2020-02-29"));
+    }
+
+    @Test
+    public void parseDateOfBirth_invalidLeapYear_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseDateOfBirth("2019-02-29"));
+    }
+
+    @Test
     public void parseOccupation_invalidValue_throwsParseException() {
         assertThrows(ParseException.class, () -> ParserUtil.parseOccupation(INVALID_OCCUPATION));
     }
@@ -255,6 +312,38 @@ public class ParserUtilTest {
     public void parseOccupation_validValue_returnsOccupation() throws Exception {
         Occupation expectedOccupation = new Occupation(VALID_OCCUPATION);
         assertEquals(expectedOccupation, ParserUtil.parseOccupation(VALID_OCCUPATION));
+    }
+
+    @Test
+    public void parseOccupation_emptyQuotedValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseOccupation("\"\""));
+    }
+
+    @Test
+    public void parseOccupation_whitespaceQuotedValue_throwsParseException() {
+        assertThrows(ParseException.class, Occupation.MESSAGE_CONSTRAINTS, () -> ParserUtil.parseOccupation("\"   \""));
+    }
+
+    @Test
+    public void parseOccupation_validQuotedValueWithoutWhitespace_returnsOccupation() throws Exception {
+        String quotedOccupation = "\"Senior s/w Developer\"";
+        Occupation expectedOccupation = new Occupation("Senior s/w Developer");
+        assertEquals(expectedOccupation, ParserUtil.parseOccupation(quotedOccupation));
+    }
+
+    @Test
+    public void parseOccupation_validQuotedValueWithInternalWhitespace_returnsOccupationWithInternalWhitespace()
+            throws Exception {
+        String quotedOccupation = "\"  Self e/mployed  \"";
+        Occupation expectedOccupation = new Occupation("Self e/mployed");
+        assertEquals(expectedOccupation, ParserUtil.parseOccupation(quotedOccupation));
+    }
+
+    @Test
+    public void parseOccupation_validQuotedValueWithExternalWhitespace_returnsOccupation() throws Exception {
+        String occWithWhitespace = WHITESPACE + "\"Lead n/etwork Engineer\"" + WHITESPACE;
+        Occupation expectedOccupation = new Occupation("Lead n/etwork Engineer");
+        assertEquals(expectedOccupation, ParserUtil.parseOccupation(occWithWhitespace));
     }
 
     @Test
@@ -277,6 +366,17 @@ public class ParserUtilTest {
     public void parseDependents_validFive_returnsDependents() throws Exception {
         Dependents expectedDep = new Dependents(Integer.parseInt(VALID_DEPENDENTS_FIVE));
         assertEquals(expectedDep, ParserUtil.parseDependents(VALID_DEPENDENTS_FIVE));
+    }
+
+    @Test
+    public void parseDependents_validMaximum_returnsDependents() throws Exception {
+        Dependents expectedDep = new Dependents(100);
+        assertEquals(expectedDep, ParserUtil.parseDependents("100"));
+    }
+
+    @Test
+    public void parseDependents_invalidTooHighValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseDependents("101"));
     }
 
     @Test
