@@ -11,8 +11,8 @@ public class Name {
 
     public static final String MESSAGE_CONSTRAINTS =
             "Names can contain letters, numbers, spaces, the special characters -'/)( and should not be blank. \n"
-                    + "If a name contains an existing prefix, enclose the name in one set of double quotes. \n"
-                    + "The same rules above apply for the name within the double quotes. \n"
+                    + "If a name contains text that is a valid command prefix, enclose the name in one set of double "
+                    + "quotes. \n"
                     + "Example: n/\"Peter s/o John\"";
 
     /*
