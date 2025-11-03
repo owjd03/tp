@@ -68,12 +68,12 @@ ClientCore is a **comprehensive desktop application for financial advisors to ma
 
 ### Input parameter constraints
 When executing `add` and `edit` commands, all parameters used must adhere to the following rules. These constraints prevent errors and ensure data integrity.
+In general, all inputs for all fields are automatically trimmed of leading and trailing whitespace. An input consisting only of whitespace is considered blank.
 
 **Name:**
 * Names can contain letters (from English, Chinese, Spanish, Korean), numbers, spaces, and the following special characters: - ' . / ( )
-* If a name contains text that looks like another valid prefix (e.g., s/, p/, e/), it must be enclosed in double quotes.
+* If a name contains text that matches a valid command prefix (e.g., s/, p/, e/), it must be enclosed in double quotes.
 * Names are automatically formatted with proper capitalization (e.g., "john s/o doe" becomes "John S/O Doe", "anne-marie" becomes "Anne-Marie").
-* To ensure consistent formatting, this logic also standardizes names with internal upper case letters to title case (e.g., "McDonald" becomes "Mcdonald").
 
 **Phone Number:**
 * Phone numbers can contain only numbers and are 7 to 15 digits long.
@@ -90,6 +90,7 @@ When executing `add` and `edit` commands, all parameters used must adhere to the
 **Insurance Package:**
 * Only the name of the insurance package needs to be provided. (case-insensitive)
 * The package must already exist in ClientCore.
+* By default, ClientCore comes with 4 predefined insurance packages: Bronze, Silver, Gold and Undecided.
 <br>
 <br>
 
@@ -99,12 +100,12 @@ For instance, both omitting the salary field during an `add` command or typing `
 
 **Salary:**
 * Salary must be a non-negative number and can have up to two decimal places.
-* It should not have any currency symbols (e.g., $) or spaces.
-* It can also be separated by commas for thousands (e.g., 1,000,000.50).
+* It should not have any other symbols or spaces.
+* It can also be optionally separated by commas for thousands (e.g., 1,000,000.50).
 
 **Date of Birth:**
 * Date of Birth must follow the format YYYY-MM-DD.
-* The date must be a valid calendar date. 
+* The date must be a valid past or present calendar date.
 * Leap years are taken into account (e.g., 2020-02-29 is valid, but 2019-02-29 is not).
 
 **Marital Status:**
@@ -115,6 +116,12 @@ For instance, both omitting the salary field during an `add` command or typing `
 
 **Occupation:**
 * Occupation must not be blank.
+
+Tags are special optional descriptions that you can add to a person to document specific behaviour or traits of that person.
+**Tags:**
+* The `t/` prefix can be omitted completely if no tags are to be added, and will not show up as "Unspecified" in the contact's details.
+* Tags can contain alphanumeric characters.
+* Multiple tags can be added in the same command by repeating the `t/` prefix. However, they are case-insensitive. (e.g. `t/friend t/Friend` will only add/edit one `friend` tag)
 
 
 ### Viewing help : `help`
@@ -143,12 +150,15 @@ A person can have any number of tags (including 0)
 
 Examples:
 * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 s/120000 dob/2001-01-01 ms/Married ip/Gold dep/2 t/friend t/colleague`
-* After running the above command:
-
-  ![result for `add` command](images/addSuccessful.png)
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 dep/0 ip/Undecided t/wanted criminal`
 * `add n/"muthu a/l ganesan (sam)" p/92345678 e/muthu@example.com a/456 Serangoon Rd ip/Bronze s/45000` 
-* `add n/Dr. strange p/98989898 e/strange@email.com a/67 Mystic Ave ip/Silver occ/Sorcerer`
+* `add n/Dr. strange p/98989898 e/strange@email.com a/67 Mystic Ave ip/silver occ/Sorcerer`
+* After running the above commands:
+    ![results for the above `add` commands](images/addSuccessfuls.png)
+
+Negative Examples:
+* `add n/John s/o Doe p/92345672 e/john@example.com a/456 Computing Rd ip/Bronze` (will not work as the name contains a prefix-like text without being enclosed in double quotes)
+* `add n/John Doe p/98seven65432` (will not work as the phone number contains non-numeric characters, and is missing other mandatory fields)
+* `add n/John Doe dep/-1 ms/Complicated` (will not work as number of dependents cannot be negative, and marital status cannot be 'Complicated')
 
 ### Listing all persons : `list`
 
@@ -168,8 +178,7 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [ip/INSURANCE_PACKA
 
 Tag Specific Behaviour:
 * When editing tags, the existing tags of the person will be removed i.e. adding of tags is not cumulative.
-* Duplicate tags (case-insensitive) will be ignored. For example, if the user inputs `t/friend t/Friend`, only one `friend` tag will be added.
-* You can remove all the person’s tags by typing `t/` without specifying any tags after it.
+* You can remove all the person’s tags by typing `t/` without specifying any tags after it. This behaviour is unique to the `t/` prefix.
 
 Examples:
 *  `edit 1 p/91234567 e/johndoe@newemail.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@newemail.com` respectively. 
@@ -183,6 +192,12 @@ Examples:
 * `edit 3 a/John street, block 321, #01-01 s/150000` Edits the address and salary of the 3rd person to be `John street, block 321, #01-01` and `$150,000` respectively.
 * `edit 4 ip/Silver dep/0` Edits the insurance package and number of dependents of the 4th person to be `Silver` and `0` respectively.
 * `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
+
+Negative Examples:
+* `edit 1 John s/o Doe` (will not work as the name contains a prefix-like text without being enclosed in double quotes)
+* `edit 2` (will not work as no fields to edit were provided)
+* In a list of 4 people, `edit 5 p/91234567` (will not work as there is no 5th person in the current list)
+* `edit 2 s/-5000` (will not work as salary cannot be negative)
 
 
 ### Locating persons by name: `find`

@@ -24,10 +24,10 @@ import seedu.address.testutil.PersonBuilder;
 
 public class PersonContainsKeywordsPredicateTest {
 
-    private static final Function<Person, Double> GET_SALARY_DOUBLE =
-            p -> p.getSalary().getNumericValue();
-    private static final Function<Person, Double> GET_DEPENDENTS_DOUBLE =
-            p -> p.getDependents().getNumericValue();
+    private static final Function<Person, String> GET_SALARY =
+            p -> p.getSalary().toString();
+    private static final Function<Person, String> GET_DEPENDENTS =
+            p -> p.getDependents().toString();
     private static final Function<Person, Boolean> IS_SALARY_UNSPECIFIED =
             p -> p.getSalary().isUnspecified();
     private static final Function<Person, Boolean> IS_DEPENDENTS_UNSPECIFIED =
@@ -192,14 +192,14 @@ public class PersonContainsKeywordsPredicateTest {
 
     private FilterComparisonPrefixParser createSalaryComparisonParser(String keyword) throws ParseException {
         FilterComparisonPrefixParser parser = new FilterComparisonPrefixParser(
-                PREFIX_SALARY, GET_SALARY_DOUBLE, IS_SALARY_UNSPECIFIED);
+                PREFIX_SALARY, GET_SALARY, IS_SALARY_UNSPECIFIED);
         parser.parse(keyword);
         return parser;
     }
 
     private FilterComparisonPrefixParser createDependentsComparisonParser(String keyword) throws ParseException {
         FilterComparisonPrefixParser parser = new FilterComparisonPrefixParser(
-                PREFIX_DEPENDENTS, GET_DEPENDENTS_DOUBLE, IS_DEPENDENTS_UNSPECIFIED);
+                PREFIX_DEPENDENTS, GET_DEPENDENTS, IS_DEPENDENTS_UNSPECIFIED);
         parser.parse(keyword);
         return parser;
     }

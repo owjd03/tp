@@ -224,7 +224,7 @@ public class FilterCommandTest {
 
     private FilterComparisonPrefixParser createSalaryParser(String keyword) throws ParseException {
         FilterComparisonPrefixParser parser = new FilterComparisonPrefixParser(PREFIX_SALARY,
-                p -> p.getSalary().getNumericValue(),
+                p -> p.getSalary().toString(),
                 p -> p.getSalary().isUnspecified());
         parser.parse(keyword);
         return parser;
@@ -232,7 +232,7 @@ public class FilterCommandTest {
 
     private FilterComparisonPrefixParser createDependentsParser(String keyword) throws ParseException {
         FilterComparisonPrefixParser parser = new FilterComparisonPrefixParser(PREFIX_DEPENDENTS,
-                p -> p.getDependents().getNumericValue(),
+                p -> p.getDependents().toString(),
                 p -> p.getDependents().isUnspecified());
         parser.parse(keyword);
         return parser;

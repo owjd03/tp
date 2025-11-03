@@ -51,13 +51,6 @@ public class Dependents {
     }
 
     /**
-     * Returns the numerical value of the dependents as a double.
-     */
-    public double getNumericValue() {
-        return this.value;
-    }
-
-    /**
      * Returns true if the dependents are unspecified.
      */
     public boolean isUnspecified() {
