@@ -381,8 +381,9 @@ The sequence diagram below illustrates the interactions within the system when e
 **Target user profile**:
 
 * works as a Financial Advisor professionally
-* has a need to manage a significant number of clients and contacts
-* wants to store clients' profile to get applicable financial plans for them
+* has a need to manage a significant number of client contacts
+* wants to store clients' detailed profiles that include fields like salary, date of birth, marital status, etc. 
+* wants the best for his clients and recommend them the most fitting insurance packages
 * prefer desktop apps over other types
 * can type fast
 * prefers typing to mouse interactions
@@ -921,3 +922,57 @@ testers are expected to do more *exploratory* testing.
 1. Dealing with missing data files
     1. Test case: Delete or rename `data/addressbook.json` and `data/insurancecatalog.json`, then launch the application.<br>
        Expected: Application launches with empty data. New data files are created in "data" folder.
+
+
+
+## **Appendix: Effort**
+### Difficulty level
+
+### Challenges faced
+
+### Effort required
+
+### Achievements
+
+
+## **Appendix: Planned Enhancements**
+### Filter: 
+implement input validation for all categories, i.e. phone only accepts numbers, dob inputs must be a substring of yyyy-mm-dd and so on
+
+### Sort: 
+Currently, the existing comparator only sorts by unicode order, creating ambiguity for the human eye and making it seem like it groups common characters together instead of by a specific order. Hence, we seek to implement other type of comparators, such as Collator to ensure human-readable alphabetical sorting, multilingual-safe. E.g. Sorting Chinese names will be done in pinyin order and Japanese names will be done in kana order, followed by Kanji.
+
+### Larger character set for name validation: 
+Currently, we only accept English, Chinese, Korean and Spanish characters. The new validation rule will be updated to accept characters from a much wider range of global language scripts. Specifically, characters defined by the Unicode Consortium as part of major worldwide languages. 
+
+Sample input: `add n/செல்வி ராணி p/12345678 ...`
+Sample output: `New person added: செல்வி ராணி Phone: 12345678 ...`
+
+### Edit individual tags: 
+We will update the current mechanism for editing tags to allow users to modify a tag directly without affecting other tags assigned to the client, giving them more control over adding or deleting individual tags. This will be achieved via a new sub-command or flag under the edit command.
+
+Sample input: `edit 1 t/ 1 from/high risk to/medium risk`
+Sample output: `... Tags updated: [high risk] -> [medium risk]`
+
+### Delete Package: 
+Ability to delete packages with clients in use, sets all affected clients’ insurance package to “Undecided”.
+
+### Find: 
+support partial matching instead of exact matching for keywords
+
+### InsurancePackage: 
+Allow one person to have more than one insurance package assgined to the person
+
+### Allow nested double quotations " in name field:
+We will implement quotation encapsulation for attribute values. If an entire attribute value is enclosed in double quotes, the parser will treat all content within the quotes as a single string literal, allowing the use of double quotes within the attribute itself via an escape character (\").
+
+Sample input: `add n/"Insurance \"Sales\" Agent" p/123...`
+Sample output: `New person added: Insurance "Sales" Agent Phone: 123...`
+
+### Set maximum character limits for address/occupation/salary/name fields: 
+This is to improve data quality and maintain system stability. Excluding whitespaces, the proposed limits are: Name (50 chars), Occupation (50 chars), Salary (15 chars), and Address (200 chars). Users who attempt to exceed the limit will receive an immediate validation error.
+
+Sample input: `edit 1 a/123ssssssss... (201 characters)`
+Sample output: `Error: Address cannot exceed 200 characters.`
+
+### Add support for multi-screen detection
