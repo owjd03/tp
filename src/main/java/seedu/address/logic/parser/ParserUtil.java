@@ -99,7 +99,7 @@ public class ParserUtil {
         String processedAddress = address.trim();
         if (processedAddress.startsWith("\"") && processedAddress.endsWith("\"")) {
             if (processedAddress.length() < 2) {
-                throw new ParseException("Address value cannot be an empty quote.");
+                throw new ParseException(Address.MESSAGE_CONSTRAINTS);
             }
             processedAddress = processedAddress.substring(1, processedAddress.length() - 1).trim();
         }
@@ -177,7 +177,7 @@ public class ParserUtil {
                 Occupation.MESSAGE_CONSTRAINTS);
         if (processedOccupation.startsWith("\"") && processedOccupation.endsWith("\"")) {
             if (processedOccupation.length() < 2) {
-                throw new ParseException("Occupation value cannot be an empty quote.");
+                throw new ParseException(Occupation.MESSAGE_CONSTRAINTS);
             }
             processedOccupation = processedOccupation.substring(1, processedOccupation.length() - 1).trim();
         }

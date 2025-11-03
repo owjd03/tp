@@ -161,7 +161,7 @@ public class ParserUtilTest {
 
     @Test
     public void parseAddress_emptyQuotedValue_throwsParseException() {
-        assertThrows(ParseException.class, () -> ParserUtil.parseAddress("\"\""));
+        assertThrows(ParseException.class, Address.MESSAGE_CONSTRAINTS, () -> ParserUtil.parseAddress("\"\""));
     }
 
     @Test
@@ -316,7 +316,7 @@ public class ParserUtilTest {
 
     @Test
     public void parseOccupation_emptyQuotedValue_throwsParseException() {
-        assertThrows(ParseException.class, () -> ParserUtil.parseOccupation("\"\""));
+        assertThrows(ParseException.class, Occupation.MESSAGE_CONSTRAINTS, () -> ParserUtil.parseOccupation("\"   \""));
     }
 
     @Test
