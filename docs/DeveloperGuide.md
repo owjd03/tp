@@ -235,6 +235,23 @@ The sequence diagram below illustrates the interactions within the system when e
 
 <img src="images/SortSequenceDiagram.png" width="922" />
 
+**Aspect: Comparator implementation and Unicode-based sorting:**
+
+The `sort` command uses Java's `Comparator` interface to define custom sorting logic:
+
+1. **String-based fields** (name, phone, email, address, marital status, occupation, insurance package):
+    - Uses `String.compareToIgnoreCase()` which compares characters based on their Unicode code point values.
+    - This results in Unicode ordering: special characters → numbers → special characters → letters (exact position depends on Unicode value).
+
+2. **Numeric fields** (salary, dependents):
+    - Uses `Comparator.comparing()` with numeric conversion for true numerical comparison.
+
+3. **Date fields** (date of birth):
+    - Uses string comparison on `yyyy-MM-dd` formatted dates, which correctly orders chronologically.
+    - Example: `"1990-01-15"` < `"2000-12-31"` when compared as strings.
+
+The comparator is constructed by creating a base comparator, applying the sort direction (ascending/descending), and wrapping it to handle "Unspecified" values at the bottom.
+
 **Design Considerations:**
 
 **Aspect: How unspecified values are handled:**
@@ -940,18 +957,21 @@ testers are expected to do more *exploratory* testing.
 implement input validation for all categories, i.e. phone only accepts numbers, dob inputs must be a substring of yyyy-mm-dd and so on
 
 ### Sort: 
-Currently, the existing comparator only sorts by unicode order, creating ambiguity for the human eye and making it seem like it groups common characters together instead of by a specific order. Hence, we seek to implement other type of comparators, such as Collator to ensure human-readable alphabetical sorting, multilingual-safe. E.g. Sorting Chinese names will be done in pinyin order and Japanese names will be done in kana order, followed by Kanji.
+Currently, the existing comparator only sorts by unicode order, creating ambiguity for the human eye and making it seem like it groups common characters together instead of by a specific order. 
+Hence, we seek to implement other type of comparators, such as Collator to ensure human-readable alphabetical sorting, multilingual-safe. 
+
+E.g. Planned sort enhancements allows for sorting of Chinese names to be done in pinyin order and Japanese names to be done in kana order, followed by Kanji.
 
 ### Larger character set for name validation: 
 Currently, we only accept English, Chinese, Korean and Spanish characters. The new validation rule will be updated to accept characters from a much wider range of global language scripts. Specifically, characters defined by the Unicode Consortium as part of major worldwide languages. 
 
-Sample input: `add n/செல்வி ராணி p/12345678 ...`
+Sample input: `add n/செல்வி ராணி p/12345678 ...`<br>
 Sample output: `New person added: செல்வி ராணி Phone: 12345678 ...`
 
 ### Edit individual tags: 
 We will update the current mechanism for editing tags to allow users to modify a tag directly without affecting other tags assigned to the client, giving them more control over adding or deleting individual tags. This will be achieved via a new sub-command or flag under the edit command.
 
-Sample input: `edit 1 t/ 1 from/high risk to/medium risk`
+Sample input: `edit 1 t/ 1 from/high risk to/medium risk`<br>
 Sample output: `... Tags updated: [high risk] -> [medium risk]`
 
 ### Delete Package: 
@@ -961,18 +981,22 @@ Ability to delete packages with clients in use, sets all affected clients’ ins
 support partial matching instead of exact matching for keywords
 
 ### InsurancePackage: 
-Allow one person to have more than one insurance package assgined to the person
+Allow one person to have more than one insurance package assigned to the person.
+Similar to `Tags`, multiple `ip/` prefixes can be used in commands, where insurance packages will be displayed as a collection
+
+Sample input: `add n/John Doe p/98765432 e/johndoe@example.com a/123 Main St ip/Gold ip/Health ip/Life`<br>
+Sample output: `... Insurance Package: [Gold] [Health] [Life]`
 
 ### Allow nested double quotations " in name field:
 We will implement quotation encapsulation for attribute values. If an entire attribute value is enclosed in double quotes, the parser will treat all content within the quotes as a single string literal, allowing the use of double quotes within the attribute itself via an escape character (\").
 
-Sample input: `add n/"Insurance \"Sales\" Agent" p/123...`
+Sample input: `add n/"Insurance \"Sales\" Agent" p/123...`<br>
 Sample output: `New person added: Insurance "Sales" Agent Phone: 123...`
 
 ### Set maximum character limits for address/occupation/salary/name fields: 
 This is to improve data quality and maintain system stability. Excluding whitespaces, the proposed limits are: Name (50 chars), Occupation (50 chars), Salary (15 chars), and Address (200 chars). Users who attempt to exceed the limit will receive an immediate validation error.
 
-Sample input: `edit 1 a/123ssssssss... (201 characters)`
+Sample input: `edit 1 a/123ssssssss... (201 characters)`<br>
 Sample output: `Error: Address cannot exceed 200 characters.`
 
 ### Add support for multi-screen detection
