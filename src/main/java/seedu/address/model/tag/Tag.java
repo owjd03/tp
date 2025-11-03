@@ -23,7 +23,7 @@ public class Tag {
         requireNonNull(tagName);
         String trimmedTagName = tagName.trim(); // Trim leading and trailing whitespaces
         checkArgument(isValidTagName(trimmedTagName), MESSAGE_CONSTRAINTS);
-        this.tagName = trimmedTagName;
+        this.tagName = trimmedTagName.toLowerCase();
     }
 
     /**
