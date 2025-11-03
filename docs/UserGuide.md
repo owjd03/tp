@@ -69,10 +69,11 @@ ClientCore is a **comprehensive desktop application for financial advisors to ma
 ### Input parameter constraints
 When executing `add` and `edit` commands, all parameters used must adhere to the following rules. These constraints prevent errors and ensure data integrity.
 In general, all inputs for all fields are automatically trimmed of leading and trailing whitespace. An input consisting only of whitespace is considered blank.
+No two contacts can have the same phone number and/or case-insensitive email address (e.g. if two contacts have emails `test@example.com` and `TEsT@ExAMpLE.Com`, they are considered duplicates).
 
 **Name:**
 * Names can contain letters (from English, Chinese, Spanish, Korean), numbers, spaces, and the following special characters: - ' . / ( )
-* If a name contains text that matches a valid command prefix (e.g., s/, p/, e/), it must be enclosed in double quotes.
+* If a name contains text that matches a valid command prefix (e.g., s/, p/, e/), enclose the entire name in double quotes.
 * Names are automatically formatted with proper capitalization (e.g., "john s/o doe" becomes "John S/O Doe", "anne-marie" becomes "Anne-Marie").
 
 **Phone Number:**
@@ -86,6 +87,7 @@ In general, all inputs for all fields are automatically trimmed of leading and t
 
 **Address:**
 * Address must not be blank.
+* If an address contains text that matches a valid command prefix (e.g., s/, p/, e/), enclose the entire address in double quotes.
 
 **Insurance Package:**
 * Only the name of the insurance package needs to be provided. (case-insensitive)
@@ -101,7 +103,7 @@ For instance, both omitting the salary field during an `add` command or typing `
 **Salary:**
 * Salary must be a non-negative number and can have up to two decimal places.
 * It should not have any other symbols or spaces.
-* It can also be optionally separated by commas for thousands (e.g., 1,000,000.50).
+* It can also be optionally separated by commas for thousands (e.g., 1,000,000.50). Even if they are incorrectly placed, they will be corrected.
 
 **Date of Birth:**
 * Date of Birth must follow the format YYYY-MM-DD.
@@ -115,7 +117,8 @@ For instance, both omitting the salary field during an `add` command or typing `
 * Number of dependents must be a non-negative integer between 0 and 100 inclusive.
 
 **Occupation:**
-* Occupation must not be blank.
+* Occupation must not be blank. 
+* If an occupation contains text that matches a valid command prefix (e.g., s/, p/, e/), enclose the entire occupation in double quotes.
 
 Tags are special optional descriptions that you can add to a person to document specific behaviour or traits of that person.
 **Tags:**
