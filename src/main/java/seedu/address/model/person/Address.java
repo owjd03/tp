@@ -9,7 +9,10 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Address {
 
-    public static final String MESSAGE_CONSTRAINTS = "Addresses can take any values, and it should not be blank";
+    public static final String MESSAGE_CONSTRAINTS = "Addresses can take any values, and it should not be blank. \n"
+            + "If an address contains text that is a valid command prefix, enclose the address in one set of double "
+            + "quotes. \n"
+            + "Example: a/\"123 Main St p/Block 5\"";
 
     /*
      * The first character of the address must not be a whitespace,

@@ -9,8 +9,11 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Occupation {
 
-    public static final String MESSAGE_CONSTRAINTS = "Occupation must be non-empty "
-            + "or be declared as 'Unspecified' (case-insensitive).";
+    public static final String MESSAGE_CONSTRAINTS = "Occupation must be non-empty or be declared as 'Unspecified' "
+            + "(case-insensitive). \n"
+            + "If an occupation contains text that is a valid command prefix, enclose the occupation in one set of "
+            + "double quotes. \n"
+            + "Example: occ/\"Pilot @ S/Airlines\"";
 
     /*
      * The first character of the occupation must not be a whitespace,
