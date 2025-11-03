@@ -958,7 +958,12 @@ Sample output: `... Tags updated: [high risk] -> [medium risk]`
 Ability to delete packages with clients in use, sets all affected clients’ insurance package to “Undecided”.
 
 ### Find: 
-support partial matching instead of exact matching for keywords
+`Find` implementation currently search for persons by doing exact matching keywords, e.g. `find alex david` will only list out people with name that has `alex` or `david` but not `alexa` which contains alex as a substring of its name. 
+In future iteration, we will update this method of matching such that it will match to any name that contains the given keyword, just like how `view` name matching works.
+
+Sample input:  `find alex david`
+
+Sample output: a list of people whose name contains `alex` or `david` e.g. `alex` `david` `alexa` `alexandra`
 
 ### InsurancePackage: 
 Allow one person to have more than one insurance package assgined to the person
@@ -976,3 +981,9 @@ Sample input: `edit 1 a/123ssssssss... (201 characters)`
 Sample output: `Error: Address cannot exceed 200 characters.`
 
 ### Add support for multi-screen detection
+Currently, ClientCore does not support multi-screen detection as mentioned in the `UserGuide#KnownIssues`.
+In future iteration, we will develop the app window to detect any multi-screen existence and readjust its position once it detects the app window is off-screen.
+
+Current outcome: `The app will remember its last position and stuck to it regardless if the screen, its currently in, is on or not.`
+
+Expected outcome: `The app detects its current position is off-screen and readjust itself to the centre of main screen.`
