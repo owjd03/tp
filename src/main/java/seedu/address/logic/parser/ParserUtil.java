@@ -96,8 +96,17 @@ public class ParserUtil {
      * @throws ParseException if the given {@code address} is invalid.
      */
     public static Address parseAddress(String address) throws ParseException {
-        String trimmedAddress = validateStringField(address, Address::isValidAddress, Address.MESSAGE_CONSTRAINTS);
-        return new Address(trimmedAddress);
+        String processedAddress = address.trim();
+        if (processedAddress.startsWith("\"") && processedAddress.endsWith("\"")) {
+            if (processedAddress.length() < 2) {
+                throw new ParseException("Address value cannot be an empty quote.");
+            }
+            processedAddress = processedAddress.substring(1, processedAddress.length() - 1).trim();
+        }
+        if (processedAddress.isEmpty()) {
+            throw new ParseException(Address.MESSAGE_CONSTRAINTS);
+        }
+        return new Address(processedAddress);
     }
 
     /**
@@ -164,9 +173,18 @@ public class ParserUtil {
      * @throws ParseException if the given {@code occupation} is invalid.
      */
     public static Occupation parseOccupation(String occupation) throws ParseException {
-        String trimmedOccupation = validateStringField(occupation, Occupation::isValidOccupation,
+        String processedOccupation = validateStringField(occupation, Occupation::isValidOccupation,
                 Occupation.MESSAGE_CONSTRAINTS);
-        return new Occupation(trimmedOccupation);
+        if (processedOccupation.startsWith("\"") && processedOccupation.endsWith("\"")) {
+            if (processedOccupation.length() < 2) {
+                throw new ParseException("Occupation value cannot be an empty quote.");
+            }
+            processedOccupation = processedOccupation.substring(1, processedOccupation.length() - 1).trim();
+        }
+        if (processedOccupation.isEmpty()) {
+            throw new ParseException(Occupation.MESSAGE_CONSTRAINTS);
+        }
+        return new Occupation(processedOccupation);
     }
 
     /**
