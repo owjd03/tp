@@ -144,7 +144,8 @@ A person can have any number of tags (including 0)
 Examples:
 * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 s/120000 dob/2001-01-01 ms/Married ip/Gold dep/2 t/friend t/colleague`
 * After running the above command:
-  ![result for `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 s/120000 dob/2001-01-01 ms/Married ip/Gold dep/2 t/friend t/colleague`](images/addSuccessful.png)
+
+  ![result for `add` command](images/addSuccessful.png)
 * `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 dep/0 ip/Undecided t/wanted criminal`
 * `add n/"muthu a/l ganesan (sam)" p/92345678 e/muthu@example.com a/456 Serangoon Rd ip/Bronze s/45000` 
 * `add n/Dr. strange p/98989898 e/strange@email.com a/67 Mystic Ave ip/Silver occ/Sorcerer`
@@ -172,10 +173,12 @@ Tag Specific Behaviour:
 
 Examples:
 *  `edit 1 p/91234567 e/johndoe@newemail.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@newemail.com` respectively. 
-*  After running the above command:
+   After running the above command:
+
    ![result for `edit 1 p/91234567 e/johndoe@newemail.com`](images/editSuccessful.png)
-* `edit 1 s/unspecified dob/UNSPECified` Edits the salary and date of birth of the 1st person to be `Unspecified`.
-*  After running the above command:
+*  `edit 1 s/unspecified dob/UNSPECified` Edits the salary and date of birth of the 1st person to be `Unspecified`.
+   After running the above command:
+
    ![result for `edit 1 s/unspecified dob/UNSPECified`](images/editToUnspecified.png) 
 * `edit 3 a/John street, block 321, #01-01 s/150000` Edits the address and salary of the 3rd person to be `John street, block 321, #01-01` and `$150,000` respectively.
 * `edit 4 ip/Silver dep/0` Edits the insurance package and number of dependents of the 4th person to be `Silver` and `0` respectively.
@@ -407,7 +410,7 @@ Examples:
 * `editp ip/Gold d/New description.` Edits the description of "Gold" package to be `New description.`
 * After running the above command:
     ![result for `editp ip/Gold d/New description.`](images/editPackageSuccessful.png)
-* `editp ip/Basic Plan d/ ` Edits the description of "Basic Plan" to be empty.
+* `editp ip/Basic Plan d/` Edits the description of "Basic Plan" to be empty.
 
 ### Deleting an insurance package: `deletep`
 

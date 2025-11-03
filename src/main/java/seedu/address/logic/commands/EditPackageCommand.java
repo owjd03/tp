@@ -64,7 +64,8 @@ public class EditPackageCommand extends Command {
 
         // Find the target package by name by filtering (case-insensitive)
         InsurancePackage targetPackage = model.getInsuranceCatalog().getInsurancePackageList().stream()
-                .filter(pkg -> pkg.getPackageName().equalsIgnoreCase(packageName)).findFirst().orElse(null);
+                .filter(pkg -> pkg.getPackageName().equalsIgnoreCase(packageName))
+                .findFirst().orElse(null);
 
         if (targetPackage == null) {
             logger.warning("Invalid package specified for edit: " + packageName);
