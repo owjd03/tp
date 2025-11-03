@@ -3,53 +3,61 @@
 skinparam ArrowFontStyle plain
 
 box Logic #C8C8FA
-participant ":EditPackageCommand" as EditCmd #3333C4
+participant ":EditPackageCommand" as EditPackageCommand #3333C4
 end box
 
 box Model #F97181
-participant ":Model" as M #9D0012
-participant ":InsuranceCatalog" as Catalog #9D0012
-participant ":UniqueInsurancePackageList" as PkgList #9D0012
+participant ":Model" as Model #9D0012
+participant ":InsuranceCatalog" as InsuranceCatalog #9D0012
+participant ":UniqueInsurancePackageList" as UniqueInsurancePackageList #9D0012
 end box
 
-[-> EditCmd : execute(model)
-activate EditCmd
+[-> EditPackageCommand : execute(model)
+activate EditPackageCommand
 
-EditCmd -> M : getInsuranceCatalog()
-activate M
-M --> EditCmd : catalog
-deactivate M
+EditPackageCommand -> Model : getCatalog()
+activate Model
+Model --> EditPackageCommand : catalog
+deactivate Model
 
-ref over EditCmd, Catalog, PkgList : Find targetPackage by name (stream & filter)
+EditPackageCommand -> InsuranceCatalog : getPackageList()
+activate InsuranceCatalog
+InsuranceCatalog --> EditPackageCommand : packageList
+deactivate InsuranceCatalog
 
+EditPackageCommand -> UniqueInsurancePackageList : findPackageByName(name)
+activate UniqueInsurancePackageList
 
-alt targetPackage == null
-    <-- EditCmd : CommandException(MESSAGE_INVALID_PACKAGE)
-else targetPackage != null
-    EditCmd -> InsurancePackage ** #00008B : create(name, newDesc)
-    activate InsurancePackage
-    InsurancePackage --> EditCmd : editedPackage
-    deactivate InsurancePackage
+UniqueInsurancePackageList --> EditPackageCommand : targetP
+deactivate UniqueInsurancePackageList
 
-    EditCmd -> M : setInsurancePackage(oldPackage, editedPackage)
-        activate M
+alt targetP == null
+    <-- EditPackageCommand : CommandException
+else targetP != null
+    EditPackageCommand -> "editedP:InsurancePackage" ** #00008B : create(name, newDescription)
+    activate "editedP:InsurancePackage"
+    "editedP:InsurancePackage" --> EditPackageCommand : editedP
+    deactivate "editedP:InsurancePackage"
 
-        M -> Catalog : setInsurancePackage(oldPackage, editedPackage)
-        activate Catalog
+    EditPackageCommand -> Model : setInsurancePackage(targetP, editedP)
+        activate Model
 
-        Catalog -> PkgList : setInsurancePackage(oldPackage, editedPackage)
-        activate PkgList
+        Model -> InsuranceCatalog : setInsurancePackage(targetP, editedP)
+        activate InsuranceCatalog
 
-        PkgList --> Catalog
-        deactivate PkgList
+        InsuranceCatalog -> UniqueInsurancePackageList : setInsurancePackage(targetP, editedP)
+        activate UniqueInsurancePackageList
 
-        Catalog --> M
-        deactivate Catalog
+        UniqueInsurancePackageList --> InsuranceCatalog
+        deactivate UniqueInsurancePackageList
 
-        M --> EditCmd
-        deactivate M
+        InsuranceCatalog --> Model
+        deactivate InsuranceCatalog
 
-    <-- EditCmd : CommandResult (success, editedPackage)
-    deactivate EditCmd
+        Model --> EditPackageCommand
+        deactivate Model
+
+    <-- EditPackageCommand : CommandResult
+    deactivate EditPackageCommand
 end
 @enduml

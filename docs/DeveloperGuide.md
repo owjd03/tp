@@ -303,7 +303,7 @@ The editing of insurance packages is further facilitated by the `EditPackageComm
 
 After parsing, the target package name and new description are stored in the `EditPackageCommand` object.
 
-When `Command#execute` is called, `EditPackageCommand` first searches for the original package `targetPackage` by its name (case-insensitively). 
+When `Command#execute` is called, `EditPackageCommand` first searches for the original package `targetPackage` by its name (case-insensitively). This is done by converting the `Model#getInsurancePackageList()` to a stream and filtering for a matching name.
 
 If this package is not found, a `CommandException` is thrown. If found, a new `InsurancePackage` object `editedInsurancePackage` is created using the original name and the new description. The `InsurancePackage` constructor automatically formats the package name for consistency. 
 
