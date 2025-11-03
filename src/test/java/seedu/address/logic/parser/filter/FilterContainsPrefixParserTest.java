@@ -137,6 +137,27 @@ public class FilterContainsPrefixParserTest {
         parser.parse("ave 6");
         assertTrue(parser.test(ALICE));
         assertFalse(parser.test(BENSON));
+
+        // Input enclosed in quotation marks
+        parser.parse("\"clementi\"");
+        assertTrue(parser.test(BENSON));
+
+        // Input only begins with quotation mark
+        parser.parse("\"jurong");
+        assertFalse(parser.test(ALICE));
+
+        // Input only ends with quotation mark
+        parser.parse("jurong\"");
+        assertFalse(parser.test(ALICE));
+
+        // Filter for name with prefix, enclosing input in quotation marks
+        Person personPrefix = new PersonBuilder().withAddress("street of martin/john").build();
+        parser.parse("\"martin/john\"");
+        assertTrue(parser.test(personPrefix));
+
+        // Filter for name with more than 1 set of quotation marks
+        parser.parse("\"\"martin/john\"\"");
+        assertFalse(parser.test(personPrefix));
     }
 
     @Test

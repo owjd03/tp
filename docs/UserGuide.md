@@ -251,6 +251,7 @@ Finds contacts matching **all** the provided criteria. You must provide at least
 
 Format: `filter [n/NAME] [a/ADDRESS] [p/PHONE] [e/EMAIL] [s/SALARY] [dob/DATE_OF_BIRTH] [ms/MARITAL_STATUS] [dep/NUMBER_OF_DEPENDENTS] [occ/OCCUPATION] [ip/INSURANCE_PACKAGE] [t/TAG]…​`
 <br>
+<br>
 
 **Filtering by Keyword (Default)**
 
@@ -259,10 +260,14 @@ By default, the filter performs a case-insensitive "**contains**" search for all
 * `filter n/jo` will match `Josh` or `Joseph`.
 * `filter dob/-10-` will match any date of birth in October (e.g. `2000-10-20`).
 * **Tags:** You can provide multiple `t/` prefixes. `filter t/friend t/rich` finds contacts who are tagged as **both** a `friend` **AND** `rich`.
-* **Names with slashes:** If a name contains text that looks like a filter prefix (e.g. `s/o`), you **must** enclose the name in quotes.
+* **Keywords with slashes:** When filtering the following fields `n/NAME`, `a/ADDRESS` and `occ/OCCUPATION`,
+if your keyword contains a valid filter prefix (e.g. `s/`), you **must** enclose the keyword in quotes.
   * **Correct:** `filter n/"rajoo s/o rajeet"`.
+  * **Correct:** `filter a/"street of n/m"`
   * **Incorrect:** `filter n/rajoo s/o rajeet` (This incorrectly searches for a salary of `o rajeet`).
-  * **No problem (Start with the prefix):** `filter n/s/o rajeet`.
+* **Note:** For all other fields (like `p/PHONE` or `e/EMAIL`), quotes are **not** specially handled. They will
+be treated as a literal part of your search.
+  * `filter e/"user@test.com"` will search for an email that begins and ends with a quote, which will find no matches.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 The filter is case-insensitive and matches partial words.<br>
