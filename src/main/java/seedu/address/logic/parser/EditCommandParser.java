@@ -2,7 +2,6 @@ package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 import static seedu.address.logic.commands.EditCommand.MESSAGE_NOT_EDITED;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE_OF_BIRTH;
@@ -55,12 +54,7 @@ public class EditCommandParser implements Parser<EditCommand> {
 
         Index index;
         try {
-            int indexInt = Integer.parseInt(preamble);
-            if (indexInt <= 0) {
-                throw new ParseException(String.format("%s\n%s",
-                        MESSAGE_INVALID_PERSON_DISPLAYED_INDEX, EditCommand.MESSAGE_USAGE));
-            }
-            index = Index.fromOneBased(indexInt);
+            index = ParserUtil.parseIndex(preamble);
         } catch (NumberFormatException nfe) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
         }

@@ -2,6 +2,7 @@ package seedu.address.logic.parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,9 +37,20 @@ public class ArgumentTokenizer {
      * @return           List of zero-based prefix positions in the given arguments string
      */
     private static List<PrefixPosition> findAllPrefixPositions(String argsString, Prefix... prefixes) {
-        return Arrays.stream(prefixes)
+        List<PrefixPosition> positions = Arrays.stream(prefixes)
                 .flatMap(prefix -> findPrefixPositions(argsString, prefix).stream())
                 .collect(Collectors.toList());
+        positions.sort(Comparator.comparingInt(PrefixPosition::getStartPosition)
+                .thenComparingInt(p -> -p.getPrefix().getPrefix().length()));
+        List<PrefixPosition> filteredPositions = new ArrayList<>();
+        int lastEndPosition = -1;
+        for (PrefixPosition current : positions) {
+            if (current.getStartPosition() >= lastEndPosition) {
+                filteredPositions.add(current);
+                lastEndPosition = current.getStartPosition() + current.getPrefix().getPrefix().length();
+            }
+        }
+        return filteredPositions;
     }
 
     /**
@@ -66,15 +78,10 @@ public class ArgumentTokenizer {
      * such occurrence can be found.
      *
      * E.g if {@code argsString} = "e/hip/900", {@code prefix} = "p/" and
-     * {@code fromIndex} = 0, this method returns -1 as there are no valid
-     * occurrences of "p/" with whitespace before it. However, if
-     * {@code argsString} = "e/hi p/900", {@code prefix} = "p/" and
-     * {@code fromIndex} = 0, this method returns 5.
+     * {@code fromIndex} = 0, this method returns 4.
      */
     private static int findPrefixPosition(String argsString, String prefix, int fromIndex) {
-        int prefixIndex = argsString.indexOf(" " + prefix, fromIndex);
-        return prefixIndex == -1 ? -1
-                : prefixIndex + 1; // +1 as offset for whitespace
+        return argsString.indexOf(prefix, fromIndex);
     }
 
     /**
