@@ -954,7 +954,13 @@ testers are expected to do more *exploratory* testing.
 
 ## **Appendix: Planned Enhancements**
 ### Filter: 
-implement input validation for all categories, i.e. phone only accepts numbers, dob inputs must be a substring of yyyy-mm-dd and so on
+Currently, `dob/DATE_OF_BIRTH` only supports a "contains" search (e.g. `dob/-10-`). Users are not able
+to search for people born before or after a certain date. Hence, we seek to implement 2 modes of searching
+for `dob/DATE_OF_BIRTH`: "contains" (default) and "comparison".<br>
+
+Example:
+* `filter dob/>=2000-01-01` finds people who are born on or after this date
+* `filter dob/<1990-12-31` finds people who are born before this date
 
 ### Sort: 
 Currently, the existing comparator only sorts by unicode order, creating ambiguity for the human eye and making it seem like it groups common characters together instead of by a specific order. 

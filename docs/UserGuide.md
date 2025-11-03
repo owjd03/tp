@@ -269,7 +269,8 @@ if your keyword contains a valid filter prefix (e.g. `s/`), you **must** enclose
 be treated as a literal part of your search.
   * `filter e/"user@test.com"` will search for an email that begins and ends with a quote, which will find no matches.
 
-<div markdown="span" class="alert alert-primary">:bulb: **Tip:**
+<div markdown="span" class="alert alert-info">
+**:information_source: Additional Information:**<br>
 The filter is case-insensitive and matches partial words.<br>
 A valid query for impossible data (e.g. `filter dob/abc` or `filter dob/1990--12`) will return 0 results, not show an error.
 </div>
