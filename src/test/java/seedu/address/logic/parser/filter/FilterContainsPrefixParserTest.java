@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
+import seedu.address.testutil.PersonBuilder;
 
 
 public class FilterContainsPrefixParserTest {
@@ -98,6 +99,27 @@ public class FilterContainsPrefixParserTest {
         parser.parse("benson");
         assertFalse(parser.test(ALICE));
         assertTrue(parser.test(BENSON));
+
+        // Input enclosed in quotation marks
+        parser.parse("\"alice pauline\"");
+        assertTrue(parser.test(ALICE));
+
+        // Input only begins with quotation mark
+        parser.parse("\"alice");
+        assertFalse(parser.test(ALICE));
+
+        // Input only ends with quotation mark
+        parser.parse("alice\"");
+        assertFalse(parser.test(ALICE));
+
+        // Filter for name with prefix, enclosing input in quotation marks
+        Person personPrefix = new PersonBuilder().withName("rajoo s/o rajeet").build();
+        parser.parse("\"rajoo s/o\"");
+        assertTrue(parser.test(personPrefix));
+
+        // Filter for name with more than 1 set of quotation marks
+        parser.parse("\"\"rajoo s/o\"\"");
+        assertFalse(parser.test(personPrefix));
     }
 
     @Test

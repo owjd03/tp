@@ -2,6 +2,7 @@ package seedu.address.logic.parser.filter;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -49,7 +50,12 @@ public class FilterContainsPrefixParser implements FilterPrefixParser {
         if (value == null) {
             return false;
         }
-        return value.toLowerCase().contains(this.keyword);
+
+        String toCheck = this.keyword;
+        if (this.prefix.equals(PREFIX_NAME) && toCheck.startsWith("\"") && toCheck.endsWith("\"")) {
+            toCheck = toCheck.substring(1, toCheck.length() - 1);
+        }
+        return value.toLowerCase().contains(toCheck);
     }
 
     @Override
