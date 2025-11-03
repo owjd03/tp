@@ -975,7 +975,20 @@ Sample input: `edit 1 t/ 1 from/high risk to/medium risk`<br>
 Sample output: `... Tags updated: [high risk] -> [medium risk]`
 
 ### Delete Package: 
-Ability to delete packages with clients in use, sets all affected clients’ insurance package to “Undecided”.
+Currently, users are unable to delete insurance packages that have at least one client assigned to it.
+This can be inconvenient as it requires the user to manually find and update all affected clients' insurance packages before they can delete the package. 
+We plan to improve this by allowing the deletion to proceed and automatically re-assigning all affected clients to the "Undecided" package.
+
+**Before:**
+- Client A has insurance package "Gold".
+- User executes `deletep ip/Gold`.
+- An error is shown: "This insurance package is assigned to one or more clients and cannot be deleted."
+  
+**After (Proposed):**
+- Client A has insurance package "Gold".
+- User executes `deletep ip/Gold`.
+- The "Gold" package is deleted.
+- Client A's insurance package is automatically set to "Undecided".
 
 ### Find: 
 `Find` implementation currently search for persons by doing exact matching keywords, e.g. `find alex david` will only list out people with name that has `alex` or `david` but not `alexa` which contains alex as a substring of its name. 
