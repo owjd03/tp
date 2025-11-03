@@ -1,7 +1,6 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DEPENDENTS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DOB_DESC_AMY;
@@ -48,6 +47,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_SALARY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
+import static seedu.address.logic.parser.ParserUtil.MESSAGE_INVALID_INDEX;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_PERSON;
@@ -100,29 +100,22 @@ public class EditCommandParserTest {
     }
 
     @Test
-    public void parse_noFieldSpecified_failure() {
-        String expectedError = String.format("%s\n%s",
-                EditCommand.MESSAGE_NOT_EDITED, EditCommand.MESSAGE_USAGE);
-
-        // no field specified
+    public void parse_missingFieldSpecified_failure() {
+        String expectedError = String.format("%s\n%s", EditCommand.MESSAGE_NOT_EDITED, EditCommand.MESSAGE_USAGE);
         assertParseFailure(parser, "1", expectedError);
     }
 
     @Test
-    public void parse_missingIndex_failure() {
+    public void parse_missingIndexAndField_failure() {
         String expectedError = String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE);
-
-        // no index specified
-        assertParseFailure(parser, VALID_NAME_AMY, expectedError);
-
-        // no index and no field specified
         assertParseFailure(parser, "", expectedError);
     }
 
     @Test
     public void parse_invalidIndexValue_failure() {
-        String expectedError = String.format("%s\n%s",
-                MESSAGE_INVALID_PERSON_DISPLAYED_INDEX, EditCommand.MESSAGE_USAGE);
+        String expectedError = String.format(MESSAGE_INVALID_INDEX);
+
+        assertParseFailure(parser, VALID_NAME_AMY, expectedError);
 
         assertParseFailure(parser, "-5" + NAME_DESC_AMY, expectedError);
 
@@ -131,7 +124,7 @@ public class EditCommandParserTest {
 
     @Test
     public void parse_invalidIndexFormat_failure() {
-        String expectedError = String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE);
+        String expectedError = String.format(MESSAGE_INVALID_INDEX);
 
         // invalid arguments being parsed as preamble
         assertParseFailure(parser, "1 some random string", expectedError);
