@@ -73,7 +73,6 @@ In general, all inputs for all fields are automatically trimmed of leading and t
 **Name:**
 * Names can contain letters (from English, Chinese, Spanish, Korean), numbers, spaces, and the following special characters: - ' . / ( )
 * If a name contains text that matches a valid command prefix (e.g., s/, p/, e/), it must be enclosed in double quotes.
-* If a name itself contains double quotes, escape them with a backslash (e.g., n/"James \"The Hammer\" Smith").
 * Names are automatically formatted with proper capitalization (e.g., "john s/o doe" becomes "John S/O Doe", "anne-marie" becomes "Anne-Marie").
 
 **Phone Number:**
