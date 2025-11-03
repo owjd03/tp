@@ -30,8 +30,8 @@ public class DeletePackageCommand extends Command {
             "This insurance package is assigned to one or more clients and cannot be deleted.";
     public static final String MESSAGE_CANNOT_DELETE_STANDARD_PACKAGE =
             "Standard insurance package (Undecided) cannot be deleted.";
-
     private static final String DEFAULT_PACKAGE = "Undecided";
+
     private static final Logger logger = LogsCenter.getLogger(DeletePackageCommand.class);
 
     private final String packageName;
