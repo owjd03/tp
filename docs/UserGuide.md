@@ -435,7 +435,7 @@ Furthermore, certain edits can cause ClientCore to behave in unexpected ways (e.
 ## Known issues
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
-
+2. **If someone's name contain "i/" in their name** (for whatever reason), typing `view i/` will be detected as an **INDEX** search. The remedy to this issue is by capitalizing the `i` since prefix detection is case-sensitive. e.g. `view I/` will be considered as **NAME-KEYWORD**.
 --------------------------------------------------------------------------------------------------------------------
 
 ## Command summary
