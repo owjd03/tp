@@ -984,6 +984,6 @@ Sample output: `Error: Address cannot exceed 200 characters.`
 Currently, ClientCore does not support multi-screen detection as mentioned in the `UserGuide#KnownIssues`.
 In future iteration, we will develop the app window to detect any multi-screen existence and readjust its position once it detects the app window is off-screen.
 
-Current outcome: `The app will remember its position and stuck to it regardless if the screen, its currently in, is on or not.`
+Current outcome: `The app will remember its last position and stuck to it regardless if the screen, its currently in, is on or not.`
 
-Expected outcome: `The app detects its current position is off-screen and readjust to itself to the centre of main screen.`
+Expected outcome: `The app detects its current position is off-screen and readjust itself to the centre of main screen.`
