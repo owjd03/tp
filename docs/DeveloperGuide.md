@@ -63,7 +63,7 @@ Each of the four main components (also shown in the diagram above),
 
 For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside component's being coupled to the implementation of a component), as illustrated in the (partial) class diagram below.
 
-<img src="images/ComponentManagers.png" width="300" />
+<img src="images/ComponentManagers.png" width="314" />
 
 The sections below give more details of each component.
 
@@ -109,7 +109,7 @@ How the `Logic` component works:
 
 Here are the other classes in `Logic` (omitted from the class diagram above) that are used for parsing a user command:
 
-<img src="images/ParserClasses.png" width="600"/>
+<img src="images/ParserClasses.png" width="683"/>
 
 How the parsing works:
 * When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
@@ -118,8 +118,7 @@ How the parsing works:
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
 
-<img src="images/NewModelClassDiagram.png" width="700" />
-
+<img src="images/NewModelClassDiagram.png" width="1110" />
 
 The `Model` component,
 
@@ -134,7 +133,7 @@ The `Model` component,
 
 **API** : [`Storage.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/storage/Storage.java)
 
-<img src="images/StorageClassDiagram.png" width="550" />
+<img src="images/StorageClassDiagram.png" width="627" />
 
 The `Storage` component,
 * can save both address book data and user preference data in JSON format, and read them back into corresponding objects.
@@ -234,7 +233,7 @@ Special handling ensures that "Unspecified" values are always placed at the bott
 
 The sequence diagram below illustrates the interactions within the system when executing a `sort name ascending` command:
 
-<img src="images/SortSequenceDiagram.png" width="550" />
+<img src="images/SortSequenceDiagram.png" width="922" />
 
 **Design Considerations:**
 
@@ -257,7 +256,7 @@ This is useful for creating backups of client's contact details and data.
 
 The sequence diagram below illustrates the interactions within the system when executing an `export` command.
 
-<img src="images/ExportSequenceDiagram.png" width="550" />
+<img src="images/ExportSequenceDiagram.png" width="1273" />
 
 **Design Considerations:**
 
@@ -291,6 +290,7 @@ For `deletep`, the parser only validates the package name using the `ip/` prefix
 The parser also validates that there is no preamble text before the prefixes and that the required prefixes are not duplicated.
 
 **Add Insurance Package**
+
 The addition of insurance packages is further facilitated by the `AddPackageCommand` and `InsurancePackage` classes.
 
 After parsing, an `InsurancePackage` object is created with the parsed values. The `InsurancePackage` constructor automatically formats the package name to capitalize each word for consistency. 
@@ -310,7 +310,7 @@ Finally, the command calls `Model#setInsurancePackage()` to replace the `targetP
 
 The sequence diagram below illustrates the interactions within the system when executing a `editp ip/packageName d/newDescription` command:
 
-<img src="images/EditPackageSequenceDiagram.png" width="550" />
+<img src="images/EditPackageSequenceDiagram.png" width="1403" />
 
 **Design Considerations:**
 
@@ -326,6 +326,38 @@ The sequence diagram below illustrates the interactions within the system when e
 
 
 **Delete Insurance Package**
+
+The deletion of insurance packages is facilitated by the `DeletePackageCommand` class.
+
+After parsing, the target package name is stored in the `DeletePackageCommand` object.
+
+When `Command#execute` is called, `DeletePackageCommand` first checks if the package is the default "Undecided" package,
+which cannot be deleted. It then searches for the package by its name (case-insensitive). If the package is not found,
+a `CommandException` is thrown. The command also checks if the package is currently assigned to any client. If it is in 
+use, the deletion is prevented and an error message is displayed. 
+
+If all checks pass, the command calls `Model#deleteInsurancePackage()` to remove the specified insurance package from 
+the `UniqueInsurancePackageList` in `InsuranceCatalog`.
+
+**Aspect: How deletep executes:**
+
+The sequence diagram below illustrates the interactions within the system when executing a `deletep ip/packageName` command:
+
+<img src="images/DeletePackageSequenceDiagram.png" width="1164" />
+
+**Design Considerations:**
+
+**Aspect: Handling Deletion of a Package in Use:**
+
+* **Current choice:** Prevent deletion and throw an error if the package is in use.
+    * **Pros:** Safer for the user, as it prevents accidental data loss. The user is made explicitly aware that the 
+    package is still in use and can choose to handle the affected clients first.
+    * **Cons:** Requires the user to manually find and update all affected clients before they can delete the package, which can be tedious.
+
+* **Alternative:** Allow deletion of the target package, and automatically set the package to "Undecided" for all affected clients.
+    * **Pros:** More convenient for the user, as it automates the process of un-assigning the package.
+    * **Cons:** This "cascading delete" logic is a lot more complex to implement and would need significant 
+    safety fallbacks in case of unexpected events, such as an application crash during the execution of the command.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -533,7 +565,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 1.  FA requests to list clients
 2.  ClientCore shows a list of clients
 3.  FA requests to tag a specific client in the list.
-4.  ClientCore tag the client.
+4.  ClientCore tags the client.
 
     Use case ends.
 

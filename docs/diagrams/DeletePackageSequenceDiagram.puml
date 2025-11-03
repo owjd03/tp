@@ -1,0 +1,63 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":DeletePackageCommand" as DeletePackageCommand LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":Model" as Model MODEL_COLOR
+participant ":InsuranceCatalog" as InsuranceCatalog MODEL_COLOR
+participant "packages:UniqueInsurancePackageList" as PackageList MODEL_COLOR
+end box
+
+-> DeletePackageCommand : execute()
+activate DeletePackageCommand
+
+DeletePackageCommand -> Model : getInsuranceCatalog()
+activate Model
+Model --> DeletePackageCommand : catalog
+deactivate Model
+
+DeletePackageCommand -> InsuranceCatalog : findPackageByName(packageName)
+activate InsuranceCatalog
+InsuranceCatalog -> PackageList : findPackageByName(packageName)
+activate PackageList
+PackageList --> InsuranceCatalog : targetPackage
+deactivate PackageList
+InsuranceCatalog --> DeletePackageCommand : targetPackage
+deactivate InsuranceCatalog
+
+' Abstracted check for whether package is in use
+DeletePackageCommand -> Model : isPackageInUse(targetPackage)
+activate Model
+Model --> DeletePackageCommand : result
+deactivate Model
+
+alt result == true (package in use)
+    DeletePackageCommand -> DeletePackageCommand : throw CommandException
+    <-- DeletePackageCommand : CommandResult (error)
+else else
+    DeletePackageCommand -> Model : deleteInsurancePackage(targetPackage)
+    activate Model
+
+    Model -> InsuranceCatalog : deleteInsurancePackage(targetPackage)
+    activate InsuranceCatalog
+
+    InsuranceCatalog -> PackageList : remove(targetPackage)
+    activate PackageList
+    PackageList --> InsuranceCatalog
+    deactivate PackageList
+
+    InsuranceCatalog --> Model
+    deactivate InsuranceCatalog
+
+    Model --> DeletePackageCommand
+    deactivate Model
+    <-- DeletePackageCommand : CommandResult (success)
+end
+
+deactivate DeletePackageCommand
+
+@enduml
