@@ -12,7 +12,7 @@ ClientCore is a **comprehensive desktop application for financial advisors to ma
 
 ## Quick start
 
-1. Ensure you have Java `17` or above installed in your Computer.<br>
+1. Ensure you have Java `17` or above installed in your Computer. Open your command terminal and type `java -version` to check. <br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
 1. Download the latest `.jar` file from [here](https://github.com/AY2526S1-CS2103T-T15-3/tp/releases).
