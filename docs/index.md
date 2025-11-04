@@ -8,7 +8,7 @@ title: ClientCore
 
 ![Ui](images/Ui.png)
 
-**ClientCore is a **comprehensive desktop application for financial advisors to manage their clients efficiently**. It is optimized for tech-savvy financial advisors who need to handle a large number of detailed client profiles, enabling them to reduce administrative work and focus on delivering personalized financial advice.
+**ClientCore is a comprehensive desktop application for financial advisors to manage their clients efficiently**. It is optimized for tech-savvy financial advisors who need to handle a large number of detailed client profiles, enabling them to reduce administrative work and focus on delivering personalized financial advice.
 
 
 * If you are interested in using ClientCore, head over to the [_Quick Start_ section of the **User Guide**](UserGuide.html#quick-start).

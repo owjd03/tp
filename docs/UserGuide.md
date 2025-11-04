@@ -74,7 +74,7 @@ No two contacts can have the same phone number and/or case-insensitive email add
 **Name:**
 * Names can contain letters from most languages worldwide (e.g., English, Chinese, Korean, Japanese, Tamil), digits (0-9), spaces, or one of these six specific symbols: - ' . / ( )
 * If a name contains text that matches a valid command prefix (e.g., s/, p/, e/), enclose the entire name in double quotes.
-* Names are automatically formatted with proper capitalization (e.g., "john s/o doe" becomes "John S/O Doe", "anne-marie" becomes "Anne-Marie").
+* Names are automatically formatted with title capitalization (e.g., "john s/o doe" becomes "John S/O Doe", "anne-marie" becomes "Anne-Marie").
 
 **Phone Number:**
 * Phone numbers can contain only numbers and are 7 to 15 digits long.
@@ -121,6 +121,7 @@ For instance, both omitting the salary field during an `add` command or typing `
 * If an occupation contains text that matches a valid command prefix (e.g., s/, p/, e/), enclose the entire occupation in double quotes.
 
 Tags are special optional descriptions that you can add to a person to document specific behaviour or traits of that person.
+
 **Tags:**
 * The `t/` prefix can be omitted completely if no tags are to be added, and will not show up as "Unspecified" in the contact's details.
 * Tags can contain alphanumeric characters.
@@ -145,7 +146,6 @@ Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ip/INSURANCE_PACKAGE [s/SAL
 * Each user must have a name, phone number, email, address and insurance package. 
 * All other fields are optional.
 * For any field that is not specified in the command, it will be show up as "Unspecified" in the contact's details.
-* Names will be auto-formatted with title capitalization (e.g. "john doe" and "jOhn DoE" will both be formatted to "John Doe"). 
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags (including 0)
@@ -197,7 +197,7 @@ Examples:
 * `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
 
 Negative Examples:
-* `edit 1 John s/o Doe` (will not work as the name contains a prefix-like text without being enclosed in double quotes)
+* `edit 1 n/John s/o Doe` (will not work as the name contains a prefix-like text without being enclosed in double quotes)
 * `edit 2` (will not work as no fields to edit were provided)
 * In a list of 4 people, `edit 5 p/91234567` (will not work as there is no 5th person in the current list)
 * `edit 2 s/-5000` (will not work as salary cannot be negative)
