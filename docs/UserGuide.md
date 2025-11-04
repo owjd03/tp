@@ -72,7 +72,7 @@ In general, all inputs for all fields are automatically trimmed of leading and t
 No two contacts can have the same phone number and/or case-insensitive email address (e.g. if two contacts have emails `test@example.com` and `TEsT@ExAMpLE.Com`, they are considered duplicates).
 
 **Name:**
-* Names can contain letters (from English, Chinese, Spanish, Korean), numbers, spaces, and the following special characters: - ' . / ( )
+* Names can contain letters from most languages worldwide (e.g., English, Chinese, Korean, Japanese, Tamil), digits (0-9), spaces, or one of these six specific symbols: - ' . / ( )
 * If a name contains text that matches a valid command prefix (e.g., s/, p/, e/), enclose the entire name in double quotes.
 * Names are automatically formatted with proper capitalization (e.g., "john s/o doe" becomes "John S/O Doe", "anne-marie" becomes "Anne-Marie").
 
@@ -495,7 +495,7 @@ Furthermore, certain edits can cause ClientCore to behave in unexpected ways (e.
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
 2. **If someone's name contain "i/" in their name** (for whatever reason), typing `view i/` will be detected as an **INDEX** search. The remedy to this issue is by capitalizing the `i` since prefix detection is case-sensitive. e.g. `view I/` will be considered as **NAME-KEYWORD**.
-
+3. **If a user copies text with non-breaking spaces** (e.g. from certain websites), the non-breaking spaces will not be trimmed and may cause unexpected behaviour. The remedy is to manually delete the non-breaking spaces and/or replace them with normal spaces.
 --------------------------------------------------------------------------------------------------------------------
 
 ## Command summary

@@ -19,7 +19,7 @@ public class Name {
      * The first character of the address must not be a whitespace,
      * otherwise " " (a blank string) becomes a valid input.
      */
-    private static final String VALIDATION_REGEX = "[\\p{L}\\p{N}\\s'\\-\\.\\(\\)/]+";
+    private static final String VALIDATION_REGEX = "[\\p{L}\\p{M}\\p{N}\\s'\\-\\.\\(\\)/]+";
     private static final String DELIMITERS = " -'/.()";
     public final String fullName;
 
