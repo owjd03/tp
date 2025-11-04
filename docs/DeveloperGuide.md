@@ -242,7 +242,7 @@ The `sort` command uses Java's `Comparator` interface to define custom sorting l
 
 1. **String-based fields** (name, phone, email, address, marital status, occupation, insurance package):
     - Uses `String.compareToIgnoreCase()` which compares characters based on their Unicode code point values.
-    - This results in Unicode ordering: special characters → numbers → special characters → letters (exact position depends on Unicode value).
+    - This results in Unicode ordering: special characters -> numbers -> special characters -> letters (exact position depends on Unicode value).
 
 2. **Numeric fields** (salary, dependents):
     - Uses `Comparator.comparing()` with numeric conversion for true numerical comparison.
@@ -1011,7 +1011,7 @@ Sample output: a list of people whose name contains `alex` or `david` e.g. `alex
 
 ### InsurancePackage: 
 Allow one person to have more than one insurance package assigned to the person.
-Similar to `Tags`, multiple `ip/` prefixes can be used in commands, where insurance packages will be displayed as a collection
+Similar to `Tags`, multiple `ip/` prefixes can be used in commands, where insurance packages will be displayed as a collection.
 
 Sample input: `add n/John Doe p/98765432 e/johndoe@example.com a/123 Main St ip/Gold ip/Health ip/Life`<br>
 Sample output: `... Insurance Package: [Gold] [Health] [Life]`

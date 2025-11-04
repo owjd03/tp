@@ -318,26 +318,26 @@ Invalid Usages:
 ### Sorting persons: `sort`
 
 Sorts the list of persons by the specified field in specified order.
-Unlike other commands, the parameters have to follow the specific order and cannot be used interchangeably<br>
+Unlike other commands, the parameters have to follow the specific order and cannot be used interchangeably.<br>
 e.g. The sort command specifies `sort FIELD [DIRECTION]`, thus `sort [DIRECTION] FIELD` is not acceptable.
 
 Format: `sort FIELD [DIRECTION]`
 
 * The `FIELD` must be one of the following: `name`, `phone`, `email`, `address`, `salary`, `dateofbirth`, 
-`maritalstatus`, `occupation`, `dependents` or `insurancepackage`
-* The `DIRECTION` must be one of the following: `ascending` or `descending`. If not specified, defaults to `ascending`
+`maritalstatus`, `occupation`, `dependents` or `insurancepackage`.
+* The `DIRECTION` must be one of the following: `ascending` or `descending`. If not specified, defaults to `ascending`.
 <br>
 <br>
-* The sort is case-insensitive for text fields (e.g., `name`, `email`, `address`, `maritalstatus`, `occupation`)
-* Numerical fields (`salary`, `dependents`) are sorted numerically
-* Date fields (`dateofbirth`) are sorted from earliest dateofbirth to latest dateofbirth for ascending 
+* The sort is case-insensitive for text fields (e.g., `name`, `email`, `address`, `maritalstatus`, `occupation`).
+* Numerical fields (`salary`, `dependents`) are sorted numerically.
+* Date fields (`dateofbirth`) are sorted from earliest dateofbirth to latest dateofbirth for ascending
 and latest dateofbirth to earliest dateofbirth for descending.<br>
 e.g. when sorted by ascending direction, A person born in 1999-05-30 will be sorted above a person born in 2001-03-20.
 * For text fields that contain numbers, letters, and special characters (e.g., `name`, `address`, `occupation`, `email`), the sorting follows a standard character order used by computers:
-    * Most special characters and punctuation marks (like `!`, `#`, `$`, `-`, `.`, `/`) come before numbers
-    * Numbers (`0` to `9`) come next
-    * Some special characters (like `@` in email addresses, or `:` in addresses) come after numbers
-    * Letters (from A to Z, in any language) come last
+    * Most special characters and punctuation marks (like `!`, `#`, `$`, `-`, `.`, `/`) come before numbers.
+    * Numbers (`0` to `9`) come next.
+    * Some special characters (like `@` in email addresses, or `:` in addresses) come after numbers.
+    * Letters (from A to Z, in any language) come last.
 * The same order applies in reverse when sorting in `descending` order.
 <br>
 <br>
@@ -348,19 +348,19 @@ The exact position of each special character depends on its Unicode value. <br>
 For example, when sorting by address, `:456 Main St` will come after `123 Main St` but before `ABC Street`.
 </div>
 
-* The entire list will be sorted and displayed in the main window
-* Invalid direction parameters are ignored and will default to ascending
-* Extra parameters after the direction will be ignored
+* The entire list will be sorted and displayed in the main window.
+* Invalid direction parameters are ignored and will default to ascending.
+* Extra parameters after the direction will be ignored.
 
 Examples:
-* `sort name` sorts all persons alphabetically by name (ascending by default)
-* `sort name ascending` sorts all persons alphabetically by name from A to Z
-* `sort name descending` sorts all persons alphabetically by name from Z to A
-* `sort salary` sorts all persons by salary from lowest to highest (ascending by default)
+* `sort name` sorts all persons alphabetically by name (ascending by default).
+* `sort name ascending` sorts all persons alphabetically by name from A to Z.
+* `sort name descending` sorts all persons alphabetically by name from Z to A.
+* `sort salary` sorts all persons by salary from lowest to highest (ascending by default).
 * After running the above command:
   ![result for `sort salary ascending`](images/sortSalaryAscending.png)
-* `sort dependents descending` sort all persons by dependents from highest to lowest
-* `sort dateofbirth` sorts all persons by date of birth from oldest to youngest
+* `sort dependents descending` sort all persons by dependents from highest to lowest.
+* `sort dateofbirth` sorts all persons by date of birth from oldest to youngest.
 
 ### Exporting all persons: `export`
 
@@ -404,10 +404,10 @@ Adds a new custom insurance package in ClientCore.
 
 Format: `addp ip/PACKAGE_NAME d/NEW_PACKAGE_DESCRIPTION`
 
-* Creates a new insurance package with the specified `PACKAGE_NAME` and `PACKAGE_DESCRIPTION`
+* Creates a new insurance package with the specified `PACKAGE_NAME` and `PACKAGE_DESCRIPTION`.
 * The `ip/` (package name) and `d/` (package description) fields are **both mandatory**.
 * Package names are automatically formatted with proper capitalization (e.g., "premium package" becomes "Premium Package").
-* Package names cannot be empty after removing whitespace
+* Package names cannot be empty after removing whitespace.
 * You can set an empty description by typing `d/` with nothing after it (e.g., `d/`). A trailing space is optional and will be ignored.
 * Duplicate package names are not allowed (case-insensitive check).
 
